@@ -14,8 +14,8 @@ export const translations = {
       cta2: 'Book Now'
     },
     about: {
-      title: 'Welcome to Hadba',
-      description: 'For over 20 years, Hadba has been serving the most authentic Mandi and traditional Arabic dishes. Our recipes have been passed down through generations, bringing you the true taste of Yemen.',
+      title: 'Welcome to Samdan',
+      description: 'For over 20 years, Samdan has been serving the most authentic Mandi and traditional Arabic dishes. Our recipes have been passed down through generations, bringing you the true taste of Yemen.',
       feature1: 'Authentic Recipes',
       feature2: 'Fresh Ingredients',
       feature3: 'Family Tradition'
@@ -36,12 +36,12 @@ export const translations = {
       title: 'Visit Us',
       address: 'Al Olaya District, Riyadh, Saudi Arabia',
       phone: '+966 50 123 4567',
-      email: 'info@hadba.com',
+      email: 'info@Samdan.com',
       hours: 'Daily 12:00 PM - 12:00 AM',
       button: 'Get Directions'
     },
     footer: {
-      rights: '© 2026 Hadba Restaurant. All rights reserved.',
+      rights: '© 2026 Samdan Restaurant. All rights reserved.',
       follow: 'Follow Us'
     }
   },
@@ -82,7 +82,7 @@ export const translations = {
       title: 'زورونا',
       address: 'حي العليا، الرياض، المملكة العربية السعودية',
       phone: '+966 50 123 4567',
-      email: 'info@hadba.com',
+      email: 'info@Samdan.com',
       hours: 'يومياً ١٢:٠٠ م - ١٢:٠٠ ص',
       button: 'احصل على الاتجاهات'
     },

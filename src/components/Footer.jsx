@@ -10,7 +10,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="container footer-content">
         <div className="footer-brand">
-          <h3>🍖 Hadba</h3>
+          <h3>🍖 Samdan</h3>
           <p>{t.footer.rights}</p>
         </div>
         <div className="footer-social">

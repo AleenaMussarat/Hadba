@@ -27,7 +27,7 @@ const LoadingScreen = () => {
             <span className="logo-emoji">🍖</span>
           </div>
           <h1 className="logo-text">
-            Hadba <span>Mandi</span>
+            Samdan <span>Mandi</span>
           </h1>
           <p className="logo-subtitle">Traditional Yemeni Cuisine</p>
         </div>

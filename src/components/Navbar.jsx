@@ -95,7 +95,7 @@ const Navbar = () => {
               <FaUtensils className="logo-icon" />
             </div>
             <div className="logo-text">
-              <span className="logo-main">Hadba</span>
+              <span className="logo-main">Samdan</span>
               <span className="logo-sub">Mandi</span>
             </div>
           </div>
@@ -178,7 +178,7 @@ const Navbar = () => {
               <FaUtensils className="logo-icon" />
             </div>
             <div className="logo-text">
-              <span className="logo-main">Hadba</span>
+              <span className="logo-main">Samdan</span>
               <span className="logo-sub">Mandi</span>
             </div>
           </div>
