@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { LanguageProvider } from './i18n'
+import { HashRouter, Routes, Route } from 'react-router-dom'
+import { LanguageProvider, getLanguageDir } from './i18n'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Menu from './components/Menu'
@@ -7,48 +8,55 @@ import About from './components/About'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import LoadingScreen from './components/LoadingScreen'
+import ReserveModal from './components/ReserveModal'
+import ScrollToTop from './components/ScrollToTop'
 import './App.css'
 
 function App() {
   const [currentLang, setCurrentLang] = useState('en')
   const [isLoading, setIsLoading] = useState(true)
+  const [isReserveOpen, setIsReserveOpen] = useState(false)
 
   useEffect(() => {
-    // Load fonts
-    const link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Noto+Kufi+Arabic:wght@300;400;500;600;700&display=swap';
-    link.rel = 'stylesheet';
-    document.head.appendChild(link);
+    const link = document.createElement('link')
+    link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Noto+Kufi+Arabic:wght@300;400;500;600;700&display=swap'
+    link.rel = 'stylesheet'
+    document.head.appendChild(link)
 
-    // Simulate loading time (minimum 1.5 seconds)
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 2000) // Show logo for 2 seconds
+    document.documentElement.dir = getLanguageDir(currentLang)
+    document.documentElement.lang = currentLang
 
-    return () => clearTimeout(timer)
+    return () => link.remove()
   }, [])
 
   const toggleLanguage = (lang) => {
     setCurrentLang(lang)
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'
+    document.documentElement.dir = getLanguageDir(lang)
     document.documentElement.lang = lang
-    document.body.className = lang === 'ar' ? 'lang-ar' : ''
   }
 
   if (isLoading) {
-    return <LoadingScreen />
+    return <LoadingScreen onFinish={() => setIsLoading(false)} />
   }
 
   return (
     <LanguageProvider value={{ currentLang, toggleLanguage }}>
-      <div className={`app ${currentLang === 'ar' ? 'lang-ar' : ''}`}>
-        <Navbar />
-        <Hero />
-        <About />
-        <Menu />
-        <Contact />
-        <Footer />
-      </div>
+      <HashRouter>
+        <div className="app">
+          <ScrollToTop />
+          <Navbar onReserveClick={() => setIsReserveOpen(true)} />
+          <main>
+            <Routes>
+              <Route path="/" element={<Hero onReserveClick={() => setIsReserveOpen(true)} />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/menu" element={<Menu />} />
+              <Route path="/contact" element={<Contact onReserveClick={() => setIsReserveOpen(true)} />} />
+            </Routes>
+          </main>
+          <Footer onReserveClick={() => setIsReserveOpen(true)} />
+          <ReserveModal isOpen={isReserveOpen} onClose={() => setIsReserveOpen(false)} />
+        </div>
+      </HashRouter>
     </LanguageProvider>
   )
 }

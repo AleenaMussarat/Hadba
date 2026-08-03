@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(curl.exe -4 -s --max-time 15 \"https://unafraid-canopy-smudge.ngrok-free.dev/api/menu-items?pagination%5BpageSize%5D=1\" -H \"ngrok-skip-browser-warning: true\")",
+      "PowerShell(curl.exe -4 -s --max-time 15 \"https://unafraid-canopy-smudge.ngrok-free.dev/api/menu-items?pagination%5BpageSize%5D=1\")",
+      "PowerShell(curl.exe -4 -s --max-time 15 \"https://unafraid-canopy-smudge.ngrok-free.dev/api/menu-items?pagination%5BpageSize%5D=1\" -o NUL -w \"HTTP_CODE:%{http_code}\\\\n\")",
+      "PowerShell(Get-CimInstance Win32_Process -Filter \"Name = 'node.exe'\" | Where-Object { $_.CommandLine -match 'strapi' } | Select-Object ProcessId, CommandLine)",
+      "PowerShell(Stop-Process -Id 14460,8384 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Id 11544,17592 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-CimInstance Win32_Process -Filter \"Name = 'node.exe'\" | Where-Object { $_.CommandLine -match 'strapi' } | Select-Object ProcessId)",
+      "PowerShell(Stop-Process -Id 348,12964 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(curl.exe -4 -s \"https://unafraid-canopy-smudge.ngrok-free.dev/api/menu-items?pagination%5BpageSize%5D=1\" -o NUL -w \"HTTP_CODE:%{http_code}\\\\n\" --max-time 15)",
+      "PowerShell(Stop-Process -Id 7728,19088 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(curl.exe -4 -s \"http://localhost:1337/api/menu-items?pagination%5BpageSize%5D=1\" -o NUL -w \"menu-items: %{http_code}\\\\n\")",
+      "PowerShell(curl.exe -4 -s \"http://localhost:1337/api/carousel-slides?filters%5BisActive%5D%5B%24eq%5D=true\" -o NUL -w \"carousel-slides: %{http_code}\\\\n\")",
+      "PowerShell(curl.exe -4 -s \"https://unafraid-canopy-smudge.ngrok-free.dev/api/menu-items?pagination%5BpageSize%5D=1\" -o NUL -w \"ngrok tunnel: %{http_code}\\\\n\" --max-time 15)",
+      "PowerShell(Stop-Process -Id 9308,24060 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Id 25620,24396 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Id 7668,19492 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Id 8596,4400 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(curl.exe -4 -s \"https://unafraid-canopy-smudge.ngrok-free.dev/api/menu-items?pagination%5BpageSize%5D=1\" -o NUL -w \"ngrok: %{http_code}\\\\n\" --max-time 15)",
+      "PowerShell(Stop-Process -Id 18372,16284 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Id 22348,16132 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Id 22980,25392 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-ChildItem \"D:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\cms\\\\node_modules\\\\@strapi\\\\plugin-users-permissions\" -Recurse -Filter \"schema.json\" -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match \"user\" } | Select-Object FullName)",
+      "PowerShell(Stop-Process -Id 21940,19080 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Id 2784,21060 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-ChildItem \"D:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\cms\\\\node_modules\\\\@strapi\\\\admin\\\\dist\" -Recurse -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -eq \"services\" } | Select-Object FullName)",
+      "PowerShell(Stop-Process -Id 22196,26132 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Id 26536,18576 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Id 12420,20796 -Force -ErrorAction SilentlyContinue)"
+    ]
+  }
+}

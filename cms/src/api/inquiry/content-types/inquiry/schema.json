@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "inquiries",
+  "info": {
+    "singularName": "inquiry",
+    "pluralName": "inquiries",
+    "displayName": "Inquiry",
+    "description": "A reservation inquiry submitted from the website's Inquiries form"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "phone": {
+      "type": "string",
+      "required": true
+    },
+    "guests": {
+      "type": "integer",
+      "required": true
+    },
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "time": {
+      "type": "time",
+      "required": true
+    },
+    "notes": {
+      "type": "text"
+    },
+    "stage": {
+      "type": "enumeration",
+      "enum": [
+        "New",
+        "Contacted",
+        "Confirmed",
+        "Cancelled"
+      ],
+      "default": "New"
+    }
+  }
+}

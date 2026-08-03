@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "carousel_slides",
+  "info": {
+    "singularName": "carousel-slide",
+    "pluralName": "carousel-slides",
+    "displayName": "Carousel Slide",
+    "description": "A hero carousel slide on the homepage, English and Arabic together on one entry (max 5 active)"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "badgeEn": {
+      "type": "string"
+    },
+    "badgeAr": {
+      "type": "string"
+    },
+    "titleEn": {
+      "type": "string",
+      "required": true
+    },
+    "titleAr": {
+      "type": "string",
+      "required": true
+    },
+    "subtitleEn": {
+      "type": "text"
+    },
+    "subtitleAr": {
+      "type": "text"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

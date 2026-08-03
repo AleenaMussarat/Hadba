@@ -1,0 +1,60 @@
+{
+  "kind": "collectionType",
+  "collectionName": "menu_items",
+  "info": {
+    "singularName": "menu-item",
+    "pluralName": "menu-items",
+    "displayName": "Menu Item",
+    "description": "A single dish on the menu, English and Arabic together on one entry"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "nameEn": {
+      "type": "string",
+      "required": true
+    },
+    "nameAr": {
+      "type": "string",
+      "required": true
+    },
+    "descriptionEn": {
+      "type": "text"
+    },
+    "descriptionAr": {
+      "type": "text"
+    },
+    "categoryEn": {
+      "type": "string",
+      "required": true
+    },
+    "categoryAr": {
+      "type": "string",
+      "required": true
+    },
+    "price": {
+      "type": "decimal",
+      "required": true
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    },
+    "calories": {
+      "type": "integer"
+    }
+  }
+}

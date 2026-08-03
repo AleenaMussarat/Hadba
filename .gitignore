@@ -11,6 +11,17 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+
+# Strapi CMS (separate project — has its own .gitignore for build/db artifacts)
+cms/node_modules
+cms/.env
+cms/.cache
+cms/build
+cms/dist
+cms/.strapi
+cms/.tmp
+cms/public/uploads
 
 # Editor directories and files
 .vscode/*
