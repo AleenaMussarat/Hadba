@@ -28,7 +28,12 @@
       "PowerShell(Get-ChildItem \"D:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\cms\\\\node_modules\\\\@strapi\\\\admin\\\\dist\" -Recurse -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -eq \"services\" } | Select-Object FullName)",
       "PowerShell(Stop-Process -Id 22196,26132 -Force -ErrorAction SilentlyContinue)",
       "PowerShell(Stop-Process -Id 26536,18576 -Force -ErrorAction SilentlyContinue)",
-      "PowerShell(Stop-Process -Id 12420,20796 -Force -ErrorAction SilentlyContinue)"
+      "PowerShell(Stop-Process -Id 12420,20796 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 1337 -ErrorAction SilentlyContinue)",
+      "PowerShell(Start-Process ngrok -ArgumentList \"http 1337\" -WindowStyle Hidden)",
+      "PowerShell(curl.exe -4 -s http://127.0.0.1:4040/api/tunnels)",
+      "PowerShell(curl.exe -4 -s -o NUL -w \"%{http_code}\" https://unafraid-canopy-smudge.ngrok-free.dev/admin)",
+      "Read(//c/Program Files/Git/bin/**)"
     ]
   }
 }
