@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "branches",
+  "info": {
+    "singularName": "branch",
+    "pluralName": "branches",
+    "displayName": "Branch",
+    "description": "A restaurant location, English and Arabic together on one entry"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "nameEn": {
+      "type": "string",
+      "required": true
+    },
+    "nameAr": {
+      "type": "string",
+      "required": true
+    },
+    "locationEn": {
+      "type": "text",
+      "required": true
+    },
+    "locationAr": {
+      "type": "text",
+      "required": true
+    },
+    "hoursEn": {
+      "type": "string",
+      "required": true
+    },
+    "hoursAr": {
+      "type": "string",
+      "required": true
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "mapsLink": {
+      "type": "string",
+      "required": true
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

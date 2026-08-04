@@ -443,6 +443,43 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiBranchBranch extends Struct.CollectionTypeSchema {
+  collectionName: 'branches';
+  info: {
+    description: 'A restaurant location, English and Arabic together on one entry';
+    displayName: 'Branch';
+    pluralName: 'branches';
+    singularName: 'branch';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    hoursAr: Schema.Attribute.String & Schema.Attribute.Required;
+    hoursEn: Schema.Attribute.String & Schema.Attribute.Required;
+    image: Schema.Attribute.Media<'images'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::branch.branch'
+    > &
+      Schema.Attribute.Private;
+    locationAr: Schema.Attribute.Text & Schema.Attribute.Required;
+    locationEn: Schema.Attribute.Text & Schema.Attribute.Required;
+    mapsLink: Schema.Attribute.String & Schema.Attribute.Required;
+    nameAr: Schema.Attribute.String & Schema.Attribute.Required;
+    nameEn: Schema.Attribute.String & Schema.Attribute.Required;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCarouselSlideCarouselSlide
   extends Struct.CollectionTypeSchema {
   collectionName: 'carousel_slides';
@@ -475,6 +512,39 @@ export interface ApiCarouselSlideCarouselSlide
     subtitleEn: Schema.Attribute.Text;
     titleAr: Schema.Attribute.String & Schema.Attribute.Required;
     titleEn: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiGalleryImageGalleryImage
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'gallery_images';
+  info: {
+    description: "A photo shown in the site's Gallery page";
+    displayName: 'Gallery Image';
+    pluralName: 'gallery-images';
+    singularName: 'gallery-image';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    captionAr: Schema.Attribute.String;
+    captionEn: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    image: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::gallery-image.gallery-image'
+    > &
+      Schema.Attribute.Private;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1115,7 +1185,9 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::branch.branch': ApiBranchBranch;
       'api::carousel-slide.carousel-slide': ApiCarouselSlideCarouselSlide;
+      'api::gallery-image.gallery-image': ApiGalleryImageGalleryImage;
       'api::inquiry.inquiry': ApiInquiryInquiry;
       'api::menu-item.menu-item': ApiMenuItemMenuItem;
       'api::staff-account.staff-account': ApiStaffAccountStaffAccount;
