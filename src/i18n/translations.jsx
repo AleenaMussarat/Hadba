@@ -16,6 +16,10 @@ export const menuImages = {
 }
 
 const diningRoom = '/brand/photo-riyadh-skyline.jpg'
+const najdiArchitecture = '/brand/photo-najdi-architecture.jpg'
+const saduInterior = '/brand/photo-sadu-interior.jpg'
+const BRANCH_MAP_QUERY = 'Khalid bin Al Waleed Street, Qurtubah, Riyadh, Saudi Arabia'
+const branchMapsLink = `https://maps.google.com/?q=${encodeURIComponent(BRANCH_MAP_QUERY)}`
 
 // ---- Full real menu (from SAMDAN's printed menu) ----
 // Each row: [en name, ar name, en desc, ar desc, category key, price, calories|null, imageKey, featured?]
@@ -150,6 +154,8 @@ export const translations = {
       home: 'Home',
       about: 'Our Story',
       menu: 'Menu',
+      branches: 'Branches',
+      gallery: 'Gallery',
       contact: 'Contact',
       reserve: 'Inquiries'
     },
@@ -207,6 +213,42 @@ export const translations = {
       email: 'reservations@samdan.sa',
       hours: 'Daily 12:00 PM – 12:00 AM'
     },
+    branches: {
+      eyebrow: 'Find Us',
+      title: 'Our Branches',
+      subtitle: 'Visit us at our Riyadh location, with more branches opening soon.',
+      directionsLabel: 'Get Directions',
+      items: [
+        {
+          name: 'SAMDAN — Qurtubah',
+          location: 'Khalid bin Al Waleed Street, Qurtubah, Riyadh, Saudi Arabia',
+          hours: 'Daily 12:00 PM – 12:00 AM',
+          mapsLink: branchMapsLink,
+          image: najdiArchitecture
+        }
+      ]
+    },
+    gallery: {
+      eyebrow: 'A Glimpse Inside',
+      title: 'Gallery',
+      subtitle: "A visual journey through SAMDAN's ambiance and signature dishes.",
+      images: [
+        { caption: 'Najdi Architecture', image: najdiArchitecture },
+        { caption: 'Sadu-Inspired Interior', image: saduInterior },
+        { caption: 'SAMDAN, Riyadh', image: diningRoom },
+        { caption: 'Hejazi Mandi', image: menuImages.hejaziMandi },
+        { caption: 'Lamb Kabsa', image: menuImages.lambKabsa },
+        { caption: 'Kabsa Mashawi', image: menuImages.kabsaMashawi },
+        { caption: 'Saleeg', image: menuImages.saleeg },
+        { caption: 'Arabic Coffee & Dates', image: menuImages.coffeeDates },
+        { caption: 'Luqaimat', image: menuImages.luqaimat }
+      ]
+    },
+    notFound: {
+      title: 'Page Not Found',
+      subtitle: "The page you're looking for doesn't exist or may have been moved.",
+      backHome: 'Back to Home'
+    },
     footer: {
       rights: '© 2026 SAMDAN Restaurant. All rights reserved.',
       follow: 'Follow Us',
@@ -240,6 +282,8 @@ export const translations = {
       home: 'الرئيسية',
       about: 'قصتنا',
       menu: 'القائمة',
+      branches: 'الفروع',
+      gallery: 'معرض الصور',
       contact: 'تواصل معنا',
       reserve: 'استفسارات'
     },
@@ -296,6 +340,42 @@ export const translations = {
       phone: '+966 55 518 5657',
       email: 'reservations@samdan.sa',
       hours: 'يومياً ١٢:٠٠ ظهراً - ١٢:٠٠ منتصف الليل'
+    },
+    branches: {
+      eyebrow: 'موقعنا',
+      title: 'فروعنا',
+      subtitle: 'زورونا في فرعنا بالرياض، مع افتتاح فروع جديدة قريباً.',
+      directionsLabel: 'احصل على الاتجاهات',
+      items: [
+        {
+          name: 'سمدان - قرطبة',
+          location: 'شارع خالد بن الوليد، قرطبة، الرياض، المملكة العربية السعودية',
+          hours: 'يومياً ١٢:٠٠ ظهراً - ١٢:٠٠ منتصف الليل',
+          mapsLink: branchMapsLink,
+          image: najdiArchitecture
+        }
+      ]
+    },
+    gallery: {
+      eyebrow: 'لمحة من الداخل',
+      title: 'معرض الصور',
+      subtitle: 'جولة بصرية عبر أجواء سمدان وأطباقها المميزة.',
+      images: [
+        { caption: 'العمارة النجدية', image: najdiArchitecture },
+        { caption: 'الديكور المستوحى من السدو', image: saduInterior },
+        { caption: 'سمدان، الرياض', image: diningRoom },
+        { caption: 'مندي حجازي', image: menuImages.hejaziMandi },
+        { caption: 'كبسة لحم', image: menuImages.lambKabsa },
+        { caption: 'كبسة مشاوي', image: menuImages.kabsaMashawi },
+        { caption: 'سليق', image: menuImages.saleeg },
+        { caption: 'قهوة عربية وتمر', image: menuImages.coffeeDates },
+        { caption: 'لقيمات', image: menuImages.luqaimat }
+      ]
+    },
+    notFound: {
+      title: 'الصفحة غير موجودة',
+      subtitle: 'الصفحة التي تبحث عنها غير موجودة أو ربما تم نقلها.',
+      backHome: 'العودة للرئيسية'
     },
     footer: {
       rights: '© ٢٠٢٦ مطعم سمدان. جميع الحقوق محفوظة.',

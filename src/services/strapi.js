@@ -90,3 +90,28 @@ export async function fetchCarouselSlides(locale) {
     image: mediaUrl(slide.image)
   }))
 }
+
+export async function fetchBranches(locale) {
+  const json = await strapiFetch(`branches?populate=image&sort=order:asc`)
+  const data = json.data || []
+  if (data.length === 0) throw new Error('No branches returned by Strapi')
+
+  return data.map((branch) => ({
+    name: locale === 'ar' ? branch.nameAr : branch.nameEn,
+    location: locale === 'ar' ? branch.locationAr : branch.locationEn,
+    hours: locale === 'ar' ? branch.hoursAr : branch.hoursEn,
+    mapsLink: branch.mapsLink,
+    image: mediaUrl(branch.image)
+  }))
+}
+
+export async function fetchGalleryImages(locale) {
+  const json = await strapiFetch(`gallery-images?populate=image&sort=order:asc`)
+  const data = json.data || []
+  if (data.length === 0) throw new Error('No gallery images returned by Strapi')
+
+  return data.map((item) => ({
+    caption: locale === 'ar' ? item.captionAr : item.captionEn,
+    image: mediaUrl(item.image)
+  }))
+}

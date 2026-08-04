@@ -4,7 +4,7 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { items, carouselSlides } = require('./seed-data');
+const { items, carouselSlides, branches, galleryImages } = require('./seed-data');
 
 async function downloadToTemp(url) {
   const res = await fetch(url);
@@ -56,6 +56,10 @@ async function setPublicPermissions(strapi) {
     'api::menu-item.menu-item.findOne',
     'api::carousel-slide.carousel-slide.find',
     'api::carousel-slide.carousel-slide.findOne',
+    'api::branch.branch.find',
+    'api::branch.branch.findOne',
+    'api::gallery-image.gallery-image.find',
+    'api::gallery-image.gallery-image.findOne',
     // Create-only — the public can submit an inquiry but never list/read
     // other people's submissions back out through the API.
     'api::inquiry.inquiry.create'
@@ -106,23 +110,64 @@ module.exports = async function seed({ strapi }) {
   const existingSlides = await strapi.documents('api::carousel-slide.carousel-slide').findMany();
   if (existingSlides.length > 0) {
     strapi.log.info('[seed] Carousel slides already present — skipping.');
+  } else {
+    strapi.log.info('[seed] Seeding carousel slides...');
+    for (const slide of carouselSlides) {
+      const media = await uploadImage(strapi, slide.image, `carousel-${slide.order}.jpg`);
+
+      await strapi.documents('api::carousel-slide.carousel-slide').create({
+        data: {
+          badgeEn: slide.badgeEn,
+          titleEn: slide.titleEn,
+          subtitleEn: slide.subtitleEn,
+          badgeAr: slide.badgeAr,
+          titleAr: slide.titleAr,
+          subtitleAr: slide.subtitleAr,
+          isActive: slide.isActive,
+          image: media.id
+        }
+      });
+    }
+  }
+
+  const existingBranches = await strapi.documents('api::branch.branch').findMany();
+  if (existingBranches.length > 0) {
+    strapi.log.info('[seed] Branches already present — skipping.');
+  } else {
+    strapi.log.info('[seed] Seeding branches...');
+    for (const branch of branches) {
+      const media = await uploadImage(strapi, branch.image, `branch-${branch.order}.jpg`);
+
+      await strapi.documents('api::branch.branch').create({
+        data: {
+          nameEn: branch.nameEn,
+          nameAr: branch.nameAr,
+          locationEn: branch.locationEn,
+          locationAr: branch.locationAr,
+          hoursEn: branch.hoursEn,
+          hoursAr: branch.hoursAr,
+          mapsLink: branch.mapsLink,
+          image: media.id
+        }
+      });
+    }
+  }
+
+  const existingGalleryImages = await strapi.documents('api::gallery-image.gallery-image').findMany();
+  if (existingGalleryImages.length > 0) {
+    strapi.log.info('[seed] Gallery images already present — skipping.');
     strapi.log.info('[seed] Done.');
     return;
   }
 
-  strapi.log.info('[seed] Seeding carousel slides...');
-  for (const slide of carouselSlides) {
-    const media = await uploadImage(strapi, slide.image, `carousel-${slide.order}.jpg`);
+  strapi.log.info('[seed] Seeding gallery images...');
+  for (const galleryImage of galleryImages) {
+    const media = await uploadImage(strapi, galleryImage.image, `gallery-${galleryImage.order}.jpg`);
 
-    await strapi.documents('api::carousel-slide.carousel-slide').create({
+    await strapi.documents('api::gallery-image.gallery-image').create({
       data: {
-        badgeEn: slide.badgeEn,
-        titleEn: slide.titleEn,
-        subtitleEn: slide.subtitleEn,
-        badgeAr: slide.badgeAr,
-        titleAr: slide.titleAr,
-        subtitleAr: slide.subtitleAr,
-        isActive: slide.isActive,
+        captionEn: galleryImage.captionEn,
+        captionAr: galleryImage.captionAr,
         image: media.id
       }
     });

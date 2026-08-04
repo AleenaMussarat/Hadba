@@ -171,4 +171,32 @@ const carouselSlides = [
   }
 ];
 
-module.exports = { items, carouselSlides };
+const MAP_QUERY = 'Khalid bin Al Waleed Street, Qurtubah, Riyadh, Saudi Arabia';
+
+const branches = [
+  {
+    order: 1,
+    nameEn: 'SAMDAN — Qurtubah',
+    nameAr: 'سمدان - قرطبة',
+    locationEn: 'Khalid bin Al Waleed Street, Qurtubah, Riyadh, Saudi Arabia',
+    locationAr: 'شارع خالد بن الوليد، قرطبة، الرياض، المملكة العربية السعودية',
+    hoursEn: 'Daily 12:00 PM – 12:00 AM',
+    hoursAr: 'يومياً ١٢:٠٠ ظهراً - ١٢:٠٠ منتصف الليل',
+    image: localAsset('photo-najdi-architecture.jpg'),
+    mapsLink: `https://maps.google.com/?q=${encodeURIComponent(MAP_QUERY)}`
+  }
+];
+
+const galleryImages = [
+  { order: 1, image: localAsset('photo-najdi-architecture.jpg'), captionEn: 'Najdi Architecture', captionAr: 'العمارة النجدية' },
+  { order: 2, image: localAsset('photo-sadu-interior.jpg'), captionEn: 'Sadu-Inspired Interior', captionAr: 'الديكور المستوحى من السدو' },
+  { order: 3, image: localAsset('photo-riyadh-skyline.jpg'), captionEn: 'SAMDAN, Riyadh', captionAr: 'سمدان، الرياض' },
+  { order: 4, image: IMAGES.hejaziMandi, captionEn: 'Hejazi Mandi', captionAr: 'مندي حجازي' },
+  { order: 5, image: IMAGES.lambKabsa, captionEn: 'Lamb Kabsa', captionAr: 'كبسة لحم' },
+  { order: 6, image: IMAGES.kabsaMashawi, captionEn: 'Kabsa Mashawi', captionAr: 'كبسة مشاوي' },
+  { order: 7, image: IMAGES.saleeg, captionEn: 'Saleeg', captionAr: 'سليق' },
+  { order: 8, image: IMAGES.coffeeDates, captionEn: 'Arabic Coffee & Dates', captionAr: 'قهوة عربية وتمر' },
+  { order: 9, image: IMAGES.luqaimat, captionEn: 'Luqaimat', captionAr: 'لقيمات' }
+];
+
+module.exports = { items, carouselSlides, branches, galleryImages };
