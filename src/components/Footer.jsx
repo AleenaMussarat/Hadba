@@ -23,6 +23,8 @@ const Footer = ({ onReserveClick }) => {
             <Link to="/">{t.nav.home}</Link>
             <Link to="/about">{t.nav.about}</Link>
             <Link to="/menu">{t.nav.menu}</Link>
+            <Link to="/branches">{t.nav.branches}</Link>
+            <Link to="/gallery">{t.nav.gallery}</Link>
             <Link to="/contact">{t.nav.contact}</Link>
           </div>
         </div>

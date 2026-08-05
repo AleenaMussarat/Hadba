@@ -54,6 +54,8 @@ const Navbar = ({ onReserveClick }) => {
     { path: '/', label: t.nav.home },
     { path: '/about', label: t.nav.about },
     { path: '/menu', label: t.nav.menu },
+    { path: '/branches', label: t.nav.branches },
+    { path: '/gallery', label: t.nav.gallery },
     { path: '/contact', label: t.nav.contact }
   ]
 

@@ -33,7 +33,16 @@
       "PowerShell(Start-Process ngrok -ArgumentList \"http 1337\" -WindowStyle Hidden)",
       "PowerShell(curl.exe -4 -s http://127.0.0.1:4040/api/tunnels)",
       "PowerShell(curl.exe -4 -s -o NUL -w \"%{http_code}\" https://unafraid-canopy-smudge.ngrok-free.dev/admin)",
-      "Read(//c/Program Files/Git/bin/**)"
+      "Read(//c/Program Files/Git/bin/**)",
+      "PowerShell(Get-CimInstance Win32_Process -Filter \"CommandLine LIKE '%strapi%'\" -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 1337 -State Listen)",
+      "PowerShell(Stop-Process -Id 21792 -Force)",
+      "PowerShell(curl.exe -s http://localhost:1337/api/branches)",
+      "PowerShell(curl.exe -s http://localhost:1337/api/gallery-images)",
+      "PowerShell(curl.exe -s \"http://localhost:1337/api/gallery-images?populate=image&pagination[pageSize]=1\" | Out-File -FilePath \"$env:TEMP\\\\gallery-check.json\" -Encoding utf8; Get-Content \"$env:TEMP\\\\gallery-check.json\" | Select-String -Pattern '\"url\"')",
+      "Read(//c/Users/ACER/AppData/Local/Temp/**)",
+      "PowerShell(curl.exe -4 -s \"http://localhost:1337/api/gallery-images?populate=image\" -o \"$env:TEMP\\\\gallery-check2.json\"; \\(Get-Item \"$env:TEMP\\\\gallery-check2.json\"\\).Length)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue)"
     ]
   }
 }

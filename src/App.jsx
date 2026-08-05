@@ -5,7 +5,10 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Menu from './components/Menu'
 import About from './components/About'
+import Branches from './components/Branches'
+import Gallery from './components/Gallery'
 import Contact from './components/Contact'
+import NotFound from './components/NotFound'
 import Footer from './components/Footer'
 import LoadingScreen from './components/LoadingScreen'
 import ReserveModal from './components/ReserveModal'
@@ -50,7 +53,10 @@ function App() {
               <Route path="/" element={<Hero onReserveClick={() => setIsReserveOpen(true)} />} />
               <Route path="/about" element={<About />} />
               <Route path="/menu" element={<Menu />} />
+              <Route path="/branches" element={<Branches />} />
+              <Route path="/gallery" element={<Gallery />} />
               <Route path="/contact" element={<Contact onReserveClick={() => setIsReserveOpen(true)} />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
           <Footer onReserveClick={() => setIsReserveOpen(true)} />
