@@ -53,7 +53,13 @@
       "PowerShell(curl.exe -4 -s -o NUL -w \"status: %{http_code}`n\" 'https://samdan-production.up.railway.app/api/menu-items?pagination[pageSize]=1')",
       "PowerShell(curl.exe -4 -g -s -o NUL -w \"status: %{http_code}`n\" 'https://samdan-production.up.railway.app/api/menu-items?pagination[pageSize]=1&populate=image')",
       "PowerShell(curl.exe -4 -s -o NUL -w \"image status: %{http_code}`n\" https://samdan-production.up.railway.app/uploads/menu_item_1_95ed6629bd.jpg)",
-      "PowerShell(Copy-Item \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\public\\\\brand\\\\icon-knife-fork.png\" -Destination \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\cms\\\\src\\\\admin\\\\assets\\\\icon-knife-fork.png\")"
+      "PowerShell(Copy-Item \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\public\\\\brand\\\\icon-knife-fork.png\" -Destination \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\cms\\\\src\\\\admin\\\\assets\\\\icon-knife-fork.png\")",
+      "Read(//d/My Documents/ZEDESIGNS PROJECTS/**)",
+      "PowerShell(Copy-Item \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\assets\\\\images\\\\Icons\\\\Samdan Guidlines ICONS-30.png\" -Destination \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\public\\\\brand\\\\icon-chef-hat.png\")",
+      "PowerShell(Copy-Item \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\assets\\\\images\\\\Icons\\\\Samdan Guidlines ICONS-29.png\" -Destination \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\public\\\\brand\\\\icon-chef-hat.png\" -Force)",
+      "PowerShell(Copy-Item \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\assets\\\\images\\\\Icons\\\\Samdan Guidlines ICONS-30.png\" -Destination \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\public\\\\brand\\\\icon-chef-hat.png\" -Force)",
+      "WebFetch(domain:matchthemes.com)",
+      "WebFetch(domain:elegencia-react-ejev.vercel.app)"
     ]
   }
 }

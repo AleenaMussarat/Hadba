@@ -17,11 +17,12 @@
   --color-sand: #D9B88A;
   --color-sand-muted: #A6875F;
 
-  /* Dark surfaces */
-  --bg-base: #120E0C;
-  --bg-elevated: #1D1613;
-  --bg-elevated-2: #241B17;
-  --bg-overlay: rgba(18, 14, 12, 0.92);
+  /* Dark surfaces — neutral matte black/charcoal instead of a warm brown
+     tint, so the red/orange accents read more distinctly against it. */
+  --bg-base: #0D0D0D;
+  --bg-elevated: #1A1A1A;
+  --bg-elevated-2: #242424;
+  --bg-overlay: rgba(13, 13, 13, 0.92);
 
   /* Text */
   --text-primary: #F5ECE1;
@@ -361,22 +362,6 @@ html[dir="rtl"] .nav-link {
   color: var(--text-primary);
 }
 
-.nav-link::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(246, 157, 28, 0.1);
-  border-radius: var(--radius-box);
-  opacity: 0;
-  transform: scale(0.8);
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.nav-link:hover::before,
-.nav-link.active::before {
-  opacity: 1;
-  transform: scale(1);
-}
 
 .nav-link.active .nav-link-indicator {
   animation: indicatorPulse 2s ease-in-out infinite;
@@ -764,30 +749,43 @@ html[dir="rtl"] .mobile-menu.active {
 
 /* ===== HERO ===== */
 .hero {
-  padding: calc(var(--navbar-height) + 4rem) 0 6rem;
-  min-height: 92vh;
+  padding: calc(var(--navbar-height) + 2.5rem) 0 6rem;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   position: relative;
   overflow: hidden;
   background: var(--bg-base);
 }
 
+/* Stacked layout (copy on top, full-width landscape visual below) instead
+   of a side-by-side grid — a landscape image/video needs real width to read
+   well, which a narrow side column can't give it. */
 .hero-layout {
-  display: grid;
-  grid-template-columns: 0.95fr 1.15fr;
-  gap: 4rem;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
   position: relative;
   z-index: 1;
 }
 
+.hero-copy {
+  display: flex;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+.hero-copy-details,
+.hero-copy-text {
+  flex: 1;
+  min-width: 0;
+}
+
 .hero-copy h1 {
   font-family: 'Playfair Display', serif;
-  font-size: 3.6rem;
+  font-size: 3.4rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.4rem;
   line-height: 1.15;
   letter-spacing: -1px;
 }
@@ -796,12 +794,21 @@ html[dir="rtl"] .mobile-menu.active {
   color: var(--color-accent);
 }
 
+.hero-divider {
+  width: 90px;
+  height: 6px;
+  margin: 0 0 1.4rem;
+  background-image: url('/brand/pattern-red.png');
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  opacity: 0.9;
+}
+
 .hero-subtitle {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   color: var(--text-secondary);
-  margin-bottom: 1.2rem;
+  margin: 0 0 1.2rem;
   line-height: 1.8;
-  max-width: 520px;
 }
 
 .hero-tagline {
@@ -809,7 +816,6 @@ html[dir="rtl"] .mobile-menu.active {
   font-weight: 600;
   font-style: italic;
   color: var(--color-accent);
-  margin-bottom: 2.2rem;
   letter-spacing: 0.3px;
 }
 
@@ -817,23 +823,24 @@ html[dir="rtl"] .mobile-menu.active {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-bottom: 3rem;
+  margin-top: 2rem;
 }
 
-.hero-highlights {
+.hero-copy-details {
   display: flex;
-  gap: 1.2rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .hero-card {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  background: var(--bg-elevated);
+  gap: 1.2rem;
+  background: linear-gradient(155deg, var(--bg-elevated) 0%, var(--bg-elevated-2) 100%);
   border: 1px solid var(--border-color);
+  border-top: 3px solid var(--color-primary);
   border-radius: var(--radius-box);
-  padding: 1rem 1.3rem;
+  padding: 1.4rem 1.6rem;
   transition: all 0.3s ease;
 }
 
@@ -843,22 +850,35 @@ html[dir="rtl"] .mobile-menu.active {
   box-shadow: 0 12px 30px var(--shadow-color);
 }
 
-.hero-card-icon {
-  width: 46px;
-  height: 46px;
+.hero-card-icon-badge {
   flex-shrink: 0;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(188, 52, 51, 0.12);
+  border: 1px solid var(--border-color-strong);
+  border-radius: var(--radius-box);
+}
+
+.hero-card-icon {
+  width: 30px;
+  height: 30px;
   filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.3));
 }
 
 .hero-card strong {
   display: block;
   color: var(--text-primary);
-  font-size: 0.95rem;
+  font-size: 1.05rem;
+  margin-bottom: 0.25rem;
 }
 
 .hero-card p {
-  color: var(--text-secondary);
-  font-size: 0.85rem;
+  color: var(--color-accent);
+  font-weight: 600;
+  font-size: 0.92rem;
 }
 
 /* ===== GRAND OPENING PROMO BANNER ===== */
@@ -866,14 +886,38 @@ html[dir="rtl"] .mobile-menu.active {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 1.3rem;
-  margin-top: 1.2rem;
-  padding: 1.3rem 1.6rem;
+  gap: 1.5rem;
+  padding: 1.7rem 1.9rem;
   border-radius: var(--radius-box);
   background: linear-gradient(120deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   border: 1px solid rgba(188, 52, 51, 0.5);
+  border-top: 3px solid var(--color-accent);
   box-shadow: 0 20px 50px rgba(188, 52, 51, 0.3);
   overflow: hidden;
+  animation: promoGlowPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes promoGlowPulse {
+  0%, 100% {
+    box-shadow: 0 20px 50px rgba(188, 52, 51, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 20px 60px rgba(188, 52, 51, 0.55);
+  }
+}
+
+.hero-promo-banner::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background-image: url('/brand/pattern-red.png');
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  opacity: 0.5;
 }
 
 .hero-promo-banner::after {
@@ -902,19 +946,22 @@ html[dir="rtl"] .mobile-menu.active {
 
 .hero-promo-icon {
   flex-shrink: 0;
-  width: 56px;
-  height: 56px;
+  width: 66px;
+  height: 66px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   z-index: 1;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.25));
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-box);
 }
 
 .hero-promo-icon img {
-  width: 100%;
-  height: 100%;
+  width: 34px;
+  height: 34px;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.3));
 }
 
 .hero-promo-copy {
@@ -927,7 +974,7 @@ html[dir="rtl"] .mobile-menu.active {
   font-family: 'Playfair Display', serif;
   font-weight: 700;
   font-style: italic;
-  font-size: 1.15rem;
+  font-size: 1.3rem;
   color: #fff;
   margin-bottom: 0.3rem;
   letter-spacing: 0.3px;
@@ -950,6 +997,10 @@ html[dir="rtl"] .mobile-menu.active {
 
 .hero-visual {
   position: relative;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto 3rem;
+  padding: 0 2rem;
 }
 
 /* ===== HERO CAROUSEL ===== */
@@ -957,7 +1008,7 @@ html[dir="rtl"] .mobile-menu.active {
   position: relative;
   border-radius: var(--radius-box);
   overflow: hidden;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 16 / 9;
   border: 1px solid var(--border-color-strong);
   box-shadow: 0 30px 90px var(--shadow-color), 0 0 0 1px rgba(246, 157, 28, 0.1);
   background: var(--bg-elevated);
@@ -984,7 +1035,8 @@ html[dir="rtl"] .mobile-menu.active {
   z-index: 1;
 }
 
-.hero-carousel-slide img {
+.hero-carousel-slide img,
+.hero-carousel-slide video {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -992,7 +1044,8 @@ html[dir="rtl"] .mobile-menu.active {
   transition: transform 6.5s ease;
 }
 
-.hero-carousel-slide.active img {
+.hero-carousel-slide.active img,
+.hero-carousel-slide.active video {
   transform: scale(1.1);
 }
 
@@ -1096,27 +1149,12 @@ html[dir="rtl"] .mobile-menu.active {
   border-radius: var(--radius-box);
 }
 
-html[dir="rtl"] .hero-carousel-arrow.prev {
-  left: auto;
-  right: 1rem;
-}
-
-html[dir="rtl"] .hero-carousel-arrow.next {
-  right: auto;
-  left: 1rem;
-}
-
 html[dir="rtl"] .hero-carousel-dots {
   right: auto;
   left: 1.2rem;
 }
 
 @media (max-width: 992px) {
-  .hero-layout {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-
   .hero-copy {
     text-align: center;
   }
@@ -1151,12 +1189,523 @@ html[dir="rtl"] .hero-carousel-dots {
   }
 }
 
+/* ===== FEATURED MENU (BOOK) ===== */
+.featured-menu-section {
+  background: var(--bg-elevated);
+  position: relative;
+}
+
+.featured-menu-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-image: url('/brand/pattern-red.png');
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  opacity: 0.85;
+}
+
+.menu-book {
+  position: relative;
+  max-width: 920px;
+  margin: 0 auto;
+  border-radius: var(--radius-box);
+  box-shadow: 0 30px 70px var(--shadow-color);
+  perspective: 2400px;
+}
+
+.menu-book-spread {
+  display: grid;
+  grid-template-columns: 1fr 10px 1fr;
+  align-items: stretch;
+  /* Same pale tone as the pages themselves, so the spine gap and any sliver
+     of "behind the page" visible mid-flip reads as paper, not a dark gap. */
+  background: #F3E9D2;
+  border: 1px solid var(--border-color-strong);
+  border-radius: var(--radius-box);
+  overflow: hidden;
+}
+
+/* The left page settles in with a quick, gentle fade — not a flip, just
+   enough motion that it doesn't feel like it's instantly snapping while the
+   right page turns beside it. */
+.menu-book-page-settle {
+  display: flex;
+  min-width: 0;
+  animation: bookPageSettle 0.7s ease-out;
+}
+
+@keyframes bookPageSettle {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Real double-sided page stack: every right-hand page is pre-rendered,
+   stacked on top of each other in DOM order (highest z-index first), each
+   with backface-visibility:hidden. Flipping a page rotates it a full
+   -180deg around its spine edge — past 90deg its front face hides itself,
+   revealing whichever page is stacked underneath, exactly like turning one
+   leaf of a real book instead of swapping in new content. */
+.menu-book-right-stack {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  /* No perspective here on purpose — it inherits .menu-book's perspective
+     instead, so the flipping leaf shares the exact same 3D depth as the
+     rest of the spread rather than having its own mismatched vanishing
+     point (this was making the flip look subtly "off"/disconnected). */
+}
+
+.menu-book-leaf {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  background: #F3E9D2;
+  transform-origin: left center;
+  backface-visibility: hidden;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1), box-shadow 0.7s ease;
+}
+
+.menu-book-leaf.is-flipped {
+  transform: rotateY(-180deg);
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.15);
+}
+
+html[dir="rtl"] .menu-book-leaf {
+  transform-origin: right center;
+}
+
+html[dir="rtl"] .menu-book-leaf.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.menu-book-page {
+  flex: 1;
+  min-width: 0;
+  background: #F3E9D2;
+  padding: 1.8rem 2rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.menu-book-page-empty {
+  background: #F3E9D2;
+}
+
+.menu-book-page-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-box);
+  overflow: hidden;
+  border: 1px solid rgba(42, 29, 18, 0.15);
+}
+
+.menu-book-page-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.menu-book-spine {
+  width: 10px;
+  flex-shrink: 0;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.05) 30%, rgba(0, 0, 0, 0.05) 70%, rgba(0, 0, 0, 0.25));
+}
+
+.menu-book-entry h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #2A1D12;
+}
+
+.menu-book-entry-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.menu-book-dots {
+  flex: 1;
+  border-bottom: 2px dotted rgba(42, 29, 18, 0.35);
+  transform: translateY(-4px);
+}
+
+.menu-book-price {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  white-space: nowrap;
+}
+
+.menu-book-entry p {
+  color: rgba(42, 29, 18, 0.75);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin-top: 0.3rem;
+}
+
+.menu-book-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-box);
+  border: 1px solid var(--border-color-strong);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.menu-book-arrow:hover {
+  background: var(--color-accent);
+  color: #1A1108;
+  border-color: transparent;
+}
+
+.menu-book-arrow.prev {
+  left: -21px;
+}
+
+.menu-book-arrow.next {
+  right: -21px;
+}
+
+.menu-book-dots-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.menu-book-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 1px;
+  border: none;
+  background: var(--border-color-strong);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s;
+}
+
+.menu-book-dot.active {
+  background: var(--color-accent);
+  width: 22px;
+}
+
+.featured-menu-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .menu-book-spread {
+    flex-direction: column;
+  }
+
+  .menu-book-spine {
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.05) 30%, rgba(0, 0, 0, 0.05) 70%, rgba(0, 0, 0, 0.25));
+  }
+
+  .menu-book-arrow.prev {
+    left: 0.5rem;
+  }
+
+  .menu-book-arrow.next {
+    right: 0.5rem;
+  }
+}
+
 /* ===== ABOUT / STORY ===== */
 .section-about {
-  background: var(--bg-base);
+  background:
+    radial-gradient(ellipse 900px 500px at 100% 0%, rgba(217, 184, 138, 0.08), transparent 70%),
+    var(--bg-base);
   position: relative;
   overflow: hidden;
   padding-top: calc(var(--navbar-height) + 3rem);
+}
+
+.section-about::after {
+  content: '';
+  position: absolute;
+  top: var(--navbar-height);
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-image: url('/brand/pattern-red.png');
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  opacity: 0.85;
+}
+
+.about-intro {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.about-intro .section-copy {
+  margin: 1.2rem auto 0;
+  max-width: 640px;
+}
+
+.about-intro-rule {
+  width: 60px;
+  height: 3px;
+  margin: 1.8rem auto;
+  background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+  opacity: 0.7;
+}
+
+.about-highlights-centered {
+  justify-content: center;
+  margin: 2.8rem 0 3.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Atmospheric background image behind the intro, fading smoothly down into
+   the page's base dark color rather than sitting as a hard-edged banner. */
+.about-intro-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 680px;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.about-intro-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.32;
+}
+
+.about-intro-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(13, 13, 13, 0.45) 0%, rgba(13, 13, 13, 0.75) 55%, var(--bg-base) 100%);
+}
+
+@keyframes aboutFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.about-fade-in {
+  opacity: 0;
+  animation: aboutFadeIn 0.7s ease-out forwards;
+}
+
+.story-card {
+  position: relative;
+  display: flex;
+  margin-top: 4rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color-strong);
+  border-radius: var(--radius-box);
+  box-shadow: 0 30px 70px var(--shadow-color);
+  overflow: hidden;
+}
+
+.story-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background-image: url('/brand/pattern-red.png');
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  opacity: 0.85;
+}
+
+.story-card-panel {
+  flex: 1;
+  min-width: 0;
+  padding: 2.8rem 2.6rem;
+}
+
+.story-card-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 1.1rem;
+}
+
+.story-card-panel h3 {
+  color: var(--color-accent);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.9rem;
+}
+
+.story-card-panel p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.story-card-divider {
+  width: 1px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, transparent, var(--border-color-strong) 20%, var(--border-color-strong) 80%, transparent);
+}
+
+.about-gallery-strip {
+  margin-top: 4rem;
+  border-radius: var(--radius-box);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 25px 60px var(--shadow-color);
+}
+
+.about-gallery-strip img {
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .story-card {
+    flex-direction: column;
+  }
+
+  .story-card-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-color-strong) 20%, var(--border-color-strong) 80%, transparent);
+  }
+}
+
+.about-divider {
+  height: 6px;
+  background-image: url('/brand/pattern-red.png');
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  opacity: 0.7;
+  margin-bottom: 4rem;
+}
+
+.about-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  margin-bottom: 4rem;
+}
+
+.about-block-reverse {
+  direction: rtl;
+}
+
+.about-block-reverse > * {
+  direction: ltr;
+}
+
+.about-block-image {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-box);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 25px 60px var(--shadow-color);
+}
+
+.about-block-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-block-copy {
+  border-inline-start: 3px solid var(--color-primary);
+  padding-inline-start: 1.8rem;
+}
+
+.about-block-copy .info-card-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 1rem;
+}
+
+.about-block-copy h3 {
+  color: var(--color-accent);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.9rem;
+}
+
+.about-block-copy p {
+  color: var(--text-secondary);
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+
+.about-ambience-note {
+  margin-top: 1.6rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.about-ambience-note h4 {
+  font-family: 'Playfair Display', serif;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.about-highlights-centered {
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .about-block,
+  .about-block-reverse {
+    grid-template-columns: 1fr;
+    direction: ltr;
+    gap: 2rem;
+  }
 }
 
 .about-grid {
@@ -1164,6 +1713,8 @@ html[dir="rtl"] .hero-carousel-dots {
   grid-template-columns: 1fr 1fr;
   gap: 4.5rem;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .about-content .section-copy {
@@ -1346,6 +1897,20 @@ html[dir="rtl"] .hero-carousel-dots {
 .section-menu {
   background: var(--bg-elevated);
   padding-top: calc(var(--navbar-height) + 3rem);
+  position: relative;
+}
+
+.section-menu::before {
+  content: '';
+  position: absolute;
+  top: var(--navbar-height);
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-image: url('/brand/pattern-red.png');
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  opacity: 0.85;
 }
 
 .menu-filters {
@@ -1616,6 +2181,19 @@ html[dir="rtl"] .menu-page-btn {
   padding-top: calc(var(--navbar-height) + 3rem);
 }
 
+.contact-section::after {
+  content: '';
+  position: absolute;
+  top: var(--navbar-height);
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-image: url('/brand/pattern-red.png');
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  opacity: 0.85;
+}
+
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1813,55 +2391,58 @@ html[dir="rtl"] .contact-item:hover {
 
 /* ===== GALLERY ===== */
 .section-gallery {
-  padding: 0 0 6rem;
-}
-
-.gallery-banner {
+  padding: calc(var(--navbar-height) + 3rem) 0 6rem;
   position: relative;
-  height: 50vh;
-  min-height: 320px;
-  margin-top: var(--navbar-height);
-  overflow: hidden;
 }
 
-.gallery-banner img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.gallery-banner-overlay {
+.section-gallery::before {
+  content: '';
   position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 2rem;
-  background: rgba(18, 14, 12, 0.6);
+  top: var(--navbar-height);
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-image: url('/brand/pattern-red.png');
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  opacity: 0.85;
 }
 
-.gallery-banner-overlay .section-copy {
-  max-width: 480px;
-}
-
+/* Mosaic layout instead of a uniform grid — each item spans a different
+   number of rows/columns so the whole thing reads as jumbled/curated
+   rather than a flat repeating pattern. */
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 130px;
+  grid-auto-flow: dense;
   gap: 1rem;
   margin-top: 3rem;
 }
 
 .gallery-item {
   position: relative;
-  aspect-ratio: 1 / 1;
   overflow: hidden;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-box);
   padding: 0;
   cursor: pointer;
   background: var(--bg-elevated);
+  grid-column: span 1;
+  grid-row: span 2;
+}
+
+.gallery-item-1 {
+  grid-column: span 2;
+  grid-row: span 3;
+}
+
+.gallery-item-3 {
+  grid-row: span 2;
+}
+
+.gallery-item-2 {
+  grid-row: span 3;
 }
 
 .gallery-item img {
@@ -2064,21 +2645,51 @@ html[dir="rtl"] .contact-item:hover {
 }
 
 .footer-links a {
+  position: relative;
+  display: block;
   color: var(--text-secondary);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
-  transition: color 0.3s, transform 0.3s;
+  transition: color 0.3s;
   width: fit-content;
+}
+
+/* Absolutely positioned so it never affects the link's own width/flow —
+   nothing about the text or surrounding layout shifts on hover, the icon
+   just fades in floating to the left of it. */
+.footer-link-icon {
+  position: absolute;
+  inset-inline-start: -22px;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  opacity: 0;
+  transform: translateY(-50%) scale(0.6);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
 }
 
 .footer-links a:hover {
   color: var(--color-accent);
-  transform: translateX(3px);
 }
 
-html[dir="rtl"] .footer-links a:hover {
-  transform: translateX(-3px);
+.footer-links a:hover .footer-link-icon {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+.footer-col-contact p {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.footer-contact-icon {
+  color: var(--color-accent);
+  font-size: 0.9rem;
+  flex-shrink: 0;
 }
 
 .social-icons {
@@ -2088,7 +2699,7 @@ html[dir="rtl"] .footer-links a:hover {
 }
 
 .social-icons a {
-  color: var(--text-primary);
+  color: var(--color-accent);
   text-decoration: none;
   font-size: 1.05rem;
   display: flex;
@@ -2103,9 +2714,8 @@ html[dir="rtl"] .footer-links a:hover {
 }
 
 .social-icons a:hover {
-  background: var(--color-accent);
-  border-color: transparent;
-  color: #1A1108;
+  color: var(--color-primary-light);
+  border-color: var(--color-primary-light);
   transform: translateY(-3px);
 }
 

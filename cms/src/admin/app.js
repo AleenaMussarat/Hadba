@@ -325,9 +325,56 @@ const installTitleRewrite = () => {
   }
 };
 
+// Strapi's table date cells (Created At, Updated At, and the Inquiry "date"
+// field) are hardcoded to render with Intl's "full" date style (e.g.
+// "Wednesday, August 5, 2026") — there's no config to change the format
+// per-field. That output is distinctive enough to safely pattern-match and
+// rewrite to DD/MM/YYYY wherever it shows up in the admin.
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const FULL_DATE_RE = /(?:Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday), (January|February|March|April|May|June|July|August|September|October|November|December) (\d{1,2}), (\d{4})/g;
+
+const toDdmmyyyy = (_match, month, day, year) => {
+  const mm = String(MONTHS.indexOf(month) + 1).padStart(2, '0');
+  const dd = String(day).padStart(2, '0');
+  return `${dd}/${mm}/${year}`;
+};
+
+const rewriteDateNodesIn = (root) => {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  let node = walker.nextNode();
+  while (node) {
+    if (node.nodeValue && FULL_DATE_RE.test(node.nodeValue)) nodes.push(node);
+    FULL_DATE_RE.lastIndex = 0;
+    node = walker.nextNode();
+  }
+  nodes.forEach((n) => {
+    n.nodeValue = n.nodeValue.replace(FULL_DATE_RE, toDdmmyyyy);
+  });
+};
+
+const installDateFormatRewrite = () => {
+  if (typeof document === 'undefined' || window.__samdanDateRewriteInstalled) return;
+  window.__samdanDateRewriteInstalled = true;
+  rewriteDateNodesIn(document.body);
+  new MutationObserver((mutations) => {
+    mutations.forEach((m) => {
+      m.addedNodes.forEach((n) => {
+        if (n.nodeType === Node.TEXT_NODE) {
+          if (FULL_DATE_RE.test(n.nodeValue || '')) n.nodeValue = n.nodeValue.replace(FULL_DATE_RE, toDdmmyyyy);
+          FULL_DATE_RE.lastIndex = 0;
+        } else if (n.nodeType === Node.ELEMENT_NODE) {
+          rewriteDateNodesIn(n);
+        }
+      });
+    });
+  }).observe(document.body, { childList: true, subtree: true });
+};
+
 const bootstrap = () => {
   installSharedFetchPatch();
   installTitleRewrite();
+  installDateFormatRewrite();
   // Both disabled — wasn't working reliably (the media-picker jump kept
   // re-triggering and discarding real file selections; the CSV export had
   // auth issues). Code left in place in case it's worth revisiting later.

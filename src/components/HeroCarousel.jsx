@@ -55,7 +55,18 @@ const HeroCarousel = () => {
       <div className="hero-carousel-track">
         {slides.map((slide, i) => (
           <div className={`hero-carousel-slide ${i === index ? 'active' : ''}`} key={i} aria-hidden={i !== index}>
-            <img src={slide.image} alt={slide.title} loading={i === 0 ? 'eager' : 'lazy'} />
+            {slide.isVideo ? (
+              <video
+                src={slide.image}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload={i === 0 ? 'auto' : 'metadata'}
+              />
+            ) : (
+              <img src={slide.image} alt={slide.title} loading={i === 0 ? 'eager' : 'lazy'} />
+            )}
             <div className="hero-carousel-scrim" />
             <div className="hero-carousel-caption">
               <span className="hero-carousel-badge">{slide.badge}</span>

@@ -25,7 +25,7 @@ const mediaUrl = (media) => {
 // pull the entire catalog over the wire at once. Each entry holds both
 // languages at once (nameEn/nameAr, etc.) — the caller's locale picks which
 // side is projected into the flat `name`/`description`/`category` shape.
-export async function fetchMenuItems(locale, { category, page = 1, pageSize = 10 } = {}) {
+export async function fetchMenuItems(locale, { category, featured, page = 1, pageSize = 10 } = {}) {
   const categoryField = locale === 'ar' ? 'categoryAr' : 'categoryEn'
   const params = new URLSearchParams({
     populate: 'image',
@@ -34,6 +34,7 @@ export async function fetchMenuItems(locale, { category, page = 1, pageSize = 10
     'pagination[pageSize]': pageSize
   })
   if (category) params.set(`filters[${categoryField}][$eq]`, category)
+  if (featured) params.set('filters[featured][$eq]', 'true')
 
   const json = await strapiFetch(`menu-items?${params.toString()}`)
   const data = json.data || []
@@ -87,7 +88,8 @@ export async function fetchCarouselSlides(locale) {
     badge: locale === 'ar' ? slide.badgeAr : slide.badgeEn,
     title: locale === 'ar' ? slide.titleAr : slide.titleEn,
     subtitle: locale === 'ar' ? slide.subtitleAr : slide.subtitleEn,
-    image: mediaUrl(slide.image)
+    image: mediaUrl(slide.image),
+    isVideo: !!slide.image?.mime?.startsWith('video/')
   }))
 }
 

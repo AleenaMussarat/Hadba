@@ -5,7 +5,15 @@ import { submitInquiry } from '../services/strapi'
 import { FaXmark, FaCircleCheck, FaTriangleExclamation } from 'react-icons/fa6'
 
 const emptyForm = { name: '', phone: '', guests: 2, date: '', time: '', notes: '' }
-const todayISO = () => new Date().toISOString().split('T')[0]
+
+// The date field is typed/displayed as DD/MM/YYYY, but Strapi's date field
+// needs ISO YYYY-MM-DD.
+const ddmmyyyyToISO = (value) => {
+  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value)
+  if (!match) return ''
+  const [, dd, mm, yyyy] = match
+  return `${yyyy}-${mm}-${dd}`
+}
 
 const ReserveModal = ({ isOpen, onClose }) => {
   const { currentLang } = useLanguage()
@@ -44,7 +52,13 @@ const ReserveModal = ({ isOpen, onClose }) => {
     e.preventDefault()
     setIsSubmitting(true)
     setSubmitError(false)
-    const ok = await submitInquiry(form)
+    const isoDate = ddmmyyyyToISO(form.date)
+    if (!isoDate) {
+      setIsSubmitting(false)
+      setSubmitError(true)
+      return
+    }
+    const ok = await submitInquiry({ ...form, date: isoDate })
     setIsSubmitting(false)
     if (ok) {
       setSubmitted(true)
@@ -97,7 +111,16 @@ const ReserveModal = ({ isOpen, onClose }) => {
               <div className="reserve-field-row">
                 <label className="reserve-field">
                   <span>{t.reserve.date}</span>
-                  <input type="date" required min={todayISO()} value={form.date} onChange={handleChange('date')} />
+                  <input
+                    type="text"
+                    required
+                    inputMode="numeric"
+                    placeholder="DD/MM/YYYY"
+                    pattern="\d{2}/\d{2}/\d{4}"
+                    title="DD/MM/YYYY"
+                    value={form.date}
+                    onChange={handleChange('date')}
+                  />
                 </label>
 
                 <label className="reserve-field">

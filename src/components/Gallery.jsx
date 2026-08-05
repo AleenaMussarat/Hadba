@@ -39,21 +39,18 @@ const Gallery = () => {
 
   return (
     <section className="section section-gallery">
-      <div className="gallery-banner">
-        <img src="/brand/photo-sadu-interior.jpg" alt="" />
-        <div className="gallery-banner-overlay">
+      <div className="container">
+        <div className="section-heading">
           <p className="eyebrow">{t.gallery.eyebrow}</p>
           <h2 className="section-title">{t.gallery.title}</h2>
           <p className="section-copy">{t.gallery.subtitle}</p>
         </div>
-      </div>
 
-      <div className="container">
         <div className="gallery-grid">
           {images.map((item, index) => (
             <button
               type="button"
-              className="gallery-item"
+              className={`gallery-item gallery-item-${(index % 4) + 1}`}
               key={`${item.caption}-${index}`}
               onClick={() => setActiveImage(item)}
             >

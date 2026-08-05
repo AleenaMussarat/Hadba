@@ -204,6 +204,12 @@ export const translations = {
       pageOf: 'Page {page} of {count}',
       items: buildMenuItems('en')
     },
+    featuredMenu: {
+      eyebrow: "Chef's Selections",
+      title: 'From Our Menu',
+      subtitle: 'A taste of our most-loved dishes',
+      viewFullMenu: 'View Full Menu'
+    },
     contact: {
       eyebrow: 'Get In Touch',
       title: 'Visit Us',
@@ -331,6 +337,12 @@ export const translations = {
       next: 'التالي',
       pageOf: 'صفحة {page} من {count}',
       items: buildMenuItems('ar')
+    },
+    featuredMenu: {
+      eyebrow: 'اختيارات الشيف',
+      title: 'من قائمتنا',
+      subtitle: 'تذوق أشهى أطباقنا المفضلة',
+      viewFullMenu: 'عرض القائمة الكاملة'
     },
     contact: {
       eyebrow: 'تواصل معنا',
