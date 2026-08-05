@@ -42,7 +42,11 @@
       "PowerShell(curl.exe -s \"http://localhost:1337/api/gallery-images?populate=image&pagination[pageSize]=1\" | Out-File -FilePath \"$env:TEMP\\\\gallery-check.json\" -Encoding utf8; Get-Content \"$env:TEMP\\\\gallery-check.json\" | Select-String -Pattern '\"url\"')",
       "Read(//c/Users/ACER/AppData/Local/Temp/**)",
       "PowerShell(curl.exe -4 -s \"http://localhost:1337/api/gallery-images?populate=image\" -o \"$env:TEMP\\\\gallery-check2.json\"; \\(Get-Item \"$env:TEMP\\\\gallery-check2.json\"\\).Length)",
-      "PowerShell(Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue)"
+      "PowerShell(Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue)",
+      "PowerShell(curl.exe -4 -s -o NUL -w \"%{http_code}`n\" https://samdan-production.up.railway.app/admin)",
+      "PowerShell(curl.exe -4 -s -o NUL -w \"admin: %{http_code}`n\" https://samdan-production.up.railway.app/admin)",
+      "PowerShell(curl.exe -4 -s -o NUL -w \"api/menu-items: %{http_code}`n\" https://samdan-production.up.railway.app/api/menu-items)",
+      "PowerShell(curl.exe -4 -s https://samdan-production.up.railway.app/)"
     ]
   }
 }
