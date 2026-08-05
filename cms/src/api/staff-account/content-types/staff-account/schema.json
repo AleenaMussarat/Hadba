@@ -32,7 +32,7 @@
       "type": "enumeration",
       "enum": [
         "Super Admin",
-        "Menu & Carousel Editor"
+        "Editor"
       ],
       "required": true
     }
