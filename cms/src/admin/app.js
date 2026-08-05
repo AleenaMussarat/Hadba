@@ -15,16 +15,13 @@ const brandPrimary = {
   buttonPrimary500: '#BC3433',
   buttonPrimary600: '#8F2726',
 
-  // Neutral scale re-mapped from the site's own dark palette (App.css :root)
-  // so the admin panel's backgrounds/borders/text match the live site
-  // instead of Strapi's default indigo dark theme. neutral0/100 lean warmer
-  // (red+orange blended into black) per request, rather than a flat neutral
-  // charcoal — a literal gradient isn't possible through these flat design
-  // tokens, so this is the closest supported "mixed" warm-black tone.
-  neutral0: '#1A0E0C',
-  neutral100: '#241310',
-  neutral150: '#2E1712',
-  neutral200: '#3F1F17',
+  // Neutral scale — true black background, with red/orange kept as distinct
+  // accents (via primary* above and warning* below) rather than blended into
+  // the background itself.
+  neutral0: '#0B0908',
+  neutral100: '#151110',
+  neutral150: '#1D1613',
+  neutral200: '#332419',
   neutral300: '#4A3628',
   neutral400: '#6B5340',
   neutral500: '#8C7C6A',
@@ -32,6 +29,16 @@ const brandPrimary = {
   neutral700: '#C7B9A8',
   neutral800: '#D9B88A',
   neutral900: '#F5ECE1',
+
+  // Orange accent, mapped onto Strapi's "warning" slot (a semantically
+  // fitting reuse — warning states are conventionally orange anyway) so it
+  // naturally shows up scattered across badges, alerts, and certain buttons
+  // instead of only living in one place.
+  warning100: '#3D2A12',
+  warning200: '#522F14',
+  warning500: '#F69D1C',
+  warning600: '#C97D0F',
+  warning700: '#A66509',
 };
 
 const config = {
