@@ -17,11 +17,14 @@ const brandPrimary = {
 
   // Neutral scale re-mapped from the site's own dark palette (App.css :root)
   // so the admin panel's backgrounds/borders/text match the live site
-  // instead of Strapi's default indigo dark theme.
-  neutral0: '#150F0C',
-  neutral100: '#1D1613',
-  neutral150: '#241B17',
-  neutral200: '#3A2A1F',
+  // instead of Strapi's default indigo dark theme. neutral0/100 lean warmer
+  // (red+orange blended into black) per request, rather than a flat neutral
+  // charcoal — a literal gradient isn't possible through these flat design
+  // tokens, so this is the closest supported "mixed" warm-black tone.
+  neutral0: '#1A0E0C',
+  neutral100: '#241310',
+  neutral150: '#2E1712',
+  neutral200: '#3F1F17',
   neutral300: '#4A3628',
   neutral400: '#6B5340',
   neutral500: '#8C7C6A',

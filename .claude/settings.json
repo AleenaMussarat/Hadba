@@ -46,7 +46,13 @@
       "PowerShell(curl.exe -4 -s -o NUL -w \"%{http_code}`n\" https://samdan-production.up.railway.app/admin)",
       "PowerShell(curl.exe -4 -s -o NUL -w \"admin: %{http_code}`n\" https://samdan-production.up.railway.app/admin)",
       "PowerShell(curl.exe -4 -s -o NUL -w \"api/menu-items: %{http_code}`n\" https://samdan-production.up.railway.app/api/menu-items)",
-      "PowerShell(curl.exe -4 -s https://samdan-production.up.railway.app/)"
+      "PowerShell(curl.exe -4 -s https://samdan-production.up.railway.app/)",
+      "WebFetch(domain:docs.strapi.io)",
+      "PowerShell(curl.exe -4 -s -o NUL -w \"image check: %{http_code}`n\" https://samdan-production.up.railway.app/uploads/Kabda_Baladi_40ffb45bf8.jpg)",
+      "PowerShell(curl.exe -4 -s \"https://samdan-production.up.railway.app/api/menu-items?populate=image&pagination[pageSize]=1\" -o \"$env:TEMP\\\\verify-fix.json\"; Test-Path \"$env:TEMP\\\\verify-fix.json\")",
+      "PowerShell(curl.exe -4 -s -o NUL -w \"status: %{http_code}`n\" 'https://samdan-production.up.railway.app/api/menu-items?pagination[pageSize]=1')",
+      "PowerShell(curl.exe -4 -g -s -o NUL -w \"status: %{http_code}`n\" 'https://samdan-production.up.railway.app/api/menu-items?pagination[pageSize]=1&populate=image')",
+      "PowerShell(curl.exe -4 -s -o NUL -w \"image status: %{http_code}`n\" https://samdan-production.up.railway.app/uploads/menu_item_1_95ed6629bd.jpg)"
     ]
   }
 }
