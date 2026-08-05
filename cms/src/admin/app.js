@@ -139,11 +139,22 @@ const jumpMediaPickerToUpload = () => {
   if (typeof window === 'undefined' || window.__samdanUploadJumpInstalled) return;
   window.__samdanUploadJumpInstalled = true;
 
+  // Cooldown instead of a one-time flag: Strapi re-shows a button with this
+  // exact text again after a successful upload (e.g. prompting to add more),
+  // which previously caused an infinite auto-click loop that trapped the
+  // user on the "add assets" step forever. A short cooldown lets the initial
+  // jump-past-the-browse-grid convenience still work, without re-triggering
+  // on every later re-render of the same button text.
+  let lastClickTime = 0;
+  const COOLDOWN_MS = 4000;
+
   const clickAddAssetButton = () => {
+    if (Date.now() - lastClickTime < COOLDOWN_MS) return false;
     const buttons = document.querySelectorAll('button');
     for (const btn of buttons) {
       if (btn.textContent && btn.textContent.trim() === ADD_ASSET_BUTTON_TEXT) {
         btn.click();
+        lastClickTime = Date.now();
         return true;
       }
     }
@@ -151,8 +162,6 @@ const jumpMediaPickerToUpload = () => {
   };
 
   const observer = new MutationObserver(() => {
-    // Cheap and safe to call repeatedly — once the upload step replaces the
-    // browse step, this button no longer exists and the call is a no-op.
     clickAddAssetButton();
   });
 
