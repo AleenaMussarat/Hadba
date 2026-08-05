@@ -52,7 +52,8 @@
       "PowerShell(curl.exe -4 -s \"https://samdan-production.up.railway.app/api/menu-items?populate=image&pagination[pageSize]=1\" -o \"$env:TEMP\\\\verify-fix.json\"; Test-Path \"$env:TEMP\\\\verify-fix.json\")",
       "PowerShell(curl.exe -4 -s -o NUL -w \"status: %{http_code}`n\" 'https://samdan-production.up.railway.app/api/menu-items?pagination[pageSize]=1')",
       "PowerShell(curl.exe -4 -g -s -o NUL -w \"status: %{http_code}`n\" 'https://samdan-production.up.railway.app/api/menu-items?pagination[pageSize]=1&populate=image')",
-      "PowerShell(curl.exe -4 -s -o NUL -w \"image status: %{http_code}`n\" https://samdan-production.up.railway.app/uploads/menu_item_1_95ed6629bd.jpg)"
+      "PowerShell(curl.exe -4 -s -o NUL -w \"image status: %{http_code}`n\" https://samdan-production.up.railway.app/uploads/menu_item_1_95ed6629bd.jpg)",
+      "PowerShell(Copy-Item \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\public\\\\brand\\\\icon-knife-fork.png\" -Destination \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\cms\\\\src\\\\admin\\\\assets\\\\icon-knife-fork.png\")"
     ]
   }
 }

@@ -1,12 +1,16 @@
 import logoOrange from './assets/logo-orange.png';
 import logoRed from './assets/logo-red.png';
-import favicon from './assets/favicon.png';
+// Same icon used as the live website's favicon (index.html), so both match.
+import favicon from './assets/icon-knife-fork.png';
 
 const brandPrimary = {
-  // Darker than a typical "pale tint" primary100/200 on purpose — this is the
-  // background used by selected/checked chips (e.g. "Configure the view"),
-  // and paired with the light neutral900 text color it needs to stay dark
-  // for readable contrast, matching the rest of the dark theme.
+  // Red drives everything by default (forms, focus rings, sidebar nav
+  // active state, buttons, login) — this is the single global token Strapi
+  // uses across nearly the whole admin, so red here is what makes forms/nav
+  // actually read as red without needing extra per-page hacks.
+  // Darker than a typical "pale tint" primary100/200 on purpose — paired
+  // with the light neutral900 text color, selected/checked chips need to
+  // stay dark for readable contrast in this dark theme.
   primary100: '#3D211F',
   primary200: '#522A27',
   primary500: '#D9534F',
@@ -15,9 +19,19 @@ const brandPrimary = {
   buttonPrimary500: '#BC3433',
   buttonPrimary600: '#8F2726',
 
-  // Neutral scale — true black background, with red/orange kept as distinct
-  // accents (via primary* above and warning* below) rather than blended into
-  // the background itself.
+  danger100: '#3D211F',
+  danger200: '#522A27',
+  danger500: '#D9534F',
+  danger600: '#BC3433',
+  danger700: '#8F2726',
+  alternative100: '#3D211F',
+  alternative200: '#522A27',
+  alternative500: '#D9534F',
+  alternative600: '#BC3433',
+  alternative700: '#8F2726',
+
+  // Neutral scale — true black background, red/orange stay distinct accents
+  // rather than blended into the background itself.
   neutral0: '#0B0908',
   neutral100: '#151110',
   neutral150: '#1D1613',
@@ -29,16 +43,6 @@ const brandPrimary = {
   neutral700: '#C7B9A8',
   neutral800: '#D9B88A',
   neutral900: '#F5ECE1',
-
-  // Orange accent, mapped onto Strapi's "warning" slot (a semantically
-  // fitting reuse — warning states are conventionally orange anyway) so it
-  // naturally shows up scattered across badges, alerts, and certain buttons
-  // instead of only living in one place.
-  warning100: '#3D2A12',
-  warning200: '#522F14',
-  warning500: '#F69D1C',
-  warning600: '#C97D0F',
-  warning700: '#A66509',
 };
 
 const config = {
@@ -296,11 +300,38 @@ const installInquiryExportButton = () => {
   ensureButton();
 };
 
+// Red is the global default everywhere (forms, nav, buttons, login, "Create
+// new entry" — all driven by the primary/buttonPrimary tokens above). No
+// per-page color overrides needed.
+
+// Strapi hardcodes the browser tab title as "Strapi Admin" (and "<Page> |
+// Strapi" on every other page) inside its own compiled package — there's no
+// config option for it. This rewrites any "Strapi" occurrence in the tab
+// title to "Samdan" whenever it changes, covering both the initial title and
+// every subsequent page navigation.
+const rewriteTitle = () => {
+  if (document.title.includes('Strapi')) {
+    document.title = document.title.replace(/Strapi/g, 'Samdan');
+  }
+};
+
+const installTitleRewrite = () => {
+  if (typeof document === 'undefined' || window.__samdanTitleRewriteInstalled) return;
+  window.__samdanTitleRewriteInstalled = true;
+  rewriteTitle();
+  const titleEl = document.querySelector('title');
+  if (titleEl) {
+    new MutationObserver(rewriteTitle).observe(titleEl, { childList: true, characterData: true, subtree: true });
+  }
+};
+
 const bootstrap = () => {
   installSharedFetchPatch();
-  jumpMediaPickerToUpload();
-  // Disabled per request — wasn't working reliably. Code left in place in
-  // case it's worth revisiting later.
+  installTitleRewrite();
+  // Both disabled — wasn't working reliably (the media-picker jump kept
+  // re-triggering and discarding real file selections; the CSV export had
+  // auth issues). Code left in place in case it's worth revisiting later.
+  // jumpMediaPickerToUpload();
   // installInquiryExportButton();
 };
 
