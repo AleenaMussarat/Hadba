@@ -654,9 +654,7 @@ export interface ApiStaffAccountStaffAccount
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
-    role: Schema.Attribute.Enumeration<
-      ['Super Admin', 'Menu & Carousel Editor']
-    > &
+    role: Schema.Attribute.Enumeration<['Super Admin', 'Editor']> &
       Schema.Attribute.Required;
     temporaryPassword: Schema.Attribute.String &
       Schema.Attribute.Required &
