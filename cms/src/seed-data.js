@@ -3,8 +3,10 @@
 const path = require('path');
 
 const img = (id, w = 800) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=70`;
-// Local brand asset (already cropped/resized into ../public/brand by scripts/prepare-assets).
-const localAsset = (filename) => path.join(__dirname, '..', '..', 'public', 'brand', filename);
+// Local brand asset, copied into cms/public/brand so the seed script is
+// self-contained and works when only the cms/ folder is deployed (e.g. Railway
+// with Root Directory set to cms — it never sees the sibling frontend folder).
+const localAsset = (filename) => path.join(__dirname, '..', 'public', 'brand', filename);
 
 const IMAGES = {
   lambKabsa: img('photo-1681116997174-76efb15220f4'),
