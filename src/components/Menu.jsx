@@ -67,11 +67,15 @@ const Menu = () => {
 
   return (
     <section className="section section-menu">
+      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.jpg)' }} aria-hidden="true" />
       <div className="container">
         <div className="section-heading">
-          <p className="eyebrow">{t.menu.eyebrow}</p>
-          <h2 className="section-title">{t.menu.title}</h2>
-          <p className="section-copy">{t.menu.subtitle}</p>
+          <p className="eyebrow eyebrow-icon fade-in-up" style={{ animationDelay: '0.05s' }}>
+            <img src="/brand/icon-knife-fork.png" alt="" />
+            {t.menu.eyebrow}
+          </p>
+          <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{t.menu.title}</h2>
+          <p className="section-copy fade-in-up" style={{ animationDelay: '0.25s' }}>{t.menu.subtitle}</p>
         </div>
 
         <div className="menu-filters">
@@ -89,7 +93,11 @@ const Menu = () => {
 
         <div className="menu-items">
           {items.map((item, index) => (
-            <article key={`${item.name}-${index}`} className={`menu-item ${item.featured ? 'featured' : ''}`}>
+            <article
+              key={`${item.name}-${index}`}
+              className={`menu-item fade-in-up ${item.featured ? 'featured' : ''}`}
+              style={{ animationDelay: `${(index % 8) * 0.08}s` }}
+            >
               <div className="menu-item-media">
                 <img src={item.image} alt={item.name} loading="lazy" />
                 {item.featured ? (

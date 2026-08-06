@@ -1,28 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
 import { fetchCarouselSlides } from '../services/strapi'
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
-
-const AUTOPLAY_MS = 5000
+import DepthCarousel from './reactbits/DepthCarousel'
 
 const HeroCarousel = () => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
   const [slides, setSlides] = useState(t.hero.carousel)
-  const [index, setIndex] = useState(0)
-  const pausedRef = useRef(false)
+  const [activeIndex, setActiveIndex] = useState(0)
 
   useEffect(() => {
-    let active = true
+    let isCurrent = true
     setSlides(t.hero.carousel)
-    setIndex(0)
+    setActiveIndex(0)
 
     fetchCarouselSlides(currentLang)
       .then((data) => {
-        if (active) {
+        if (isCurrent && data.length > 0) {
           setSlides(data)
-          setIndex(0)
+          setActiveIndex(0)
         }
       })
       .catch(() => {
@@ -30,71 +27,36 @@ const HeroCarousel = () => {
       })
 
     return () => {
-      active = false
+      isCurrent = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLang])
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      if (!pausedRef.current) {
-        setIndex((prev) => (prev + 1) % slides.length)
-      }
-    }, AUTOPLAY_MS)
-    return () => clearInterval(id)
-  }, [slides.length])
-
-  const goTo = (i) => setIndex((i + slides.length) % slides.length)
+  const items = slides.map((slide) => ({ image: slide.image, alt: slide.title }))
+  const activeSlide = slides[activeIndex]
 
   return (
-    <div
-      className="hero-carousel"
-      onMouseEnter={() => { pausedRef.current = true }}
-      onMouseLeave={() => { pausedRef.current = false }}
-    >
-      <div className="hero-carousel-track">
-        {slides.map((slide, i) => (
-          <div className={`hero-carousel-slide ${i === index ? 'active' : ''}`} key={i} aria-hidden={i !== index}>
-            {slide.isVideo ? (
-              <video
-                src={slide.image}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload={i === 0 ? 'auto' : 'metadata'}
-              />
-            ) : (
-              <img src={slide.image} alt={slide.title} loading={i === 0 ? 'eager' : 'lazy'} />
-            )}
-            <div className="hero-carousel-scrim" />
-            <div className="hero-carousel-caption">
-              <span className="hero-carousel-badge">{slide.badge}</span>
-              <h3>{slide.title}</h3>
-              <p>{slide.subtitle}</p>
-            </div>
-          </div>
-        ))}
+    <div className="hero-carousel">
+      <div className="hero-carousel-stage">
+        <DepthCarousel
+          items={items}
+          cardWidth={420}
+          cardHeight={360}
+          depth={220}
+          spread={110}
+          perspective={1600}
+          autoplay
+          autoplayDelay={5000}
+          onChange={setActiveIndex}
+        />
       </div>
-
-      <button type="button" className="hero-carousel-arrow prev" onClick={() => goTo(index - 1)} aria-label="Previous slide">
-        <FaChevronLeft />
-      </button>
-      <button type="button" className="hero-carousel-arrow next" onClick={() => goTo(index + 1)} aria-label="Next slide">
-        <FaChevronRight />
-      </button>
-
-      <div className="hero-carousel-dots">
-        {slides.map((_, i) => (
-          <button
-            type="button"
-            key={i}
-            className={`hero-carousel-dot ${i === index ? 'active' : ''}`}
-            onClick={() => goTo(i)}
-            aria-label={`Go to slide ${i + 1}`}
-          />
-        ))}
-      </div>
+      {activeSlide ? (
+        <div className="hero-carousel-caption">
+          <span className="hero-carousel-badge">{activeSlide.badge}</span>
+          <h3>{activeSlide.title}</h3>
+          <p>{activeSlide.subtitle}</p>
+        </div>
+      ) : null}
     </div>
   )
 }

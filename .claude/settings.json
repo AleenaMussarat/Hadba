@@ -59,7 +59,19 @@
       "PowerShell(Copy-Item \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\assets\\\\images\\\\Icons\\\\Samdan Guidlines ICONS-29.png\" -Destination \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\public\\\\brand\\\\icon-chef-hat.png\" -Force)",
       "PowerShell(Copy-Item \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\assets\\\\images\\\\Icons\\\\Samdan Guidlines ICONS-30.png\" -Destination \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\public\\\\brand\\\\icon-chef-hat.png\" -Force)",
       "WebFetch(domain:matchthemes.com)",
-      "WebFetch(domain:elegencia-react-ejev.vercel.app)"
+      "WebFetch(domain:elegencia-react-ejev.vercel.app)",
+      "PowerShell(Get-Process -Name node -ErrorAction SilentlyContinue | Select-Object Id,ProcessName; \\(Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue\\) | Select-Object -First 1)",
+      "PowerShell(Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue | Where-Object { $_.LocalPort -in 5173,5174,4173 } | Select-Object LocalPort,OwningProcess)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 5174 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue })",
+      "PowerShell(Copy-Item \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\assets\\\\images\\\\Icons\\\\Samdan Guidlines ICONS-30.png\" \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\public\\\\brand\\\\icon-highlight-chefhat.png\" -Force)",
+      "PowerShell(Copy-Item \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\assets\\\\images\\\\Icons\\\\Samdan Guidlines ICONS-23.png\" \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\public\\\\brand\\\\icon-story-eyebrow.png\" -Force)",
+      "PowerShell(Copy-Item \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\assets\\\\images\\\\GuidlinePictures\\\\Img5.png\" \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\public\\\\brand\\\\photo-ambience-interior.png\" -Force)",
+      "WebFetch(domain:reactbits.dev)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)",
+      "PowerShell(gh auth status 2>&1)",
+      "PowerShell(gh --version 2>&1)",
+      "WebFetch(domain:github.com)"
     ]
   }
 }

@@ -12,6 +12,18 @@ const Hero = ({ onReserveClick }) => {
   return (
     <>
     <section className="hero">
+      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-riyadh-skyline.jpg)' }} aria-hidden="true" />
+
+      <div className="container">
+        <div className="section-heading">
+          <p className="eyebrow eyebrow-icon">
+            <img src="/brand/icon-fork-spoon.png" alt="" />
+            {t.hero.eyebrow}
+          </p>
+          <h2 className="section-title">{t.hero.tagline}</h2>
+        </div>
+      </div>
+
       <div className="hero-visual">
         <HeroCarousel />
       </div>
@@ -41,11 +53,9 @@ const Hero = ({ onReserveClick }) => {
           </div>
 
           <div className="hero-copy-text">
-            <p className="eyebrow">{t.hero.eyebrow}</p>
             <h1 dangerouslySetInnerHTML={{ __html: t.hero.title }} />
             <div className="hero-divider" />
             <p className="hero-subtitle">{t.hero.subtitle}</p>
-            <p className="hero-tagline">{t.hero.tagline}</p>
 
             <div className="hero-buttons">
               <Link to="/menu" className="btn btn-primary">{t.hero.ctaPrimary}</Link>
