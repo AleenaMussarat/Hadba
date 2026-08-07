@@ -3,6 +3,7 @@ import { useLanguage } from '../i18n'
 import { translations, CAT, CATEGORY_ORDER } from '../i18n/translations'
 import { fetchMenuItems } from '../services/strapi'
 import RiyalSymbol from './RiyalSymbol'
+import FeaturedMenu from './FeaturedMenu'
 
 const PAGE_SIZE = 20
 
@@ -76,6 +77,16 @@ const Menu = () => {
           </p>
           <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{t.menu.title}</h2>
           <p className="section-copy fade-in-up" style={{ animationDelay: '0.25s' }}>{t.menu.subtitle}</p>
+        </div>
+      </div>
+
+      <FeaturedMenu scrollTargetId="menu-items-grid" minimal />
+
+      <div className="container">
+        <div id="menu-items-grid" className="menu-separator">
+          <img className="menu-separator-icon" src="/brand/icon-plate.png" alt="" />
+          <h3 className="menu-separator-heading">{t.menu.fullMenuHeading}</h3>
+          <p className="menu-separator-subtitle">{t.menu.fullMenuSubtitle}</p>
         </div>
 
         <div className="menu-filters">

@@ -45,6 +45,33 @@ html[dir="rtl"] body {
   font-family: 'Noto Kufi Arabic', 'Segoe UI', Tahoma, sans-serif;
 }
 
+/* Every heading/display element below sets its own explicit
+   'Playfair Display' (Latin-only, no Arabic glyphs), which overrides the
+   body-level font rather than inheriting it — without this, Arabic mode
+   would silently fall back to the browser's generic serif for all of these
+   instead of Noto Kufi Arabic. */
+html[dir="rtl"] .section-title,
+html[dir="rtl"] .logo-sub,
+html[dir="rtl"] .hero-copy h1,
+html[dir="rtl"] .hero-promo-eyebrow,
+html[dir="rtl"] .dish-card-content h3,
+html[dir="rtl"] .menu-separator-heading,
+html[dir="rtl"] .menu-expand-label span,
+html[dir="rtl"] .menu-expand-name,
+html[dir="rtl"] .about-ambience-note h4,
+html[dir="rtl"] .menu-item-top h4,
+html[dir="rtl"] .branch-card-body h3,
+html[dir="rtl"] .not-found-code,
+html[dir="rtl"] .footer-brand h4,
+html[dir="rtl"] .footer-col h4,
+html[dir="rtl"] .footer-quote,
+html[dir="rtl"] .reserve-title,
+html[dir="rtl"] .reserve-success h3,
+html[dir="rtl"] .logo-subtitle,
+html[dir="rtl"] .mobile-nav-link {
+  font-family: 'Noto Kufi Arabic', sans-serif;
+}
+
 body {
   font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg-base);
@@ -195,6 +222,10 @@ html {
   }
 
   .section-title {
+    font-size: 2.2rem;
+  }
+
+  .menu-separator-heading {
     font-size: 2.2rem;
   }
 }
@@ -985,62 +1016,176 @@ html[dir="rtl"] .mobile-menu.active {
 .hero-visual {
   position: relative;
   width: 100%;
-  max-width: 1600px;
   margin: 0 auto 3rem;
-  padding: 0 2rem;
 }
 
-/* ===== HERO CAROUSEL (DepthCarousel) ===== */
-.hero-carousel {
+/* ===== HERO CAROUSEL (3D dish carousel) ===== */
+.dish-carousel {
   position: relative;
   z-index: 1;
 }
 
-.hero-carousel-stage {
+.dish-carousel-stage {
   position: relative;
-  height: 440px;
-  max-width: 760px;
-  margin: 0 auto;
+  height: 560px;
+  margin-top: 1.2rem;
+  perspective: 1200px;
 }
 
-.hero-carousel-caption {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  padding: 1.6rem 1rem 0;
+.dish-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(92vw, 900px);
+  height: 420px;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--bg-elevated);
+  will-change: transform;
+  transition: border-color 0.4s ease;
 }
 
-.hero-carousel-badge {
+.dish-card.is-center {
+  border-color: var(--border-color-strong);
+}
+
+.dish-card-media {
+  position: absolute;
+  inset: 0;
+}
+
+.dish-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dish-card-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(13, 13, 13, 0.05) 0%, rgba(13, 13, 13, 0.55) 55%, rgba(13, 13, 13, 0.95) 100%);
+}
+
+.dish-card-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1.6rem 1.7rem;
+  text-align: start;
+  color: #fff;
+}
+
+.dish-card-badge {
   display: inline-block;
   background: var(--color-accent);
   color: #1A1108;
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  padding: 0.5rem 1.2rem;
+  padding: 0.35rem 0.9rem;
   border-radius: var(--radius-box);
-  margin-bottom: 0.9rem;
+  margin-bottom: 0.7rem;
 }
 
-.hero-carousel-caption h3 {
+.dish-card-content h3 {
   font-family: 'Playfair Display', serif;
-  font-size: 2rem;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 0.4rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-.hero-carousel-caption p {
-  color: var(--text-secondary);
-  font-size: 1rem;
-  line-height: 1.6;
-  max-width: 34ch;
-  margin: 0 auto;
+.dish-card-content p {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  max-width: 32ch;
+}
+
+.dish-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+}
+
+.dish-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 200;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color-strong);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.3s;
+  flex-shrink: 0;
+}
+
+.dish-carousel-arrow.prev {
+  left: 0.5rem;
+}
+
+.dish-carousel-arrow.next {
+  right: 0.5rem;
+}
+
+.dish-carousel-arrow:hover:not(:disabled) {
+  background: var(--color-accent);
+  color: #1A1108;
+  border-color: transparent;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.dish-carousel-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.dish-carousel-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dish-carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s;
+}
+
+.dish-carousel-dot.is-active {
+  background: var(--color-accent);
+  width: 22px;
+  border-radius: var(--radius-box);
 }
 
 @media (max-width: 992px) {
   .hero-copy {
+    flex-direction: column;
     text-align: center;
+  }
+
+  /* Title/subtitle read first, promo banner + hours card follow below —
+     row layout below this width squeezed both columns too narrow to read. */
+  .hero-copy-text {
+    order: -1;
   }
 
   .hero-subtitle {
@@ -1064,13 +1209,12 @@ html[dir="rtl"] .mobile-menu.active {
     font-size: 2.4rem;
   }
 
-  .hero-carousel-stage {
-    height: 320px;
-    max-width: 100%;
+  .dish-carousel-stage {
+    height: 440px;
   }
 
-  .hero-carousel-caption {
-    padding: 1.2rem 1rem 0;
+  .dish-card {
+    height: 320px;
   }
 }
 
@@ -1079,6 +1223,45 @@ html[dir="rtl"] .mobile-menu.active {
   background: var(--bg-base);
   position: relative;
   padding-top: 4rem;
+}
+
+/* Used when FeaturedMenu is embedded inside a page that already has its own
+   heading/background (e.g. the Menu page) — no second heading, no separate
+   section background, just the gallery blending into the surrounding page. */
+.featured-menu-section.is-minimal {
+  background: none;
+  padding: 0 0 3rem;
+}
+
+.menu-separator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.6rem;
+  margin: 1rem 0 3rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.menu-separator-icon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 0.4rem;
+}
+
+.menu-separator-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.menu-separator-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  max-width: 46ch;
 }
 
 /* Click-to-expand image gallery: four panels share the row equally at
@@ -1245,6 +1428,48 @@ html[dir="rtl"] .mobile-menu.active {
   margin-top: 2.5rem;
 }
 
+.btn-scroll-explore-arrow {
+  animation: scrollExploreBounce 1.4s ease-in-out infinite;
+}
+
+@keyframes scrollExploreBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+.btn-view-menu-arrow {
+  animation: viewMenuArrowSlide 1.4s ease-in-out infinite;
+}
+
+@keyframes viewMenuArrowSlide {
+  0%, 100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+html[dir="rtl"] .btn-view-menu-arrow {
+  animation-name: viewMenuArrowSlideRtl;
+}
+
+@keyframes viewMenuArrowSlideRtl {
+  0%, 100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(-4px);
+  }
+}
+
 @media (max-width: 768px) {
   .menu-expand-gallery {
     flex-direction: column;
@@ -1295,11 +1520,18 @@ html[dir="rtl"] .mobile-menu.active {
   max-width: 640px;
 }
 
-.about-intro-photo {
-  width: 100%;
-  max-width: 460px;
-  aspect-ratio: 16 / 10;
+.about-intro-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
   margin: 2.2rem auto;
+}
+
+.about-intro-photo {
+  flex: 0 0 auto;
+  width: 600px;
+  aspect-ratio: 16 / 10;
   border-radius: var(--radius-box);
   overflow: hidden;
   box-shadow: 0 20px 50px var(--shadow-color);
@@ -1311,12 +1543,72 @@ html[dir="rtl"] .mobile-menu.active {
   object-fit: cover;
 }
 
-.about-highlights-centered {
-  justify-content: center;
-  margin: 2.8rem 0 3.5rem;
-  position: relative;
-  z-index: 1;
+/* The flanking boxes start tucked behind the photo (scaled down, faded,
+   pushed toward it horizontally) and slide out to their resting position
+   once scrolled into view; scrolling back out retreats them again. */
+.about-intro-flank {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  flex-shrink: 0;
+  z-index: 0;
+  opacity: 0;
+  transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.4s ease;
 }
+
+.about-intro-flank.right {
+  transition-delay: 0.2s;
+}
+
+.about-intro-flank .highlight-card {
+  width: 108px;
+  padding: 0.7rem 0.5rem;
+}
+
+.about-intro-flank.left {
+  transform: translateX(70%) scale(0.55);
+}
+
+.about-intro-flank.right {
+  transform: translateX(-70%) scale(0.55);
+}
+
+.about-intro-visual.is-open .about-intro-flank {
+  opacity: 1;
+  z-index: 2;
+}
+
+.about-intro-visual.is-open .about-intro-flank.left,
+.about-intro-visual.is-open .about-intro-flank.right {
+  transform: translateX(0) scale(1);
+}
+
+@media (max-width: 992px) {
+  .about-intro-photo {
+    width: 100%;
+    max-width: 460px;
+  }
+}
+
+@media (max-width: 700px) {
+  .about-intro-visual {
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .about-intro-flank {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.8rem;
+  }
+
+  .about-intro-flank.left,
+  .about-intro-flank.right {
+    transform: none;
+  }
+}
+
 
 /* Atmospheric background image behind a page's intro heading, fading
    smoothly down into the page's base dark color rather than sitting as a
@@ -1362,32 +1654,49 @@ html[dir="rtl"] .mobile-menu.active {
   animation: fadeInUp 0.7s ease-out forwards;
 }
 
-.story-scroll-stack {
+/* Higher-specificity ancestor prefix guarantees this beats ScrollStack.css's
+   own .scroll-stack-scroller rule regardless of CSS bundle/import order —
+   without it the library's default height:100%/overflow-y:auto silently won
+   the cascade on an equal-specificity tie and produced a broken nested
+   scrollbar. useWindowScroll mode expects a normal-flow wrapper, not a
+   scroll box. */
+.section-about .story-scroll-stack {
   margin-top: 5rem;
   height: auto;
   overflow: visible;
 }
 
 .story-scroll-stack .scroll-stack-inner {
-  padding: 2rem 0 4rem;
+  /* The bottom padding is what gives the pin/scale math room to actually
+     bring the second card up and overlap the first before releasing —
+     too little (as this was) and the stack transition gets cut off before
+     it can finish, so it just looks like a big empty gap between cards. */
+  padding: 2rem 0 7rem;
   min-height: 0;
 }
 
 .story-scroll-stack .story-card-panel {
   height: auto;
   min-height: 0;
-  margin: 0 0 2rem;
+  max-width: 460px;
+  margin-left: auto;
+  margin-right: auto;
   padding: 1.8rem;
   border-radius: var(--radius-box);
   border: 1px solid var(--border-color);
   background: var(--bg-elevated);
   box-shadow: 0 20px 45px var(--shadow-color);
+  text-align: center;
 }
 
 .story-card-icon {
   width: 40px;
   height: 40px;
-  margin-bottom: 1.1rem;
+  margin: 0 auto 1.1rem;
+}
+
+.story-card-panel .info-card-name {
+  justify-content: center;
 }
 
 .story-card-panel h3 {
@@ -1402,10 +1711,6 @@ html[dir="rtl"] .mobile-menu.active {
   color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.75;
-}
-
-.about-gallery-strip {
-  position: relative;
 }
 
 .about-divider {
@@ -1433,21 +1738,37 @@ html[dir="rtl"] .mobile-menu.active {
   direction: ltr;
 }
 
+/* Shared by ParallaxImage: JS sets --parallax-y on .parallax-image every
+   scroll frame, deliberately with no transition (see component comment).
+   The pan layer is oversized so the offset never reveals an edge; a hover
+   zoom can live independently on .parallax-image img without fighting it. */
+.parallax-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.parallax-image-pan {
+  width: 100%;
+  height: 130%;
+  transform: translateY(var(--parallax-y, 0px));
+}
+
+.parallax-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .about-block-image {
   aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: var(--radius-box);
 }
 
-.about-block-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
 .about-block:hover .about-block-image img {
-  transform: scale(1.06);
+  transform: scale(1.1);
 }
 
 .about-block-copy {
@@ -1492,10 +1813,6 @@ html[dir="rtl"] .mobile-menu.active {
   color: var(--text-primary);
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
-}
-
-.about-highlights-centered {
-  justify-content: center;
 }
 
 @media (max-width: 900px) {
@@ -1589,46 +1906,33 @@ html[dir="rtl"] .mobile-menu.active {
   content: '— ';
 }
 
-.highlights {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.9rem;
-}
-
 .highlight-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.8rem;
-  min-width: 140px;
-  padding: 1.6rem 1.3rem;
+  gap: 0.5rem;
+  padding: 1rem 0.8rem;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-box);
   background: var(--bg-elevated);
   color: var(--text-primary);
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
   text-align: center;
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s ease, background 0.3s ease;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
 }
 
-.highlights.is-visible .highlight-card {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.highlights.is-visible .highlight-card:hover {
+.highlight-card:hover {
   border-color: var(--border-color-strong);
   background: var(--bg-elevated-2);
-  transform: translateY(-4px);
+  transform: translateY(-3px);
 }
 
 .highlight-card img {
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
 }
 
 .about-visuals {
@@ -2097,9 +2401,25 @@ html[dir="rtl"] .menu-page-btn {
   position: relative;
 }
 
+.branches-box {
+  position: relative;
+  z-index: 1;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-box);
+  background: var(--bg-base);
+  box-shadow: 0 30px 70px var(--shadow-color);
+  padding: 3.5rem 2.5rem;
+}
+
+@media (max-width: 640px) {
+  .branches-box {
+    padding: 2.5rem 1.2rem;
+  }
+}
+
 .branches-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
   gap: 3.5rem 2.5rem;
 }
 
@@ -2160,95 +2480,11 @@ html[dir="rtl"] .menu-page-btn {
   position: relative;
 }
 
-/* Mosaic layout instead of a uniform grid — each item spans a different
-   number of rows/columns so the whole thing reads as jumbled/curated
-   rather than a flat repeating pattern. */
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 130px;
-  grid-auto-flow: dense;
-  gap: 1.4rem;
+.gallery-masonry-wrap {
+  position: relative;
   margin-top: 3rem;
 }
 
-.gallery-item {
-  position: relative;
-  overflow: hidden;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  background: var(--bg-elevated);
-  grid-column: span 1;
-  grid-row: span 2;
-}
-
-.gallery-item-1 {
-  grid-column: span 2;
-  grid-row: span 3;
-}
-
-.gallery-item-3 {
-  grid-row: span 2;
-}
-
-.gallery-item-2 {
-  grid-row: span 3;
-}
-
-.gallery-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.45s ease;
-}
-
-.gallery-item:hover img {
-  transform: scale(1.08);
-}
-
-.gallery-item-caption {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 0.7rem 0.9rem;
-  background: linear-gradient(180deg, transparent, rgba(18, 14, 12, 0.85));
-  color: var(--text-primary);
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-align: start;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.gallery-item:hover .gallery-item-caption {
-  opacity: 1;
-}
-
-.circular-gallery-section {
-  margin-top: 5rem;
-}
-
-.circular-gallery-heading {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.8rem;
-  color: var(--text-primary);
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.circular-gallery-wrap {
-  position: relative;
-  width: 100%;
-  height: 520px;
-}
-
-@media (max-width: 768px) {
-  .circular-gallery-wrap {
-    height: 380px;
-  }
-}
 
 .gallery-lightbox {
   position: fixed;
@@ -2286,17 +2522,6 @@ html[dir="rtl"] .menu-page-btn {
   font-size: 1.1rem;
 }
 
-@media (max-width: 820px) {
-  .gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 480px) {
-  .gallery-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
 /* ===== 404 ===== */
 .section-not-found {
@@ -2841,7 +3066,8 @@ html[dir="rtl"] .menu-page-btn {
   position: relative;
   text-align: center;
   padding: 3rem 3.5rem;
-  max-width: 360px;
+  width: 360px;
+  max-width: 88vw;
   border-radius: var(--radius-box);
   background: rgba(18, 14, 12, 0.9);
   border: 1px solid rgba(246, 157, 28, 0.2);
@@ -3072,5 +3298,51 @@ html[dir="rtl"] .menu-page-btn {
   .logo-subtitle {
     font-size: 0.8rem;
     letter-spacing: 2px;
+  }
+}
+
+/* ===== BACK TO TOP ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 1.8rem;
+  inset-inline-end: 1.8rem;
+  z-index: 900;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color-strong);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 12px 30px var(--shadow-color);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.back-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background: var(--color-accent);
+  color: #1A1108;
+  border-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .back-to-top {
+    bottom: 1.2rem;
+    inset-inline-end: 1.2rem;
+    width: 42px;
+    height: 42px;
+    font-size: 1rem;
   }
 }

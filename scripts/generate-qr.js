@@ -5,7 +5,7 @@ import path from 'node:path'
 
 // Placeholder domain — swap for the real production URL once hosting is finalized.
 // Uses a hash route (HashRouter) so it works with zero server config on any host.
-const MENU_URL = 'https://samdan.sa/#/menu'
+const MENU_URL = 'https://samdan.vercel.app/#/menu'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const outDir = path.join(__dirname, '..', 'print-assets')

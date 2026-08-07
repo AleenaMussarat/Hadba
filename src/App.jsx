@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { LanguageProvider, getLanguageDir } from './i18n'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
@@ -13,10 +13,14 @@ import Footer from './components/Footer'
 import LoadingScreen from './components/LoadingScreen'
 import ReserveModal from './components/ReserveModal'
 import ScrollToTop from './components/ScrollToTop'
+import BackToTop from './components/BackToTop'
+import { startSmoothScroll, stopSmoothScroll } from './lib/smoothScroll'
 import './App.css'
 
+const LANG_STORAGE_KEY = 'samdan-lang'
+
 function App() {
-  const [currentLang, setCurrentLang] = useState('en')
+  const [currentLang, setCurrentLang] = useState(() => localStorage.getItem(LANG_STORAGE_KEY) || 'en')
   const [isLoading, setIsLoading] = useState(true)
   const [isReserveOpen, setIsReserveOpen] = useState(false)
 
@@ -32,19 +36,27 @@ function App() {
     return () => link.remove()
   }, [])
 
+  // One smooth-scroll instance for the whole site (not just pages that
+  // happen to mount ScrollStack) — see src/lib/smoothScroll.js.
+  useEffect(() => {
+    startSmoothScroll()
+    return () => stopSmoothScroll()
+  }, [])
+
   const toggleLanguage = (lang) => {
     setCurrentLang(lang)
     document.documentElement.dir = getLanguageDir(lang)
     document.documentElement.lang = lang
+    localStorage.setItem(LANG_STORAGE_KEY, lang)
   }
 
   if (isLoading) {
-    return <LoadingScreen onFinish={() => setIsLoading(false)} />
+    return <LoadingScreen currentLang={currentLang} onFinish={() => setIsLoading(false)} />
   }
 
   return (
     <LanguageProvider value={{ currentLang, toggleLanguage }}>
-      <HashRouter>
+      <BrowserRouter>
         <div className="app">
           <ScrollToTop />
           <Navbar onReserveClick={() => setIsReserveOpen(true)} />
@@ -61,8 +73,9 @@ function App() {
           </main>
           <Footer onReserveClick={() => setIsReserveOpen(true)} />
           <ReserveModal isOpen={isReserveOpen} onClose={() => setIsReserveOpen(false)} />
+          <BackToTop />
         </div>
-      </HashRouter>
+      </BrowserRouter>
     </LanguageProvider>
   )
 }

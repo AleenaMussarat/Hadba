@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { menuImages } from '../i18n/translations'
+import { menuImages, translations } from '../i18n/translations'
 
 const HEX_IMAGES = [
   menuImages.lambKabsa,
@@ -39,7 +39,8 @@ const buildHexGrid = () => {
   return cells
 }
 
-const LoadingScreen = ({ onFinish }) => {
+const LoadingScreen = ({ onFinish, currentLang }) => {
+  const t = translations[currentLang] || translations.en
   const [progress, setProgress] = useState(0)
   const [isExiting, setIsExiting] = useState(false)
   const [cells] = useState(buildHexGrid)
@@ -98,7 +99,7 @@ const LoadingScreen = ({ onFinish }) => {
               <img className="logo-circle-icon" src="/brand/icon-knife-fork.png" alt="" />
             </div>
             <img className="loading-logo-mark" src="/brand/logo-orange.png" alt="SAMDAN" />
-            <p className="logo-subtitle">Saudi Heritage Dining</p>
+            <p className="logo-subtitle">{t.hero.eyebrow}</p>
           </div>
 
           <div className="loading-bar-container">

@@ -3,7 +3,12 @@ import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
 import { fetchGalleryImages } from '../services/strapi'
 import { FaXmark } from 'react-icons/fa6'
-import CircularGallery from './reactbits/CircularGallery'
+import Masonry from './reactbits/Masonry'
+
+// Masonry needs a numeric height per item to pack columns — actual photos
+// don't share one aspect ratio, so this repeating pattern just gives the
+// grid visual rhythm; object/background-size:cover handles the crop.
+const MASONRY_HEIGHTS = [560, 420, 500, 360, 480, 440]
 
 const Gallery = () => {
   const { currentLang } = useLanguage()
@@ -38,8 +43,14 @@ const Gallery = () => {
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [activeImage])
 
-  const circularItems = useMemo(
-    () => images.map((item) => ({ image: item.image, text: item.caption || '' })),
+  const masonryItems = useMemo(
+    () =>
+      images.map((item, index) => ({
+        id: `${item.caption}-${index}`,
+        img: item.image,
+        height: MASONRY_HEIGHTS[index % MASONRY_HEIGHTS.length],
+        caption: item.caption
+      })),
     [images]
   )
 
@@ -56,29 +67,11 @@ const Gallery = () => {
           <p className="section-copy fade-in-up" style={{ animationDelay: '0.25s' }}>{t.gallery.subtitle}</p>
         </div>
 
-        <div className="gallery-grid">
-          {images.map((item, index) => (
-            <button
-              type="button"
-              className={`gallery-item gallery-item-${(index % 4) + 1}`}
-              key={`${item.caption}-${index}`}
-              onClick={() => setActiveImage(item)}
-            >
-              <img src={item.image} alt={item.caption} loading="lazy" />
-              {item.caption && <span className="gallery-item-caption">{item.caption}</span>}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="circular-gallery-section">
-        <div className="container">
-          <h3 className="circular-gallery-heading">
-            {currentLang === 'ar' ? 'استكشف بمنظور دائري' : 'Explore in 360°'}
-          </h3>
-        </div>
-        <div className="circular-gallery-wrap">
-          <CircularGallery items={circularItems} bend={3} textColor="#F5ECE1" borderRadius={0.05} />
+        <div className="gallery-masonry-wrap">
+          <Masonry
+            items={masonryItems}
+            onItemClick={(item) => setActiveImage({ image: item.img, caption: item.caption })}
+          />
         </div>
       </div>
 

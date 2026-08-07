@@ -202,13 +202,16 @@ export const translations = {
       prev: 'Previous',
       next: 'Next',
       pageOf: 'Page {page} of {count}',
+      fullMenuHeading: 'Our Curated Menu',
+      fullMenuSubtitle: 'Browse every dish we serve, organized by category so you can find your favorite fast.',
       items: buildMenuItems('en')
     },
     featuredMenu: {
       eyebrow: "Chef's Selections",
       title: 'From Our Menu',
       subtitle: 'A taste of our most-loved dishes',
-      viewFullMenu: 'View Full Menu'
+      viewFullMenu: 'View Full Menu',
+      scrollToExplore: 'Scroll down to explore'
     },
     contact: {
       eyebrow: 'Get In Touch',
@@ -336,13 +339,16 @@ export const translations = {
       prev: 'السابق',
       next: 'التالي',
       pageOf: 'صفحة {page} من {count}',
+      fullMenuHeading: 'قائمتنا المنتقاة',
+      fullMenuSubtitle: 'تصفح جميع أطباقنا مصنّفة حسب النوع لتجد طبقك المفضل بسهولة.',
       items: buildMenuItems('ar')
     },
     featuredMenu: {
       eyebrow: 'اختيارات الشيف',
       title: 'من قائمتنا',
       subtitle: 'تذوق أشهى أطباقنا المفضلة',
-      viewFullMenu: 'عرض القائمة الكاملة'
+      viewFullMenu: 'عرض القائمة الكاملة',
+      scrollToExplore: 'مرر للأسفل لاستكشاف القائمة'
     },
     contact: {
       eyebrow: 'تواصل معنا',

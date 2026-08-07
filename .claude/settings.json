@@ -71,7 +71,9 @@
       "WebFetch(domain:api.github.com)",
       "PowerShell(gh auth status 2>&1)",
       "PowerShell(gh --version 2>&1)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "PowerShell(\\(Get-Content \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\src\\\\App.css\" | Measure-Object -Line\\).Lines)",
+      "PowerShell(npm run build)"
     ]
   }
 }

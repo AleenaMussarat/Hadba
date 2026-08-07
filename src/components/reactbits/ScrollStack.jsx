@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useCallback } from 'react';
 import Lenis from 'lenis';
+import { getLenis } from '../../lib/smoothScroll';
 import './ScrollStack.css';
 
 export const ScrollStackItem = ({ children, itemClassName = '' }) => (
@@ -59,17 +60,21 @@ const ScrollStack = ({
     }
   }, [useWindowScroll]);
 
-  const getElementOffset = useCallback(
-    element => {
-      if (useWindowScroll) {
-        const rect = element.getBoundingClientRect();
-        return rect.top + window.scrollY;
-      } else {
-        return element.offsetTop;
-      }
-    },
-    [useWindowScroll]
-  );
+  // getBoundingClientRect() reflects the element's current *visual* position
+  // — which we are also setting every frame via `transform` — so using it
+  // here fed the applied transform back into the next frame's position
+  // calculation and showed up as jitter/vibration near pin boundaries.
+  // offsetTop is layout-based and unaffected by transform, so walk the
+  // offsetParent chain for a stable absolute position in both modes.
+  const getElementOffset = useCallback(element => {
+    let offset = 0;
+    let node = element;
+    while (node) {
+      offset += node.offsetTop;
+      node = node.offsetParent;
+    }
+    return offset;
+  }, []);
 
   const updateCardTransforms = useCallback(() => {
     if (!cardsRef.current.length || isUpdatingRef.current) return;
@@ -185,26 +190,13 @@ const ScrollStack = ({
 
   const setupLenis = useCallback(() => {
     if (useWindowScroll) {
-      const lenis = new Lenis({
-        duration: 1.2,
-        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: true,
-        touchMultiplier: 2,
-        infinite: false,
-        wheelMultiplier: 1,
-        lerp: 0.1,
-        syncTouch: true,
-        syncTouchLerp: 0.075
-      });
+      // Window-scroll mode taps into the app-wide Lenis instance (see
+      // src/lib/smoothScroll.js) instead of spinning up its own — two Lenis
+      // instances both driving window scroll fight each other and jank.
+      const lenis = getLenis();
+      if (!lenis) return;
 
       lenis.on('scroll', handleScroll);
-
-      const raf = time => {
-        lenis.raf(time);
-        animationFrameRef.current = requestAnimationFrame(raf);
-      };
-      animationFrameRef.current = requestAnimationFrame(raf);
-
       lenisRef.current = lenis;
       return lenis;
     } else {
@@ -277,7 +269,12 @@ const ScrollStack = ({
         cancelAnimationFrame(animationFrameRef.current);
       }
       if (lenisRef.current) {
-        lenisRef.current.destroy();
+        if (useWindowScroll) {
+          // Shared app-wide instance — only drop our listener, never destroy it.
+          lenisRef.current.off('scroll', handleScroll);
+        } else {
+          lenisRef.current.destroy();
+        }
       }
       stackCompletedRef.current = false;
       cardsRef.current = [];

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useLanguage } from '../i18n'
 import { translations, menuImages } from '../i18n/translations'
 import ScrollStack, { ScrollStackItem } from './reactbits/ScrollStack'
-import ScrollExpand from './reactbits/ScrollExpand'
+import ParallaxImage from './ParallaxImage'
 
 const HIGHLIGHT_ICONS = [
   '/brand/icon-highlight-chefhat.png',
@@ -14,21 +14,16 @@ const HIGHLIGHT_ICONS = [
 const About = () => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
-  const highlightsRef = useRef(null)
-  const [highlightsVisible, setHighlightsVisible] = useState(false)
+  const visualRef = useRef(null)
+  const [flanksOpen, setFlanksOpen] = useState(false)
 
   useEffect(() => {
-    const el = highlightsRef.current
+    const el = visualRef.current
     if (!el) return
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setHighlightsVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.2 }
+      ([entry]) => setFlanksOpen(entry.isIntersecting),
+      { threshold: 0.4 }
     )
 
     observer.observe(el)
@@ -48,26 +43,41 @@ const About = () => {
           <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{t.story.title}</h2>
           <p className="section-copy section-intro fade-in-up" style={{ animationDelay: '0.25s' }}>{t.story.intro}</p>
 
-          <div className="about-intro-photo fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <img src={menuImages.hejaziMandi} alt="Signature Hejazi Mandi at SAMDAN" />
+          <div ref={visualRef} className={`about-intro-visual fade-in-up ${flanksOpen ? 'is-open' : ''}`} style={{ animationDelay: '0.3s' }}>
+            <div className="about-intro-flank left">
+              {t.story.highlights.slice(0, 2).map((item, i) => (
+                <div key={item} className="highlight-card">
+                  <img src={HIGHLIGHT_ICONS[i]} alt="" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="about-intro-photo">
+              <img src={menuImages.hejaziMandi} alt="Signature Hejazi Mandi at SAMDAN" />
+            </div>
+
+            <div className="about-intro-flank right">
+              {t.story.highlights.slice(2, 4).map((item, i) => (
+                <div key={item} className="highlight-card">
+                  <img src={HIGHLIGHT_ICONS[i + 2]} alt="" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
           <p className="section-copy fade-in-up" style={{ animationDelay: '0.4s' }}>{t.story.description}</p>
         </div>
 
-        <div
-          ref={highlightsRef}
-          className={`highlights about-highlights-centered ${highlightsVisible ? 'is-visible' : ''}`}
+        <ScrollStack
+          useWindowScroll
+          className="story-scroll-stack"
+          itemDistance={40}
+          stackPosition="12%"
+          scaleEndPosition="45%"
+          blurAmount={1}
         >
-          {t.story.highlights.map((item, i) => (
-            <div key={item} className="highlight-card" style={{ transitionDelay: `${i * 0.15}s` }}>
-              <img src={HIGHLIGHT_ICONS[i]} alt="" />
-              <span>{item}</span>
-            </div>
-          ))}
-        </div>
-
-        <ScrollStack useWindowScroll className="story-scroll-stack">
           <ScrollStackItem itemClassName="story-card-panel">
             <img className="story-card-icon" src="/brand/icon-knife-fork.png" alt="" />
             <h3>{t.story.chefTitle}</h3>
@@ -89,7 +99,7 @@ const About = () => {
       <div className="container">
         <div className="about-block">
           <div className="about-block-image">
-            <img src="/brand/photo-ambience-interior.png" alt="Traditional Najdi architecture" />
+            <ParallaxImage src="/brand/photo-ambience-interior.png" alt="Traditional Najdi architecture" />
           </div>
           <div className="about-block-copy">
             <img className="info-card-icon" src="/brand/icon-table.png" alt="" />
@@ -99,17 +109,6 @@ const About = () => {
         </div>
       </div>
 
-      <div className="about-gallery-strip">
-        <ScrollExpand
-          src="/brand/photo-sadu-interior.jpg"
-          alt="Sadu-woven interior detail"
-          title="SAMDAN"
-          scrollHint={currentLang === 'ar' ? 'مرر للأسفل' : 'Scroll to explore'}
-          useWindowScroll
-          scrollDistance={0.8}
-          holdDistance={0.2}
-        />
-      </div>
     </section>
   )
 }

@@ -3,6 +3,7 @@ import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
 import { fetchBranches } from '../services/strapi'
 import { FaLocationDot, FaClock } from 'react-icons/fa6'
+import ParallaxImage from './ParallaxImage'
 
 const Branches = () => {
   const { currentLang } = useLanguage()
@@ -40,28 +41,30 @@ const Branches = () => {
           <p className="section-copy fade-in-up" style={{ animationDelay: '0.25s' }}>{t.branches.subtitle}</p>
         </div>
 
-        <div className="branches-grid">
-          {branches.map((branch) => (
-            <article className="branch-card" key={branch.name}>
-              <div className="branch-card-image">
-                <img src={branch.image} alt={branch.name} />
-              </div>
-              <div className="branch-card-body">
-                <h3>{branch.name}</h3>
-                <p className="branch-detail">
-                  <span className="contact-item-icon"><FaLocationDot /></span>
-                  <span>{branch.location}</span>
-                </p>
-                <p className="branch-detail">
-                  <span className="contact-item-icon"><FaClock /></span>
-                  <span>{branch.hours}</span>
-                </p>
-                <a className="btn btn-secondary branch-directions" href={branch.mapsLink} target="_blank" rel="noreferrer">
-                  {t.branches.directionsLabel}
-                </a>
-              </div>
-            </article>
-          ))}
+        <div className="branches-box">
+          <div className="branches-grid">
+            {branches.map((branch) => (
+              <article className="branch-card" key={branch.name}>
+                <div className="branch-card-image">
+                  <ParallaxImage src={branch.image} alt={branch.name} strength={20} />
+                </div>
+                <div className="branch-card-body">
+                  <h3>{branch.name}</h3>
+                  <p className="branch-detail">
+                    <span className="contact-item-icon"><FaLocationDot /></span>
+                    <span>{branch.location}</span>
+                  </p>
+                  <p className="branch-detail">
+                    <span className="contact-item-icon"><FaClock /></span>
+                    <span>{branch.hours}</span>
+                  </p>
+                  <a className="btn btn-secondary branch-directions" href={branch.mapsLink} target="_blank" rel="noreferrer">
+                    {t.branches.directionsLabel}
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>
