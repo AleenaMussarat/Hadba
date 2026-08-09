@@ -3,8 +3,7 @@ import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
 import { FaLocationDot, FaPhone, FaEnvelope, FaClock } from 'react-icons/fa6'
 import { socialLinks } from '../data/social'
-
-const MAP_QUERY = 'Khalid bin Al Waleed Street, Qurtubah, Riyadh, Saudi Arabia'
+import { MAP_QUERY, MAP_EMBED_SRC } from '../lib/mapConfig'
 
 const Contact = ({ onReserveClick }) => {
   const { currentLang } = useLanguage()
@@ -57,8 +56,8 @@ const Contact = ({ onReserveClick }) => {
           <div className="map-card">
             <iframe
               title="SAMDAN location"
-              src={`https://www.google.com/maps?q=${encodeURIComponent(MAP_QUERY)}&z=16&output=embed`}
-              loading="lazy"
+              src={MAP_EMBED_SRC}
+              loading="eager"
               referrerPolicy="no-referrer-when-downgrade"
             ></iframe>
           </div>

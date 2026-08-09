@@ -33,11 +33,13 @@ const Footer = ({ onReserveClick }) => {
         </div>
 
         <div className="footer-col footer-col-contact">
-          <div>
+          <div className="footer-contact-list">
             <h4>{t.footer.contactTitle}</h4>
-            <p><FaLocationDot className="footer-contact-icon" />{t.contact.address}</p>
-            <p><FaPhone className="footer-contact-icon" />{t.contact.phone}</p>
-            <p><FaClock className="footer-contact-icon" />{t.contact.hours}</p>
+            <div className="footer-contact-rows">
+              <p><FaLocationDot className="footer-contact-icon" /><span>{t.contact.address}</span></p>
+              <p><FaPhone className="footer-contact-icon" /><span>{t.contact.phone}</span></p>
+              <p><FaClock className="footer-contact-icon" /><span>{t.contact.hours}</span></p>
+            </div>
           </div>
 
           <div className="footer-follow">

@@ -157,7 +157,7 @@ export const translations = {
       branches: 'Branches',
       gallery: 'Gallery',
       contact: 'Contact',
-      reserve: 'Inquiries'
+      reserve: 'Reserve a Table'
     },
     hero: {
       eyebrow: 'Saudi Heritage Dining',
@@ -165,7 +165,7 @@ export const translations = {
       subtitle: 'In the heart of Saudi Arabia, SAMDAN serves exquisite Kabsa, Jarish, Najdi, and Hejazi cuisine — a remarkable dining adventure rooted in tradition.',
       tagline: 'Authentic Traditions. Refined Experiences.',
       ctaPrimary: 'View Menu',
-      ctaSecondary: 'Inquiries',
+      ctaSecondary: 'Reserve a Table',
       hours: 'Open Daily',
       hoursValue: '12:00 PM – 12:00 AM',
       promoTitle: 'Grand Opening',
@@ -188,7 +188,7 @@ export const translations = {
       qualityTitle: 'Our Promise',
       qualityText: 'To elevate Saudi heritage into a refined dining experience where tradition, authenticity, and modern elegance come together.',
       highlights: ['Authentic Recipes', 'Fresh Ingredients', 'Warm Hospitality', 'Saudi Heritage'],
-      ambienceTitle: 'The Ambience',
+      ambienceTitle: 'Our Ambience',
       ambienceText: 'A warm, elegant setting designed to welcome family, friends, and honored guests for a remarkable dining adventure.'
     },
     menu: {
@@ -294,15 +294,15 @@ export const translations = {
       branches: 'الفروع',
       gallery: 'معرض الصور',
       contact: 'تواصل معنا',
-      reserve: 'استفسارات'
+      reserve: 'احجز طاولة'
     },
     hero: {
       eyebrow: 'أصالة الضيافة السعودية',
-      title: 'كبسة <span>أصيلة</span> ونكهات نجدية',
+      title: '<span>كبسة</span> أصيلة ونكهات نجدية',
       subtitle: 'في قلب المملكة العربية السعودية، تقدّم سمدان أشهى أطباق الكبسة والجريش والمطبخ النجدي والحجازي، في رحلة طعام استثنائية متجذرة في التراث.',
-      tagline: 'أصالة الجنوب... بطعم لا يُنسى',
+      tagline: 'تقاليد أصيلة. تجارب راقية.',
       ctaPrimary: 'استكشف القائمة',
-      ctaSecondary: 'استفسارات',
+      ctaSecondary: 'احجز طاولة',
       hours: 'نستقبلكم يومياً',
       hoursValue: '١٢:٠٠ ظهراً - ١٢:٠٠ منتصف الليل',
       promoTitle: 'الافتتاح الكبير',
@@ -325,7 +325,7 @@ export const translations = {
       qualityTitle: 'وعدنا',
       qualityText: 'أن نرتقي بالتراث السعودي إلى تجربة طعام راقية، حيث تلتقي الأصالة والتقاليد بالأناقة العصرية.',
       highlights: ['وصفات أصيلة', 'مكونات طازجة', 'ضيافة دافئة', 'تراث سعودي'],
-      ambienceTitle: 'الأجواء',
+      ambienceTitle: 'أجواؤنا',
       ambienceText: 'أجواء دافئة وأنيقة مصممة لاستقبال العائلة والأصدقاء وكرام الضيوف في رحلة طعام استثنائية.'
     },
     menu: {
@@ -409,7 +409,7 @@ export const translations = {
       subtitle: 'أخبرونا عن زيارتكم وسيتواصل معكم فريقنا قريباً لتأكيد التفاصيل.',
       name: 'الاسم الكامل',
       phone: 'رقم الجوال',
-      phoneHint: 'أدخل رقم جوال سعودي صحيح، مثال: 05XXXXXXXX أو 9665XXXXXXXX+',
+      phoneHint: 'أدخل رقم جوال سعودي صحيح، مثال: 05XXXXXXXX أو +9665XXXXXXXX',
       guests: 'عدد الضيوف',
       date: 'التاريخ',
       time: 'الوقت',
@@ -417,7 +417,7 @@ export const translations = {
       notesPlaceholder: 'حساسية طعام، مناسبة خاصة، تفضيل مكان الجلوس…',
       submit: 'إرسال الاستفسار',
       submitting: 'جارِ الإرسال…',
-      errorText: 'حدث خطأ أثناء إرسال طلبكم — يرجى المحاولة مرة أخرى، أو الاتصال بنا على 966555185657+.',
+      errorText: 'حدث خطأ أثناء إرسال طلبكم — يرجى المحاولة مرة أخرى، أو الاتصال بنا على +966 55 518 5657.',
       successTitle: 'شكراً لك، {name}!',
       successText: 'لقد استلمنا طلبكم وسنتواصل معكم قريباً لتأكيد طاولتكم.',
       close: 'إغلاق'

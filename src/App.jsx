@@ -14,6 +14,7 @@ import LoadingScreen from './components/LoadingScreen'
 import ReserveModal from './components/ReserveModal'
 import ScrollToTop from './components/ScrollToTop'
 import BackToTop from './components/BackToTop'
+import MapPreload from './components/MapPreload'
 import { startSmoothScroll, stopSmoothScroll } from './lib/smoothScroll'
 import './App.css'
 
@@ -51,13 +52,19 @@ function App() {
   }
 
   if (isLoading) {
-    return <LoadingScreen currentLang={currentLang} onFinish={() => setIsLoading(false)} />
+    return (
+      <>
+        <MapPreload />
+        <LoadingScreen currentLang={currentLang} onFinish={() => setIsLoading(false)} />
+      </>
+    )
   }
 
   return (
     <LanguageProvider value={{ currentLang, toggleLanguage }}>
       <BrowserRouter>
         <div className="app">
+          <MapPreload />
           <ScrollToTop />
           <Navbar onReserveClick={() => setIsReserveOpen(true)} />
           <main>

@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useLanguage } from '../i18n'
-import { translations, menuImages } from '../i18n/translations'
+import { translations } from '../i18n/translations'
 import ScrollStack, { ScrollStackItem } from './reactbits/ScrollStack'
-import ParallaxImage from './ParallaxImage'
+import { getLenis } from '../lib/smoothScroll'
+import patternBg from '../../assets/images/GuidlinePictures/Pattern.jpeg'
 
 const HIGHLIGHT_ICONS = [
   '/brand/icon-highlight-chefhat.png',
@@ -11,24 +12,52 @@ const HIGHLIGHT_ICONS = [
   '/brand/icon-highlight-cutlery.png'
 ]
 
+const CARDS_IN_AT = 0.55
+
 const About = () => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
   const visualRef = useRef(null)
-  const [flanksOpen, setFlanksOpen] = useState(false)
+  const [progress, setProgress] = useState(0)
 
+  // Continuous scroll progress (not a boolean) so the pattern image can
+  // expand and shift opacity smoothly as this section scrolls into view,
+  // rather than snapping. The highlight cards then slide in once progress
+  // crosses CARDS_IN_AT, so they visibly follow the image's expand instead
+  // of arriving at the same time as it.
   useEffect(() => {
     const el = visualRef.current
     if (!el) return
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setFlanksOpen(entry.isIntersecting),
-      { threshold: 0.4 }
-    )
+    const updateProgress = () => {
+      const rect = el.getBoundingClientRect()
+      const viewportH = window.innerHeight
+      const start = viewportH * 0.9
+      const end = viewportH * 0.35
+      const p = (start - rect.top) / (start - end)
+      setProgress(Math.min(1, Math.max(0, p)))
+    }
 
-    observer.observe(el)
-    return () => observer.disconnect()
+    const lenis = getLenis()
+    if (lenis) {
+      lenis.on('scroll', updateProgress)
+    } else {
+      window.addEventListener('scroll', updateProgress, { passive: true })
+    }
+    updateProgress()
+
+    return () => {
+      if (lenis) {
+        lenis.off('scroll', updateProgress)
+      } else {
+        window.removeEventListener('scroll', updateProgress)
+      }
+    }
   }, [])
+
+  const patternScale = 0.55 + progress * 0.45
+  const patternOverlayOpacity = 0.85 - progress * 0.35
+  const flanksOpen = progress > CARDS_IN_AT
 
   return (
     <section className="section section-about">
@@ -44,26 +73,29 @@ const About = () => {
           <p className="section-copy section-intro fade-in-up" style={{ animationDelay: '0.25s' }}>{t.story.intro}</p>
 
           <div ref={visualRef} className={`about-intro-visual fade-in-up ${flanksOpen ? 'is-open' : ''}`} style={{ animationDelay: '0.3s' }}>
-            <div className="about-intro-flank left">
-              {t.story.highlights.slice(0, 2).map((item, i) => (
-                <div key={item} className="highlight-card">
-                  <img src={HIGHLIGHT_ICONS[i]} alt="" />
-                  <span>{item}</span>
-                </div>
-              ))}
+            <div className="about-intro-pattern">
+              <img src={patternBg} alt="" style={{ transform: `scale(${patternScale})` }} />
+              <span className="about-intro-pattern-vignette" style={{ opacity: patternOverlayOpacity }} aria-hidden="true" />
             </div>
 
-            <div className="about-intro-photo">
-              <img src={menuImages.hejaziMandi} alt="Signature Hejazi Mandi at SAMDAN" />
-            </div>
+            <div className="about-intro-visual-content">
+              <div className="about-intro-flank left">
+                {t.story.highlights.slice(0, 2).map((item, i) => (
+                  <div key={item} className="highlight-card">
+                    <img src={HIGHLIGHT_ICONS[i]} alt="" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
 
-            <div className="about-intro-flank right">
-              {t.story.highlights.slice(2, 4).map((item, i) => (
-                <div key={item} className="highlight-card">
-                  <img src={HIGHLIGHT_ICONS[i + 2]} alt="" />
-                  <span>{item}</span>
-                </div>
-              ))}
+              <div className="about-intro-flank right">
+                {t.story.highlights.slice(2, 4).map((item, i) => (
+                  <div key={item} className="highlight-card">
+                    <img src={HIGHLIGHT_ICONS[i + 2]} alt="" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -93,20 +125,13 @@ const About = () => {
             <h3>{t.story.qualityTitle}</h3>
             <p>{t.story.qualityText}</p>
           </ScrollStackItem>
-        </ScrollStack>
-      </div>
 
-      <div className="container">
-        <div className="about-block">
-          <div className="about-block-image">
-            <ParallaxImage src="/brand/photo-ambience-interior.png" alt="Traditional Najdi architecture" />
-          </div>
-          <div className="about-block-copy">
-            <img className="info-card-icon" src="/brand/icon-table.png" alt="" />
+          <ScrollStackItem itemClassName="story-card-panel">
+            <img className="story-card-icon" src="/brand/icon-table.png" alt="" />
             <h3>{t.story.ambienceTitle}</h3>
             <p>{t.story.ambienceText}</p>
-          </div>
-        </div>
+          </ScrollStackItem>
+        </ScrollStack>
       </div>
 
     </section>

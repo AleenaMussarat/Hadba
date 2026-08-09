@@ -1,11 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useLanguage } from '../i18n'
 import { translations, CAT, CATEGORY_ORDER } from '../i18n/translations'
 import { fetchMenuItems } from '../services/strapi'
 import RiyalSymbol from './RiyalSymbol'
 import FeaturedMenu from './FeaturedMenu'
+import { getLenis } from '../lib/smoothScroll'
+import curatedMenuBg from '../../assets/images/GuidlinePictures/laptop.jpeg'
 
 const PAGE_SIZE = 20
+const MOBILE_QUERY = '(max-width: 768px)'
 
 // Client-side filter + slice used whenever Strapi is unavailable — mirrors
 // the server-side filters[category] + pagination query so both paths agree.
@@ -20,6 +23,20 @@ const paginateStatic = (allItems, categoryName, page) => {
   }
 }
 
+// The site drives all scrolling through a shared Lenis instance — calling
+// the browser's native scrollIntoView fights it instead of landing where
+// asked, the same reason BackToTop.jsx goes through Lenis too.
+const scrollToMenuGrid = () => {
+  const el = document.getElementById('menu-items-grid')
+  if (!el) return
+  const lenis = getLenis()
+  if (lenis) {
+    lenis.scrollTo(el, { offset: -20 })
+  } else {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
+
 const Menu = () => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
@@ -27,10 +44,40 @@ const Menu = () => {
   const [page, setPage] = useState(1)
   const [items, setItems] = useState([])
   const [pageCount, setPageCount] = useState(1)
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(MOBILE_QUERY).matches
+  )
+  const itemRefs = useRef([])
 
   useEffect(() => {
     setPage(1)
   }, [activeCategory, currentLang])
+
+  useEffect(() => {
+    const mql = window.matchMedia(MOBILE_QUERY)
+    const onChange = (e) => setIsMobile(e.matches)
+    mql.addEventListener('change', onChange)
+    return () => mql.removeEventListener('change', onChange)
+  }, [])
+
+  useEffect(() => {
+    if (!isMobile) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+    )
+
+    itemRefs.current.forEach((el) => el && observer.observe(el))
+    return () => observer.disconnect()
+  }, [isMobile, items])
 
   useEffect(() => {
     let active = true
@@ -82,79 +129,84 @@ const Menu = () => {
 
       <FeaturedMenu scrollTargetId="menu-items-grid" minimal />
 
-      <div className="container">
-        <div id="menu-items-grid" className="menu-separator">
-          <img className="menu-separator-icon" src="/brand/icon-plate.png" alt="" />
-          <h3 className="menu-separator-heading">{t.menu.fullMenuHeading}</h3>
-          <p className="menu-separator-subtitle">{t.menu.fullMenuSubtitle}</p>
-        </div>
+      <div className="container menu-curated-section">
+        <div className="menu-curated-bg" style={{ backgroundImage: `url(${curatedMenuBg})` }} aria-hidden="true" />
 
-        <div className="menu-filters">
-          {filters.map((filter) => (
-            <button
-              key={filter.key || 'all'}
-              type="button"
-              className={`menu-filter-pill ${activeCategory === filter.key ? 'active' : ''}`}
-              onClick={() => setActiveCategory(filter.key)}
-            >
-              {filter.label}
-            </button>
-          ))}
-        </div>
+        <div className="menu-curated-content">
+          <div id="menu-items-grid" className="menu-separator">
+            <img className="menu-separator-icon" src="/brand/icon-plate.png" alt="" />
+            <h3 className="menu-separator-heading">{t.menu.fullMenuHeading}</h3>
+            <p className="menu-separator-subtitle">{t.menu.fullMenuSubtitle}</p>
+          </div>
 
-        <div className="menu-items">
-          {items.map((item, index) => (
-            <article
-              key={`${item.name}-${index}`}
-              className={`menu-item fade-in-up ${item.featured ? 'featured' : ''}`}
-              style={{ animationDelay: `${(index % 8) * 0.08}s` }}
-            >
-              <div className="menu-item-media">
-                <img src={item.image} alt={item.name} loading="lazy" />
-                {item.featured ? (
-                  <span className="menu-badge">
-                    <img src="/brand/icon-cloche-steam.png" alt="" />
-                    {t.menu.recommended}
-                  </span>
-                ) : null}
-              </div>
-              <div className="menu-item-top">
-                <span className="menu-item-category">{item.category}</span>
-                <div className="menu-item-title-row">
-                  <h4>{item.name}</h4>
-                  <span className="menu-price"><RiyalSymbol />{item.price}</span>
+          <div className="menu-filters">
+            {filters.map((filter) => (
+              <button
+                key={filter.key || 'all'}
+                type="button"
+                className={`menu-filter-pill ${activeCategory === filter.key ? 'active' : ''}`}
+                onClick={() => setActiveCategory(filter.key)}
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="menu-items">
+            {items.map((item, index) => (
+              <article
+                key={`${item.name}-${index}`}
+                ref={(el) => (itemRefs.current[index] = el)}
+                className={`menu-item ${isMobile ? 'menu-item-reveal' : 'fade-in-up'} ${item.featured ? 'featured' : ''}`}
+                style={isMobile ? undefined : { animationDelay: `${(index % 8) * 0.08}s` }}
+              >
+                <div className="menu-item-media">
+                  <img src={item.image} alt={item.name} loading="lazy" />
+                  {item.featured ? (
+                    <span className="menu-badge">
+                      <img src="/brand/icon-cloche-steam.png" alt="" />
+                      {t.menu.recommended}
+                    </span>
+                  ) : null}
                 </div>
-                <p>{item.description}</p>
-                {item.calories ? <span className="menu-item-calories">{item.calories} {t.menu.caloriesLabel}</span> : null}
-              </div>
-            </article>
-          ))}
-        </div>
+                <div className="menu-item-top">
+                  <span className="menu-item-category">{item.category}</span>
+                  <div className="menu-item-title-row">
+                    <h4>{item.name}</h4>
+                    <span className="menu-price"><RiyalSymbol />{item.price}</span>
+                  </div>
+                  <p>{item.description}</p>
+                  {item.calories ? <span className="menu-item-calories">{item.calories} {t.menu.caloriesLabel}</span> : null}
+                </div>
+              </article>
+            ))}
+          </div>
 
-        <div className="menu-pagination">
-          <button
-            type="button"
-            className="menu-page-btn"
-            onClick={() => {
-              setPage((p) => Math.max(p - 1, 1))
-              window.scrollTo({ top: 0, behavior: 'smooth' })
-            }}
-            disabled={page <= 1}
-          >
-            {t.menu.prev}
-          </button>
-          <span className="menu-page-label">{pageLabel}</span>
-          <button
-            type="button"
-            className="menu-page-btn"
-            onClick={() => {
-              setPage((p) => Math.min(p + 1, pageCount))
-              window.scrollTo({ top: 0, behavior: 'smooth' })
-            }}
-            disabled={page >= pageCount}
-          >
-            {t.menu.next}
-          </button>
+          <div className="menu-pagination">
+            <button
+              type="button"
+              className="menu-page-btn"
+              onClick={() => {
+                setPage((p) => Math.max(p - 1, 1))
+                scrollToMenuGrid()
+              }}
+              disabled={page <= 1}
+            >
+              {t.menu.prev}
+            </button>
+            <span className="menu-page-label">{pageLabel}</span>
+            <button
+              type="button"
+              className="menu-page-btn"
+              onClick={() => {
+                setPage((p) => Math.min(p + 1, pageCount))
+                scrollToMenuGrid()
+              }}
+              disabled={page >= pageCount}
+            >
+              {t.menu.next}
+            </button>
+          </div>
         </div>
       </div>
     </section>

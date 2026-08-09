@@ -51,14 +51,12 @@ html[dir="rtl"] body {
    would silently fall back to the browser's generic serif for all of these
    instead of Noto Kufi Arabic. */
 html[dir="rtl"] .section-title,
-html[dir="rtl"] .logo-sub,
 html[dir="rtl"] .hero-copy h1,
 html[dir="rtl"] .hero-promo-eyebrow,
 html[dir="rtl"] .dish-card-content h3,
 html[dir="rtl"] .menu-separator-heading,
 html[dir="rtl"] .menu-expand-label span,
 html[dir="rtl"] .menu-expand-name,
-html[dir="rtl"] .about-ambience-note h4,
 html[dir="rtl"] .menu-item-top h4,
 html[dir="rtl"] .branch-card-body h3,
 html[dir="rtl"] .not-found-code,
@@ -321,16 +319,6 @@ html {
   height: 46px;
 }
 
-.logo-sub {
-  font-family: 'Playfair Display', serif;
-  font-size: 0.68rem;
-  font-weight: 600;
-  font-style: italic;
-  color: var(--color-accent);
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-}
-
 /* ===== NAV LINKS ===== */
 .nav-links {
   display: flex;
@@ -581,10 +569,11 @@ html[dir="rtl"] .btn-reserve {
   height: 100vh;
   background: var(--bg-elevated);
   z-index: 1001;
-  padding: 2rem 1.5rem;
+  padding: 1.5rem;
   transition: right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
   box-shadow: -10px 0 40px var(--shadow-color);
 }
 
@@ -603,11 +592,12 @@ html[dir="rtl"] .mobile-menu.active {
 }
 
 .mobile-menu-header {
+  position: relative;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 2.5rem;
-  padding-bottom: 1.5rem;
+  margin-bottom: 1.8rem;
+  padding-bottom: 1.2rem;
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -616,18 +606,22 @@ html[dir="rtl"] .mobile-menu.active {
 }
 
 .mobile-menu-close {
+  position: absolute;
+  inset-inline-end: 0;
+  top: 50%;
+  transform: translateY(-50%);
   background: none;
   border: none;
   font-size: 1.8rem;
   color: var(--text-primary);
   cursor: pointer;
   padding: 8px;
-  transition: all 0.3s;
+  transition: color 0.3s, transform 0.3s;
 }
 
 .mobile-menu-close:hover {
   color: var(--color-accent);
-  transform: rotate(90deg);
+  transform: translateY(-50%) rotate(90deg);
 }
 
 .mobile-nav-links {
@@ -635,7 +629,7 @@ html[dir="rtl"] .mobile-menu.active {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.2rem;
 }
 
 .mobile-nav-links li {
@@ -651,11 +645,16 @@ html[dir="rtl"] .mobile-menu.active {
   }
 }
 
+/* Three columns (number | text | matching spacer) so the page name centers
+   in the row while the number stays pinned to the left — a plain flex row
+   with justify-content: center would center the number+text pair together,
+   dragging the number away from the left edge. */
 .mobile-nav-link {
-  display: flex;
+  display: grid;
+  grid-template-columns: 30px 1fr 30px;
   align-items: center;
-  gap: 1.5rem;
-  padding: 1rem 1.5rem;
+  gap: 1rem;
+  padding: 0.8rem 1.5rem;
   text-decoration: none;
   color: var(--text-secondary);
   font-family: 'Montserrat', sans-serif;
@@ -671,12 +670,16 @@ html[dir="rtl"] .mobile-menu.active {
   color: var(--text-primary);
 }
 
+.mobile-nav-link-text {
+  text-align: center;
+}
+
 .mobile-nav-link-number {
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--color-accent);
   opacity: 0.6;
-  min-width: 30px;
+  text-align: start;
 }
 
 .mobile-nav-link.active .mobile-nav-link-number {
@@ -685,36 +688,27 @@ html[dir="rtl"] .mobile-menu.active {
 
 .mobile-menu-footer {
   margin-top: auto;
-  padding-top: 2rem;
+  padding-top: 1.5rem;
   border-top: 1px solid var(--border-color);
 }
 
 .mobile-reserve {
-  width: 100%;
+  width: auto;
   justify-content: center;
-  padding: 14px;
-  font-size: 1rem;
+  margin: 0 auto;
+  padding: 14px 32px;
+  font-size: 1.15rem;
 }
 
+/* Reuses .social-icons (same badge look as the footer's social row) for the
+   icons themselves — this wrapper only adds the centering/wrap/spacing
+   specific to sitting inside the narrower mobile menu drawer. */
 .mobile-social-icons {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-}
-
-.mobile-social-icons a {
-  font-size: 1.8rem;
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: all 0.3s;
-  opacity: 0.7;
-}
-
-.mobile-social-icons a:hover {
-  color: var(--color-accent);
-  opacity: 1;
-  transform: translateY(-3px);
+  gap: 0.7rem;
+  margin-top: 1.2rem;
 }
 
 /* Navbar responsive */
@@ -728,12 +722,15 @@ html[dir="rtl"] .mobile-menu.active {
     font-size: 0.85rem;
   }
 
-  .btn-reserve span {
+  /* Scoped to the compact top bar only — the same button inside the
+     expanded mobile menu (.mobile-reserve) keeps its own icon+label sizing
+     below, it isn't squeezed for space the way the top bar is. */
+  .nav-actions .btn-reserve span {
     display: none;
   }
 
-  .btn-reserve {
-    padding: 10px 14px;
+  .nav-actions .btn-reserve {
+    padding: 10px 12px;
   }
 }
 
@@ -768,17 +765,8 @@ html[dir="rtl"] .mobile-menu.active {
     height: 34px;
   }
 
-  .logo-sub {
-    font-size: 0.55rem;
-  }
-
-  .btn-reserve {
-    padding: 8px 12px;
-    font-size: 0.75rem;
-  }
-
-  .btn-reserve span {
-    display: none;
+  .nav-actions .btn-reserve {
+    padding: 9px 11px;
   }
 
   .lang-toggle button {
@@ -1188,6 +1176,11 @@ html[dir="rtl"] .mobile-menu.active {
     order: -1;
   }
 
+  .hero-divider {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .hero-subtitle {
     margin-left: auto;
     margin-right: auto;
@@ -1231,6 +1224,39 @@ html[dir="rtl"] .mobile-menu.active {
 .featured-menu-section.is-minimal {
   background: none;
   padding: 0 0 3rem;
+}
+
+/* Static backdrop behind the whole curated-menu block (separator through
+   pagination) — a plain still image, not scroll-linked like the About page
+   treatments, just a faint textured background. */
+.menu-curated-section {
+  position: relative;
+  /* Padding lives here rather than on .section-menu so the trailing gap
+     before the footer is part of this element's own box — the background
+     below is height:100% of THIS element, so it stretches to cover that
+     padding too instead of leaving a plain empty strip above the footer. */
+  padding-bottom: 3rem;
+}
+
+/* Full-bleed breakout, same technique as .about-intro-pattern — .container
+   caps this section at 1200px, so inset:0 alone would only span that width
+   rather than the full viewport. */
+.menu-curated-bg {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100vw;
+  height: 100%;
+  transform: translateX(-50%);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.menu-curated-content {
+  position: relative;
+  z-index: 1;
 }
 
 .menu-separator {
@@ -1471,19 +1497,23 @@ html[dir="rtl"] .btn-view-menu-arrow {
 }
 
 @media (max-width: 768px) {
+  /* A fixed total height (the active panel grows, the rest collapse, but
+     the sum is constant) is what lets the gallery's own on-screen position
+     safely drive the scroll-expand effect — see the comment above the
+     scroll handler in FeaturedMenu.jsx for why that matters. */
   .menu-expand-gallery {
     flex-direction: column;
-    height: auto;
+    height: min(65vh, 520px);
   }
 
   .menu-expand-panel {
-    flex: none;
+    flex: 0 0 60px;
     width: 100%;
-    height: 90px;
+    height: auto;
   }
 
   .menu-expand-panel.is-active {
-    height: 340px;
+    flex: 1 1 auto;
   }
 
   .menu-expand-label {
@@ -1507,6 +1537,15 @@ html[dir="rtl"] .btn-view-menu-arrow {
   padding-top: calc(var(--navbar-height) + 3rem);
 }
 
+@media (max-width: 768px) {
+  /* .section's base 8rem bottom padding reads as too tight after the card
+     stack on a narrow screen — give it more breathing room before the
+     footer starts. */
+  .section-about {
+    padding-bottom: 12rem;
+  }
+}
+
 .about-intro {
   max-width: 720px;
   margin: 0 auto;
@@ -1521,61 +1560,124 @@ html[dir="rtl"] .btn-view-menu-arrow {
 }
 
 .about-intro-visual {
+  position: relative;
+  height: min(78vh, 640px);
+  margin: 2.2rem 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 4rem;
-  margin: 2.2rem auto;
 }
 
-.about-intro-photo {
-  flex: 0 0 auto;
-  width: 600px;
-  aspect-ratio: 16 / 10;
-  border-radius: var(--radius-box);
+/* Breaks out of .container to full viewport width regardless of how deeply
+   nested it is — the standard full-bleed trick (center via left:50%, size
+   via 100vw, pull back by half that width). The image itself scales up in
+   place (transform: scale, driven from JS scroll progress) as the section
+   enters view, with a dark overlay fading in tandem — see the
+   progress/patternScale/patternOverlayOpacity comment in About.jsx. Using
+   transform instead of animating width/height means the box's own
+   footprint never changes, so this can't feed back into the very
+   scroll-position measurement that drives it. */
+.about-intro-pattern {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100vw;
+  height: 100%;
+  transform: translateX(-50%);
   overflow: hidden;
-  box-shadow: 0 20px 50px var(--shadow-color);
+  z-index: 0;
 }
 
-.about-intro-photo img {
+.about-intro-pattern img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 0.7;
+  transition: transform 0.2s linear;
 }
 
-/* The flanking boxes start tucked behind the photo (scaled down, faded,
-   pushed toward it horizontally) and slide out to their resting position
-   once scrolled into view; scrolling back out retreats them again. */
+.about-intro-pattern-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%, transparent 25%, rgba(10, 8, 6, 0.6) 100%),
+    linear-gradient(180deg, rgba(10, 8, 6, 0.1) 0%, rgba(10, 8, 6, 0.5) 100%);
+}
+
+/* Sits above the full-bleed pattern image but stays within the normal
+   container width, so the highlight cards read as floating on top of the
+   banner rather than stretching edge-to-edge with it. */
+.about-intro-visual-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40rem;
+}
+
+/* The flanking boxes start tucked behind the pattern image (scaled down,
+   faded, pulled toward the center) and slide out to their resting position
+   once the image has substantially expanded (see CARDS_IN_AT in
+   About.jsx) — scrolling back out retreats them again. */
 .about-intro-flank {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 8rem;
   flex-shrink: 0;
-  z-index: 0;
   opacity: 0;
   transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.4s ease;
+}
+
+/* Bigger, higher-contrast, and given an accent border so these read as the
+   focal content sitting on top of the banner rather than a subtle aside
+   floating over it. */
+/* A fixed height (not just width) — different label lengths wrap to a
+   different number of lines ("Warm Hospitality" vs. "Saudi Heritage"),
+   which otherwise makes the four cards visibly different heights. Centering
+   content inside the fixed box keeps shorter one-line labels looking
+   intentional rather than just top-aligned in empty space. */
+.about-intro-flank .highlight-card {
+  width: 152px;
+  height: 150px;
+  justify-content: center;
+  padding: 1.4rem 1.1rem;
+  gap: 0.8rem;
+  font-size: 0.85rem;
+  border: 1px solid rgba(246, 157, 28, 0.35);
+  background: rgba(18, 14, 12, 0.82);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+}
+
+.about-intro-flank .highlight-card:hover {
+  border-color: var(--color-accent);
+  background: rgba(18, 14, 12, 0.92);
+}
+
+.about-intro-flank .highlight-card img {
+  width: 40px;
+  height: 40px;
 }
 
 .about-intro-flank.right {
   transition-delay: 0.2s;
 }
 
-.about-intro-flank .highlight-card {
-  width: 108px;
-  padding: 0.7rem 0.5rem;
-}
-
 .about-intro-flank.left {
-  transform: translateX(70%) scale(0.55);
+  transform: translateX(60%) scale(0.55);
 }
 
 .about-intro-flank.right {
-  transform: translateX(-70%) scale(0.55);
+  transform: translateX(-60%) scale(0.55);
 }
 
 .about-intro-visual.is-open .about-intro-flank {
   opacity: 1;
-  z-index: 2;
 }
 
 .about-intro-visual.is-open .about-intro-flank.left,
@@ -1583,17 +1685,17 @@ html[dir="rtl"] .btn-view-menu-arrow {
   transform: translateX(0) scale(1);
 }
 
-@media (max-width: 992px) {
-  .about-intro-photo {
-    width: 100%;
-    max-width: 460px;
-  }
-}
-
 @media (max-width: 700px) {
   .about-intro-visual {
+    height: auto;
+    min-height: 320px;
+  }
+
+  .about-intro-visual-content {
     flex-wrap: wrap;
-    gap: 1.5rem;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1.5rem;
   }
 
   .about-intro-flank {
@@ -1677,14 +1779,31 @@ html[dir="rtl"] .btn-view-menu-arrow {
 
 .story-scroll-stack .story-card-panel {
   height: auto;
-  min-height: 0;
+  /* Cards have different amounts of copy, so without a shared floor the
+     shorter "Our Promise" card scales/stacks on top while the taller "Our
+     Kitchen" card behind it still pokes out past its bottom edge. A common
+     min-height (with content centered inside it) keeps every card the same
+     footprint so the one on top fully covers the one behind it. "Our
+     Kitchen" has an extra chef-name/role line the other two don't, so the
+     floor needs enough headroom to cover its actual rendered height, not
+     just the shorter cards'. */
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   max-width: 460px;
   margin-left: auto;
   margin-right: auto;
   padding: 1.8rem;
   border-radius: var(--radius-box);
   border: 1px solid var(--border-color);
-  background: var(--bg-elevated);
+  /* Dark gradient layered over the photo in one background so the existing
+     light-colored text stays legible without a separate overlay element. */
+  background-image:
+    linear-gradient(rgba(10, 8, 6, 0.84), rgba(10, 8, 6, 0.88)),
+    url('../assets/images/GuidlinePictures/costume.jpeg');
+  background-size: cover;
+  background-position: center;
   box-shadow: 0 20px 45px var(--shadow-color);
   text-align: center;
 }
@@ -1722,22 +1841,6 @@ html[dir="rtl"] .btn-view-menu-arrow {
   margin-bottom: 4rem;
 }
 
-.about-block {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5rem;
-  align-items: center;
-  margin-bottom: 5rem;
-}
-
-.about-block-reverse {
-  direction: rtl;
-}
-
-.about-block-reverse > * {
-  direction: ltr;
-}
-
 /* Shared by ParallaxImage: JS sets --parallax-y on .parallax-image every
    scroll frame, deliberately with no transition (see component comment).
    The pan layer is oversized so the offset never reveals an edge; a hover
@@ -1759,69 +1862,6 @@ html[dir="rtl"] .btn-view-menu-arrow {
   object-fit: cover;
   display: block;
   transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.about-block-image {
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-  border-radius: var(--radius-box);
-}
-
-.about-block:hover .about-block-image img {
-  transform: scale(1.1);
-}
-
-.about-block-copy {
-  border-inline-start: 3px solid var(--color-primary);
-  padding-inline-start: 1.8rem;
-  transition: border-color 0.35s ease, transform 0.35s ease;
-}
-
-.about-block:hover .about-block-copy {
-  border-inline-start-color: var(--color-accent);
-  transform: translateX(6px);
-}
-
-.about-block-copy .info-card-icon {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 1rem;
-}
-
-.about-block-copy h3 {
-  color: var(--color-accent);
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 0.9rem;
-}
-
-.about-block-copy p {
-  color: var(--text-secondary);
-  font-size: 1.02rem;
-  line-height: 1.75;
-}
-
-.about-ambience-note {
-  margin-top: 1.6rem;
-  padding-top: 1.6rem;
-  border-top: 1px solid var(--border-color);
-}
-
-.about-ambience-note h4 {
-  font-family: 'Playfair Display', serif;
-  color: var(--text-primary);
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-}
-
-@media (max-width: 900px) {
-  .about-block,
-  .about-block-reverse {
-    grid-template-columns: 1fr;
-    direction: ltr;
-    gap: 2rem;
-  }
 }
 
 .about-grid {
@@ -2136,6 +2176,22 @@ html[dir="rtl"] .menu-page-btn {
   border-color: var(--color-accent);
 }
 
+/* Mobile-only scroll reveal — the desktop grid shows most items above the
+   fold anyway, but a long single-column mobile list means most cards would
+   already be fully faded in (via the immediate .fade-in-up mount animation)
+   long before the user ever scrolls down to see them. This class is only
+   applied on mobile and toggles on via IntersectionObserver instead. */
+.menu-item-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.menu-item-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .menu-item-media {
   position: relative;
   aspect-ratio: 4 / 3;
@@ -2260,6 +2316,7 @@ html[dir="rtl"] .menu-page-btn {
 
   .menu-filters {
     gap: 1rem;
+    justify-content: center;
   }
 
   .menu-filter-pill {
@@ -2285,6 +2342,7 @@ html[dir="rtl"] .menu-page-btn {
 .contact-panel {
   position: relative;
   z-index: 1;
+  min-width: 0;
 }
 
 .contact-details {
@@ -2321,6 +2379,8 @@ html[dir="rtl"] .menu-page-btn {
 .contact-item span:not(.contact-item-icon) {
   font-size: 0.95rem;
   font-weight: 500;
+  flex: 1;
+  min-width: 0;
 }
 
 .contact-item:hover {
@@ -2337,6 +2397,7 @@ html[dir="rtl"] .menu-page-btn {
 
 .social-links {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
 }
 
@@ -2366,6 +2427,7 @@ html[dir="rtl"] .menu-page-btn {
   position: relative;
   z-index: 1;
   overflow: hidden;
+  min-width: 0;
   height: 100%;
   min-height: 440px;
 }
@@ -2383,6 +2445,22 @@ html[dir="rtl"] .menu-page-btn {
   .contact-grid {
     grid-template-columns: 1fr;
     gap: 2.5rem;
+  }
+
+  .contact-panel {
+    text-align: center;
+  }
+
+  .contact-item {
+    justify-content: center;
+  }
+
+  .contact-actions {
+    justify-content: center;
+  }
+
+  .social-links {
+    justify-content: center;
   }
 
   .map-card {
@@ -2682,7 +2760,7 @@ html[dir="rtl"] .menu-page-btn {
 
 .footer-col-contact p {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.7rem;
 }
 
@@ -2773,6 +2851,29 @@ html[dir="rtl"] .menu-page-btn {
     align-items: center;
   }
 
+  .footer-contact-rows {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .footer-contact-rows p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    text-align: center;
+  }
+
+  /* The address is long enough to wrap to two lines — centering its icon
+     vertically pulls it away from the text it's labeling. Aligning to the
+     top instead keeps it level with the first line, where it reads
+     correctly regardless of how many lines the address wraps to. */
+  .footer-contact-rows p:first-child {
+    align-items: flex-start;
+  }
+
   .social-icons {
     justify-content: center;
   }
@@ -2819,7 +2920,7 @@ html[dir="rtl"] .menu-page-btn {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.16;
+  opacity: 1;
 }
 
 .reserve-modal-bg::after {

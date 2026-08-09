@@ -10,26 +10,33 @@ const HEX_IMAGES = [
   menuImages.fattoush
 ]
 
-const COLS = 3
-const ROWS = 2
+const TARGET_HEX_W = 280
+const MIN_COLS = 2
+const MIN_ROWS = 2
 const MIN_DISPLAY_MS = 2400
 const EXIT_MS = 900
 
-// Exactly one large hexagon per image (COLS * ROWS === HEX_IMAGES.length) — no repeats.
+// Column count adapts to viewport width (targeting a fixed tile size)
+// instead of a hardcoded 3 columns — a fixed count sized for a phone-width
+// screen produced enormous hexagons once stretched across a wide desktop
+// viewport. Row count adapts to height the same way, for the same reason.
+// Images repeat via modulo once rows/cols grow past HEX_IMAGES.length.
 const buildHexGrid = () => {
   const width = typeof window !== 'undefined' ? window.innerWidth : 1440
   const height = typeof window !== 'undefined' ? window.innerHeight : 900
-  const hexW = width / (COLS - 0.4)
+  const cols = Math.max(MIN_COLS, Math.round(width / TARGET_HEX_W))
+  const hexW = width / (cols - 0.4)
   const hexH = hexW * 1.1547
   const rowSpacing = hexH * 0.78
-  const gridHeight = rowSpacing * (ROWS - 1) + hexH
+  const rows = Math.max(MIN_ROWS, Math.ceil(height / rowSpacing) + 1)
+  const gridHeight = rowSpacing * (rows - 1) + hexH
   const startY = (height - gridHeight) / 2
 
   const cells = []
   let imgIndex = 0
-  for (let r = 0; r < ROWS; r++) {
+  for (let r = 0; r < rows; r++) {
     const offsetX = r % 2 === 0 ? 0 : hexW / 2
-    for (let c = 0; c < COLS; c++) {
+    for (let c = 0; c < cols; c++) {
       const x = c * hexW + offsetX - hexW / 2
       const y = startY + r * rowSpacing
       cells.push({ x, y, w: hexW, h: hexH, image: HEX_IMAGES[imgIndex % HEX_IMAGES.length] })

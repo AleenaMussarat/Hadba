@@ -3,6 +3,7 @@ import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
 import { submitInquiry } from '../services/strapi'
 import { FaXmark, FaCircleCheck, FaTriangleExclamation } from 'react-icons/fa6'
+import reserveModalBg from '../../assets/images/GuidlinePictures/businesscards.jpeg'
 
 const emptyForm = { name: '', phone: '', guests: 2, date: '', time: '', notes: '' }
 
@@ -71,7 +72,7 @@ const ReserveModal = ({ isOpen, onClose }) => {
     <div className="reserve-overlay" onClick={onClose}>
       <div className="reserve-modal" onClick={(e) => e.stopPropagation()}>
         <div className="reserve-modal-bg" aria-hidden="true">
-          <img src="/brand/photo-palm-sunset.png" alt="" />
+          <img src={reserveModalBg} alt="" />
         </div>
 
         <div className="reserve-modal-content">

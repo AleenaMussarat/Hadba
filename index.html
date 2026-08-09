@@ -5,6 +5,12 @@
     <link rel="icon" type="image/png" href="/brand/icon-knife-fork.png" />
     <link rel="apple-touch-icon" href="/brand/icon-knife-fork.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Warms up the connection to Google's map embed domains ahead of time,
+         so the Contact page's iframe doesn't pay the DNS/TLS handshake cost
+         only once it's actually requested. -->
+    <link rel="preconnect" href="https://www.google.com" />
+    <link rel="preconnect" href="https://maps.google.com" />
+    <link rel="preconnect" href="https://maps.gstatic.com" crossorigin />
     <title>SAMDAN · Saudi Heritage Dining</title>
   </head>
   <body>

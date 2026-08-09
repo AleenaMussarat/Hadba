@@ -115,7 +115,6 @@ const Navbar = ({ onReserveClick }) => {
         <div className="mobile-menu-header">
           <Link className="logo" to="/" onClick={() => setIsMobileMenuOpen(false)}>
             <img className="logo-mark" src="/brand/logo-red.png" alt="SAMDAN" />
-            <span className="logo-sub">Saudi Heritage Dining</span>
           </Link>
           <button className="mobile-menu-close" onClick={() => setIsMobileMenuOpen(false)}>
             <FaXmark />
@@ -144,7 +143,7 @@ const Navbar = ({ onReserveClick }) => {
             <FaCalendarCheck className="btn-icon" />
             <span>{t.nav.reserve}</span>
           </button>
-          <div className="mobile-social-icons">
+          <div className="mobile-social-icons social-icons">
             {socialLinks.map(({ key, url, label, Icon }) => (
               <a key={key} href={url} target="_blank" rel="noreferrer" aria-label={label}><Icon /></a>
             ))}
