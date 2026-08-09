@@ -2552,6 +2552,17 @@ html[dir="rtl"] .menu-page-btn {
   width: fit-content;
 }
 
+@media (max-width: 768px) {
+  /* .btn is inline-flex (inline-level), so margin:auto alone can't center
+     it — switching to a block-level flex here (still sized to its content
+     via width:fit-content) is what lets auto margins actually center it. */
+  .branch-directions {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 /* ===== GALLERY ===== */
 .section-gallery {
   padding: calc(var(--navbar-height) + 3rem) 0 6rem;
