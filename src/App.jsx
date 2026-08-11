@@ -22,7 +22,7 @@ import './App.css'
 const LANG_STORAGE_KEY = 'samdan-lang'
 
 function App() {
-  const [currentLang, setCurrentLang] = useState(() => localStorage.getItem(LANG_STORAGE_KEY) || 'en')
+  const [currentLang, setCurrentLang] = useState(() => localStorage.getItem(LANG_STORAGE_KEY) || 'ar')
   const [isLoading, setIsLoading] = useState(true)
   const [isReserveOpen, setIsReserveOpen] = useState(false)
 
