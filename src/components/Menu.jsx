@@ -5,7 +5,6 @@ import { fetchMenuItems } from '../services/strapi'
 import RiyalSymbol from './RiyalSymbol'
 import FeaturedMenu from './FeaturedMenu'
 import { getLenis } from '../lib/smoothScroll'
-import curatedMenuBg from '../../assets/images/GuidlinePictures/laptop.jpeg'
 
 const PAGE_SIZE = 20
 const MOBILE_QUERY = '(max-width: 768px)'
@@ -130,8 +129,6 @@ const Menu = () => {
       <FeaturedMenu scrollTargetId="menu-items-grid" minimal />
 
       <div className="container menu-curated-section">
-        <div className="menu-curated-bg" style={{ backgroundImage: `url(${curatedMenuBg})` }} aria-hidden="true" />
-
         <div className="menu-curated-content">
           <div id="menu-items-grid" className="menu-separator">
             <img className="menu-separator-icon" src="/brand/icon-plate.png" alt="" />
@@ -173,7 +170,7 @@ const Menu = () => {
                   <span className="menu-item-category">{item.category}</span>
                   <div className="menu-item-title-row">
                     <h4>{item.name}</h4>
-                    <span className="menu-price"><RiyalSymbol />{item.price}</span>
+                    <span className="menu-price"><RiyalSymbol value={item.price} /></span>
                   </div>
                   <p>{item.description}</p>
                   {item.calories ? <span className="menu-item-calories">{item.calories} {t.menu.caloriesLabel}</span> : null}

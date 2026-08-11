@@ -73,7 +73,17 @@
       "PowerShell(gh --version 2>&1)",
       "WebFetch(domain:github.com)",
       "PowerShell(\\(Get-Content \"d:\\\\My Documents\\\\ZEDESIGNS PROJECTS\\\\Hadba\\\\Hadba\\\\src\\\\App.css\" | Measure-Object -Line\\).Lines)",
-      "PowerShell(npm run build)"
+      "PowerShell(npm run build)",
+      "PowerShell(Get-Command npm -ErrorAction SilentlyContinue)",
+      "PowerShell(npx --yes playwright --version 2>&1)",
+      "PowerShell($max=30; $i=0; do { Start-Sleep -Seconds 1; $i++; $r = try { Invoke-WebRequest -Uri http://localhost:5173 -UseBasicParsing -TimeoutSec 2 } catch { $null } } while \\(-not $r -and $i -lt $max\\); if \\($r\\) { \"UP: $\\($r.StatusCode\\)\" } else { \"TIMEOUT\" })",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri http://localhost:5173 -UseBasicParsing -TimeoutSec 3; \"UP $\\($r.StatusCode\\)\" } catch { \"DOWN: $\\($_.Exception.Message\\)\" })",
+      "PowerShell(Get-NetTCPConnection -LocalPort 5173 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue })",
+      "PowerShell(Copy-Item -Path \"assets\\\\images\\\\Logos\\\\SingleRed.png\" -Destination \"public\\\\brand\\\\pattern-side-red.png\" -Force)",
+      "PowerShell(Copy-Item -Path \"assets\\\\images\\\\Logos\\\\SingleYellow.png\" -Destination \"public\\\\brand\\\\pattern-side-orange.png\" -Force)",
+      "PowerShell(Copy-Item -Path \"assets\\\\images\\\\Logos\\\\PatternRed.png\" -Destination \"public\\\\brand\\\\pattern-brand-red.png\" -Force)",
+      "PowerShell(Copy-Item -Path \"assets\\\\images\\\\Logos\\\\PatternOrange.png\" -Destination \"public\\\\brand\\\\pattern-brand-orange.png\" -Force)",
+      "PowerShell(Copy-Item -Path \"assets\\\\images\\\\GuidlinePictures\\\\Najdi.jfif\" -Destination \"public\\\\brand\\\\photo-najdi-branch.jfif\" -Force)"
     ]
   }
 }

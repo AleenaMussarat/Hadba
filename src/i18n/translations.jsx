@@ -17,6 +17,7 @@ export const menuImages = {
 
 const diningRoom = '/brand/photo-riyadh-skyline.jpg'
 const najdiArchitecture = '/brand/photo-najdi-architecture.jpg'
+const najdiBranch = '/brand/photo-najdi-branch.jfif'
 const saduInterior = '/brand/photo-sadu-interior.jpg'
 const BRANCH_MAP_QUERY = 'Khalid bin Al Waleed Street, Qurtubah, Riyadh, Saudi Arabia'
 const branchMapsLink = `https://maps.google.com/?q=${encodeURIComponent(BRANCH_MAP_QUERY)}`
@@ -24,8 +25,8 @@ const branchMapsLink = `https://maps.google.com/?q=${encodeURIComponent(BRANCH_M
 // ---- Full real menu (from SAMDAN's printed menu) ----
 // Each row: [en name, ar name, en desc, ar desc, category key, price, calories|null, imageKey, featured?]
 export const CAT = {
+  traditional: { en: 'Main Dishes', ar: 'الأكلات الشعبية' },
   breakfast: { en: 'Breakfast', ar: 'الفطور' },
-  traditional: { en: 'Traditional Dishes', ar: 'الأكلات الشعبية' },
   madhghoot: { en: 'Madhghoot & Kabsa Barriya', ar: 'المضغوط' },
   goatHaneeth: { en: 'Goat Haneeth', ar: 'الأطباق الرئيسية' },
   lambHaneeth: { en: 'Lamb Haneeth', ar: 'الحاشي' },
@@ -233,7 +234,7 @@ export const translations = {
           location: 'Khalid bin Al Waleed Street, Qurtubah, Riyadh, Saudi Arabia',
           hours: 'Daily 12:00 PM – 12:00 AM',
           mapsLink: branchMapsLink,
-          image: najdiArchitecture
+          image: najdiBranch
         }
       ]
     },
@@ -370,7 +371,7 @@ export const translations = {
           location: 'شارع خالد بن الوليد، قرطبة، الرياض، المملكة العربية السعودية',
           hours: 'يومياً ١٢:٠٠ ظهراً - ١٢:٠٠ منتصف الليل',
           mapsLink: branchMapsLink,
-          image: najdiArchitecture
+          image: najdiBranch
         }
       ]
     },

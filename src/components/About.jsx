@@ -110,7 +110,7 @@ const About = () => {
           scaleEndPosition="45%"
           blurAmount={1}
         >
-          <ScrollStackItem itemClassName="story-card-panel">
+          <ScrollStackItem itemClassName="story-card-panel story-card-chef">
             <img className="story-card-icon" src="/brand/icon-knife-fork.png" alt="" />
             <h3>{t.story.chefTitle}</h3>
             <p className="info-card-name">
@@ -120,13 +120,13 @@ const About = () => {
             <p>{t.story.chefBio}</p>
           </ScrollStackItem>
 
-          <ScrollStackItem itemClassName="story-card-panel">
+          <ScrollStackItem itemClassName="story-card-panel story-card-promise">
             <img className="story-card-icon" src="/brand/icon-cloche.png" alt="" />
             <h3>{t.story.qualityTitle}</h3>
             <p>{t.story.qualityText}</p>
           </ScrollStackItem>
 
-          <ScrollStackItem itemClassName="story-card-panel">
+          <ScrollStackItem itemClassName="story-card-panel story-card-ambience">
             <img className="story-card-icon" src="/brand/icon-table.png" alt="" />
             <h3>{t.story.ambienceTitle}</h3>
             <p>{t.story.ambienceText}</p>

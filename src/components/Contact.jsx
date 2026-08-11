@@ -1,13 +1,15 @@
 import React from 'react'
 import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
-import { FaLocationDot, FaPhone, FaEnvelope, FaClock } from 'react-icons/fa6'
+import { useReservationForm } from '../lib/useReservationForm'
+import { FaLocationDot, FaPhone, FaEnvelope, FaClock, FaCircleCheck, FaTriangleExclamation } from 'react-icons/fa6'
 import { socialLinks } from '../data/social'
 import { MAP_QUERY, MAP_EMBED_SRC } from '../lib/mapConfig'
 
-const Contact = ({ onReserveClick }) => {
+const Contact = () => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
+  const { form, submitted, isSubmitting, submitError, handleChange, handleSubmit, reset } = useReservationForm()
 
   return (
     <section className="section contact-section">
@@ -31,7 +33,7 @@ const Contact = ({ onReserveClick }) => {
               </a>
               <a className="contact-item" href="tel:+966555185657">
                 <span className="contact-item-icon"><FaPhone /></span>
-                <span>{t.contact.phone}</span>
+                <span dir="ltr">{t.contact.phone}</span>
               </a>
               <a className="contact-item" href="mailto:reservations@samdan.sa">
                 <span className="contact-item-icon"><FaEnvelope /></span>
@@ -44,7 +46,6 @@ const Contact = ({ onReserveClick }) => {
             </div>
 
             <div className="contact-actions">
-              <button type="button" className="btn btn-primary" onClick={onReserveClick}>{t.hero.ctaSecondary}</button>
               <div className="social-links">
                 {socialLinks.map(({ key, url, label, Icon }) => (
                   <a key={key} href={url} target="_blank" rel="noreferrer" aria-label={label}><Icon /></a>
@@ -53,14 +54,92 @@ const Contact = ({ onReserveClick }) => {
             </div>
           </div>
 
-          <div className="map-card">
-            <iframe
-              title="SAMDAN location"
-              src={MAP_EMBED_SRC}
-              loading="eager"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
+          <div className="contact-form-block">
+            <div className="reserve-heading">
+              <img className="reserve-icon" src="/brand/icon-table.png" alt="" />
+              <h3 className="reserve-title">{t.reserve.title}</h3>
+            </div>
+            <p className="reserve-subtitle">{t.reserve.subtitle}</p>
+
+            {submitted ? (
+              <div className="reserve-success">
+                <FaCircleCheck className="reserve-success-icon" />
+                <h3>{t.reserve.successTitle.replace('{name}', form.name || '')}</h3>
+                <p>{t.reserve.successText}</p>
+                <button type="button" className="btn btn-primary" onClick={reset}>{t.reserve.submit}</button>
+              </div>
+            ) : (
+              <form className="reserve-form" onSubmit={handleSubmit}>
+                <label className="reserve-field">
+                  <span>{t.reserve.name}</span>
+                  <input type="text" required value={form.name} onChange={handleChange('name')} />
+                </label>
+
+                <label className="reserve-field">
+                  <span>{t.reserve.phone}</span>
+                  <input
+                    type="tel"
+                    required
+                    value={form.phone}
+                    onChange={handleChange('phone')}
+                    placeholder="05XXXXXXXX"
+                    pattern="^(\+?966|0)?5[0-9]{8}$"
+                    title={t.reserve.phoneHint}
+                  />
+                </label>
+
+                <div className="reserve-field-row">
+                  <label className="reserve-field">
+                    <span>{t.reserve.date}</span>
+                    <input
+                      type="text"
+                      required
+                      inputMode="numeric"
+                      placeholder="DD/MM/YYYY"
+                      pattern="\d{2}/\d{2}/\d{4}"
+                      title="DD/MM/YYYY"
+                      value={form.date}
+                      onChange={handleChange('date')}
+                    />
+                  </label>
+
+                  <label className="reserve-field">
+                    <span>{t.reserve.time}</span>
+                    <input type="time" required value={form.time} onChange={handleChange('time')} />
+                  </label>
+
+                  <label className="reserve-field reserve-field-guests">
+                    <span>{t.reserve.guests}</span>
+                    <input type="number" min="1" max="20" required value={form.guests} onChange={handleChange('guests')} />
+                  </label>
+                </div>
+
+                <label className="reserve-field">
+                  <span>{t.reserve.notes}</span>
+                  <textarea rows="3" placeholder={t.reserve.notesPlaceholder} value={form.notes} onChange={handleChange('notes')} />
+                </label>
+
+                {submitError ? (
+                  <p className="reserve-error">
+                    <FaTriangleExclamation /> {t.reserve.errorText}
+                  </p>
+                ) : null}
+
+                <button type="submit" className="btn btn-primary reserve-submit" disabled={isSubmitting}>
+                  {isSubmitting ? t.reserve.submitting : t.reserve.submit}
+                </button>
+              </form>
+            )}
           </div>
+        </div>
+
+        <div className="map-card">
+          <iframe
+            title="SAMDAN location"
+            src={MAP_EMBED_SRC}
+            loading="eager"
+            referrerPolicy="no-referrer-when-downgrade"
+          ></iframe>
         </div>
       </div>
     </section>

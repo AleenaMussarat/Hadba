@@ -11,6 +11,7 @@
   --color-primary: #BC3433;
   --color-primary-light: #D9534F;
   --color-primary-dark: #8F2726;
+  --color-primary-darker: #641B1A;
   --color-accent: #F69D1C;
   --color-accent-light: #FFB84D;
   --color-accent-dark: #C97D0F;
@@ -39,6 +40,8 @@
 
   /* Traditional/boxy theme: one shared corner radius instead of pills/circles */
   --radius-box: 4px;
+  /* Buttons get a distinctly softer, more rounded corner than cards/badges. */
+  --radius-btn: 12px;
 }
 
 html[dir="rtl"] body {
@@ -99,6 +102,46 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
+}
+
+/* ===== PAGE BORDERS (traditional Sadu-weave frame) ===== */
+/* Positioned against <main> (not .app) so the border only runs the height of
+   the routed page content — it stops before the footer instead of framing
+   the whole document. */
+main {
+  position: relative;
+}
+
+/* Width scales with viewport instead of a fixed px value: a flat width that
+   cleared the navbar's own edge padding on a wide monitor was wider than
+   that same padding on an ordinary 1366–1440px laptop screen, so the border
+   only ever showed once zoomed out enough to shrink the effective viewport.
+   Scaling with vw (capped both ends) keeps it clear of the navbar logo/links
+   at every desktop width instead of just the widest ones. */
+.page-border {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(14px, 2vw, 30px);
+  background-repeat: repeat-y;
+  background-position: top center;
+  background-size: 100% auto;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.page-border-left {
+  left: 0;
+}
+
+.page-border-right {
+  right: 0;
+}
+
+@media (max-width: 992px) {
+  .page-border {
+    display: none;
+  }
 }
 
 html {
@@ -163,7 +206,7 @@ html {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.9rem 2.4rem;
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   font-size: 1rem;
   font-weight: 600;
   font-family: inherit;
@@ -236,8 +279,8 @@ html {
   right: 0;
   height: var(--navbar-height);
   z-index: 1000;
-  background: rgba(18, 14, 12, 0.97);
-  border-bottom: 1px solid var(--border-color);
+  background: linear-gradient(180deg, rgba(188, 52, 51, 0.94) 0%, rgba(143, 39, 38, 0.96) 100%);
+  border-bottom: 1px solid rgba(246, 157, 28, 0.3);
   transition: all var(--navbar-transition);
   animation: navbarDropIn 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -254,23 +297,9 @@ html {
   }
 }
 
-.navbar::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -6px;
-  height: 6px;
-  background-image: url('/brand/pattern-red.png');
-  background-size: auto 100%;
-  background-repeat: repeat-x;
-  opacity: 0.85;
-  pointer-events: none;
-}
-
 .navbar.scrolled {
-  background: var(--bg-overlay);
-  border-bottom: 1px solid var(--border-color-strong);
+  background: linear-gradient(180deg, rgba(143, 39, 38, 0.97) 0%, rgba(100, 27, 26, 0.98) 100%);
+  border-bottom: 1px solid rgba(246, 157, 28, 0.45);
   box-shadow: 0 4px 30px var(--shadow-color);
   height: 86px;
 }
@@ -422,22 +451,22 @@ html[dir="rtl"] .nav-link {
 .lang-toggle {
   display: flex;
   align-items: center;
-  background: rgba(246, 157, 28, 0.06);
-  border-radius: var(--radius-box);
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-btn);
   padding: 4px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s;
 }
 
 .lang-toggle:hover {
-  border-color: var(--border-color-strong);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .lang-toggle button {
   background: transparent;
   border: none;
   padding: 5px 12px;
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   font-weight: 600;
   font-family: 'Montserrat', sans-serif;
   font-size: 0.75rem;
@@ -468,19 +497,19 @@ html[dir="rtl"] .nav-link {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--color-primary);
-  color: #fff;
-  border: 1px solid rgba(246, 157, 28, 0.5);
-  padding: 11px 26px;
-  border-radius: var(--radius-box);
+  background: var(--color-accent);
+  color: #1A1108;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 9px 20px;
+  border-radius: var(--radius-btn);
   font-family: 'Playfair Display', serif;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   letter-spacing: 0.3px;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.3s;
-  box-shadow: 0 4px 20px rgba(188, 52, 51, 0.3);
+  box-shadow: 0 4px 20px rgba(246, 157, 28, 0.35);
   position: relative;
   overflow: hidden;
 }
@@ -505,9 +534,9 @@ html[dir="rtl"] .btn-reserve {
 }
 
 .btn-reserve:hover {
-  background: var(--color-primary-dark);
+  background: var(--color-accent-dark);
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 30px rgba(188, 52, 51, 0.45);
+  box-shadow: 0 8px 30px rgba(246, 157, 28, 0.5);
 }
 
 .btn-reserve:active {
@@ -527,7 +556,7 @@ html[dir="rtl"] .btn-reserve {
   color: var(--text-primary);
   cursor: pointer;
   padding: 8px;
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   transition: all 0.3s;
   position: relative;
   width: 44px;
@@ -811,6 +840,18 @@ html[dir="rtl"] .mobile-menu.active {
   align-items: center;
 }
 
+/* Flexbox auto-mirrors row order under dir="rtl" (details would land on the
+   right, title on the left) — row-reverse cancels that out so Arabic keeps
+   the same physical arrangement as English: details/hours on the left,
+   title on the right. Scoped to the same min-width as the row layout itself
+   (see the max-width: 992px override below) so it doesn't fight the mobile
+   column stack, which has its own explicit ordering via .hero-copy-text. */
+@media (min-width: 993px) {
+  html[dir="rtl"] .hero-copy {
+    flex-direction: row-reverse;
+  }
+}
+
 .hero-copy-details,
 .hero-copy-text {
   flex: 1;
@@ -912,7 +953,7 @@ html[dir="rtl"] .mobile-menu.active {
   align-items: center;
   gap: 1.5rem;
   padding: 1.7rem 1.9rem;
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   background: linear-gradient(120deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   box-shadow: 0 14px 34px rgba(188, 52, 51, 0.22);
   overflow: hidden;
@@ -1218,6 +1259,15 @@ html[dir="rtl"] .mobile-menu.active {
   padding-top: 4rem;
 }
 
+/* Home page only — the Menu page's minimal instance of this same component
+   (.is-minimal) already sets background:none below and blends into that
+   page's own section instead. */
+.featured-menu-section:not(.is-minimal) {
+  background-image: linear-gradient(rgba(13, 13, 13, 0.72), rgba(13, 13, 13, 0.78)), url('/brand/pattern-brand-red.png');
+  background-size: auto, 480px auto;
+  background-repeat: repeat, repeat;
+}
+
 /* Used when FeaturedMenu is embedded inside a page that already has its own
    heading/background (e.g. the Menu page) — no second heading, no separate
    section background, just the gallery blending into the surrounding page. */
@@ -1226,9 +1276,6 @@ html[dir="rtl"] .mobile-menu.active {
   padding: 0 0 3rem;
 }
 
-/* Static backdrop behind the whole curated-menu block (separator through
-   pagination) — a plain still image, not scroll-linked like the About page
-   treatments, just a faint textured background. */
 .menu-curated-section {
   position: relative;
   /* Padding lives here rather than on .section-menu so the trailing gap
@@ -1238,20 +1285,22 @@ html[dir="rtl"] .mobile-menu.active {
   padding-bottom: 3rem;
 }
 
-/* Full-bleed breakout, same technique as .about-intro-pattern — .container
-   caps this section at 1200px, so inset:0 alone would only span that width
-   rather than the full viewport. */
-.menu-curated-bg {
+/* Full-bleed yellow backdrop for just this block (not the whole
+   .section-menu, which also covers the "Our Signature Dishes" intro above
+   it) — same breakout technique used elsewhere for full-bleed sections. */
+.menu-curated-section::before {
+  content: '';
   position: absolute;
   top: 0;
   left: 50%;
   width: 100vw;
   height: 100%;
   transform: translateX(-50%);
-  background-size: cover;
-  background-position: center;
-  opacity: 0.3;
-  pointer-events: none;
+  background-image: url('/brand/pattern-brand-orange.png');
+  background-size: 480px auto;
+  background-repeat: repeat;
+  opacity: 0.55;
+  z-index: 0;
 }
 
 .menu-curated-content {
@@ -1260,6 +1309,8 @@ html[dir="rtl"] .mobile-menu.active {
 }
 
 .menu-separator {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1267,7 +1318,7 @@ html[dir="rtl"] .mobile-menu.active {
   gap: 0.6rem;
   margin: 1rem 0 3rem;
   padding-top: 3rem;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .menu-separator-icon {
@@ -1285,7 +1336,7 @@ html[dir="rtl"] .mobile-menu.active {
 }
 
 .menu-separator-subtitle {
-  color: var(--text-secondary);
+  color: rgba(245, 236, 225, 0.85);
   font-size: 0.95rem;
   max-width: 46ch;
 }
@@ -1311,6 +1362,7 @@ html[dir="rtl"] .mobile-menu.active {
   background-color: var(--bg-elevated-2);
   background-size: cover;
   background-position: center;
+  border-radius: var(--radius-btn);
   overflow: hidden;
   transition: flex 0.6s cubic-bezier(0.65, 0, 0.35, 1);
 }
@@ -1795,17 +1847,62 @@ html[dir="rtl"] .btn-view-menu-arrow {
   margin-left: auto;
   margin-right: auto;
   padding: 1.8rem;
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   border: 1px solid var(--border-color);
-  /* Dark gradient layered over the photo in one background so the existing
-     light-colored text stays legible without a separate overlay element. */
-  background-image:
-    linear-gradient(rgba(10, 8, 6, 0.84), rgba(10, 8, 6, 0.88)),
-    url('../assets/images/GuidlinePictures/costume.jpeg');
   background-size: cover;
   background-position: center;
   box-shadow: 0 20px 45px var(--shadow-color);
   text-align: center;
+}
+
+/* Each card gets its own photo — same dark overlay gradient layered over
+   all three so the light-colored text stays legible without a separate
+   overlay element, but a different background image per card instead of
+   one shared photo. */
+.story-card-chef {
+  background-image:
+    linear-gradient(rgba(10, 8, 6, 0.84), rgba(10, 8, 6, 0.88)),
+    url('../assets/images/GuidlinePictures/costume.jpeg');
+}
+
+.story-card-promise {
+  background-image:
+    linear-gradient(rgba(10, 8, 6, 0.84), rgba(10, 8, 6, 0.88)),
+    url('../assets/images/GuidlinePictures/billboard2.jfif');
+}
+
+.story-card-ambience {
+  background-image:
+    linear-gradient(rgba(10, 8, 6, 0.84), rgba(10, 8, 6, 0.88)),
+    url('../assets/images/GuidlinePictures/ambience.jfif');
+}
+
+/* Staircase layout: each card keeps a fixed horizontal position (left,
+   center, right) while ScrollStack's own JS still drives the vertical
+   pin/scale/overlap — it only ever writes translateY into the inline
+   transform, never margin, so this combines cleanly with that motion
+   instead of fighting it. The result is a diagonal stair-step stack rather
+   than cards landing directly on top of one another. */
+/* Higher specificity than the base .story-scroll-stack .story-card-panel
+   rule (which sets margin-left/right: auto for centering) — otherwise that
+   rule's equal-or-higher specificity would win and these offsets would
+   never apply. */
+.story-scroll-stack .story-card-panel.story-card-chef {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.story-scroll-stack .story-card-panel.story-card-ambience {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+@media (max-width: 992px) {
+  .story-scroll-stack .story-card-panel.story-card-chef,
+  .story-scroll-stack .story-card-panel.story-card-ambience {
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 .story-card-icon {
@@ -1953,7 +2050,7 @@ html[dir="rtl"] .btn-view-menu-arrow {
   gap: 0.5rem;
   padding: 1rem 0.8rem;
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   background: var(--bg-elevated);
   color: var(--text-primary);
   font-size: 0.75rem;
@@ -2046,6 +2143,11 @@ html[dir="rtl"] .btn-view-menu-arrow {
 .section-menu {
   background: var(--bg-elevated);
   padding-top: calc(var(--navbar-height) + 3rem);
+  /* .menu-curated-section already provides its own trailing space (and
+     background) below the cards — without this override, .section's base
+     8rem bottom padding stacks on top of that as a second, unpatterned gap
+     before the footer. */
+  padding-bottom: 0;
   position: relative;
 }
 
@@ -2057,10 +2159,10 @@ html[dir="rtl"] .btn-view-menu-arrow {
 }
 
 .menu-filter-pill {
-  background: rgba(13, 13, 13, 0.6);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-box);
+  background: var(--color-primary-dark);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-btn);
   padding: 0.6rem 1.2rem;
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
@@ -2075,13 +2177,14 @@ html[dir="rtl"] .menu-filter-pill {
 }
 
 .menu-filter-pill:hover {
-  color: var(--text-primary);
-  border-color: var(--border-color-strong);
+  color: #fff;
+  background: var(--color-primary);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .menu-filter-pill.active {
-  color: #1A1108;
-  background: var(--color-accent);
+  color: #fff;
+  background: var(--color-primary);
   border-color: var(--color-accent);
 }
 
@@ -2104,11 +2207,11 @@ html[dir="rtl"] .menu-filter-pill {
 }
 
 .menu-page-btn {
-  background: var(--bg-base);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color-strong);
+  background: var(--color-primary);
+  color: #fff;
+  border: 1px solid var(--color-primary);
   padding: 0.65rem 1.6rem;
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   font-size: 0.85rem;
@@ -2121,8 +2224,8 @@ html[dir="rtl"] .menu-page-btn {
 }
 
 .menu-page-btn:hover:not(:disabled) {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
   color: #fff;
 }
 
@@ -2157,9 +2260,9 @@ html[dir="rtl"] .menu-page-btn {
 
 .menu-item {
   position: relative;
-  background: var(--bg-base);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-box);
+  background: var(--color-primary-dark);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-btn);
   overflow: hidden;
   will-change: transform;
   transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s ease, box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
@@ -2212,8 +2315,8 @@ html[dir="rtl"] .menu-page-btn {
 
 .menu-item:hover .menu-price {
   transform: scale(1.08);
-  background: var(--color-accent);
-  color: #1A1108;
+  background: var(--color-primary);
+  color: #fff;
 }
 
 .menu-item-media::after {
@@ -2273,8 +2376,8 @@ html[dir="rtl"] .menu-page-btn {
 }
 
 .menu-price {
-  background: var(--color-primary);
-  color: #fff;
+  background: var(--color-accent);
+  color: #1A1108;
   display: inline-flex;
   align-items: center;
   gap: 0.3em;
@@ -2332,11 +2435,13 @@ html[dir="rtl"] .menu-page-btn {
   padding-top: calc(var(--navbar-height) + 3rem);
 }
 
+/* Details and the reservation form sit side by side; the map runs full-width
+   below both instead of being squeezed into either column. */
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4.5rem;
-  align-items: start;
+  gap: 3.5rem;
+  align-items: center;
 }
 
 .contact-panel {
@@ -2383,6 +2488,15 @@ html[dir="rtl"] .menu-page-btn {
   min-width: 0;
 }
 
+/* The phone number carries dir="ltr" so its digits/plus-sign don't get
+   bidi-reordered — but setting dir also resets text-align: start to that
+   element's own direction (left), pulling it away from its icon instead of
+   hugging it like the other RTL-aligned rows. Force it back to the right. */
+html[dir="rtl"] .contact-item span[dir="ltr"],
+html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
+  text-align: right;
+}
+
 .contact-item:hover {
   color: var(--color-accent);
 }
@@ -2404,7 +2518,7 @@ html[dir="rtl"] .menu-page-btn {
 .social-links a {
   width: 46px;
   height: 46px;
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2428,8 +2542,35 @@ html[dir="rtl"] .menu-page-btn {
   z-index: 1;
   overflow: hidden;
   min-width: 0;
-  height: 100%;
   min-height: 440px;
+  margin-top: 4rem;
+  border-radius: var(--radius-btn);
+}
+
+.contact-form-block {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  padding: 2.5rem;
+  /* Darkening gradient over the photo so the heading, field labels, and
+     subtitle text (all sitting directly on this background, unlike the
+     inputs which have their own opaque fill) stay legible throughout. */
+  background-image: linear-gradient(180deg, rgba(26, 26, 26, 0.82) 0%, rgba(26, 26, 26, 0.88) 100%), url('../assets/images/GuidlinePictures/businesscards.jpeg');
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-btn);
+  box-shadow: 0 20px 45px var(--shadow-color);
+}
+
+.contact-form-block .reserve-heading {
+  padding-inline-end: 0;
+}
+
+@media (max-width: 640px) {
+  .contact-form-block {
+    padding: 1.8rem;
+  }
 }
 
 .map-card iframe {
@@ -2483,8 +2624,14 @@ html[dir="rtl"] .menu-page-btn {
   position: relative;
   z-index: 1;
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-box);
-  background: var(--bg-base);
+  border-radius: var(--radius-btn);
+  /* Darkening scrim over the red Sadu-weave brand pattern — the accent-orange
+     detail icons and body text sit directly on this (branch cards have no
+     background of their own), so the pattern needs to be dimmed enough for
+     them to stay legible while still reading clearly as the pattern. */
+  background-image: linear-gradient(rgba(13, 13, 13, 0.72), rgba(13, 13, 13, 0.78)), url('/brand/pattern-brand-red.png');
+  background-size: auto, 480px auto;
+  background-repeat: repeat, repeat;
   box-shadow: 0 30px 70px var(--shadow-color);
   padding: 3.5rem 2.5rem;
 }
@@ -2600,7 +2747,7 @@ html[dir="rtl"] .menu-page-btn {
   inset-inline-end: 1.5rem;
   width: 44px;
   height: 44px;
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   border: 1px solid var(--border-color-strong);
   background: rgba(18, 14, 12, 0.75);
   color: var(--text-primary);
@@ -2642,23 +2789,10 @@ html[dir="rtl"] .menu-page-btn {
 
 /* ===== FOOTER ===== */
 .footer {
-  background: var(--bg-elevated-2);
-  border-top: 1px solid var(--border-color);
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  border-top: 1px solid rgba(246, 157, 28, 0.3);
   padding: 3rem 0 0;
   position: relative;
-}
-
-.footer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background-image: url('/brand/pattern-red.png');
-  background-size: auto 100%;
-  background-repeat: repeat-x;
-  opacity: 0.85;
 }
 
 .footer-shell {
@@ -2695,7 +2829,7 @@ html[dir="rtl"] .menu-page-btn {
 }
 
 .footer-col p {
-  color: var(--text-secondary);
+  color: rgba(245, 236, 225, 0.85);
   font-size: 0.88rem;
   line-height: 1.8;
   margin: 0;
@@ -2711,11 +2845,11 @@ html[dir="rtl"] .menu-page-btn {
   width: 46px;
   height: 3px;
   margin: 1rem 0 0.9rem;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  background: var(--color-accent);
 }
 
 .footer-quote {
-  color: var(--color-accent);
+  color: var(--text-primary);
   font-family: 'Playfair Display', serif;
   font-style: italic;
   font-size: 0.9rem;
@@ -2736,7 +2870,7 @@ html[dir="rtl"] .menu-page-btn {
 .footer-links a {
   position: relative;
   display: block;
-  color: var(--text-secondary);
+  color: rgba(245, 236, 225, 0.85);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
@@ -2771,7 +2905,7 @@ html[dir="rtl"] .menu-page-btn {
 
 .footer-col-contact p {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.7rem;
 }
 
@@ -2796,7 +2930,7 @@ html[dir="rtl"] .menu-page-btn {
   justify-content: center;
   width: 42px;
   height: 42px;
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   background: var(--bg-base);
   border: 1px solid var(--border-color);
   transition: all 0.3s;
@@ -2808,13 +2942,30 @@ html[dir="rtl"] .menu-page-btn {
   transform: translateY(-3px);
 }
 
+/* Scoped to the footer only — the mobile-menu drawer reuses .social-icons
+   on its own dark background, where the default orange-on-dark treatment
+   above already reads fine and doesn't need this override. Orange (not red)
+   so the filled boxes still stand out now that the footer itself is red. */
+.footer .social-icons a {
+  color: #fff;
+  background: var(--color-accent);
+  border-color: transparent;
+}
+
+.footer .social-icons a:hover {
+  background: var(--color-accent-dark);
+  color: #fff;
+  border-color: transparent;
+  transform: translateY(-3px);
+}
+
 .footer-bottom {
   padding: 1.2rem 0;
   text-align: center;
 }
 
 .footer-bottom p {
-  color: var(--text-muted);
+  color: rgba(245, 236, 225, 0.7);
   font-size: 0.82rem;
   margin: 0;
 }
@@ -2831,7 +2982,7 @@ html[dir="rtl"] .menu-page-btn {
   font-family: inherit;
   cursor: pointer;
   padding: 0.9rem 2.2rem;
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   font-weight: 700;
   font-size: 0.95rem;
   text-decoration: none;
@@ -2912,10 +3063,11 @@ html[dir="rtl"] .menu-page-btn {
   width: 100%;
   max-width: 580px;
   max-height: 100vh;
+  overflow-x: hidden;
   overflow-y: auto;
   background: var(--bg-elevated);
   border: 1px solid var(--border-color-strong);
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   padding: 2.4rem;
   box-shadow: 0 30px 80px var(--shadow-color);
 }
@@ -2952,7 +3104,7 @@ html[dir="rtl"] .menu-page-btn {
   inset-inline-end: 0.5rem;
   width: 36px;
   height: 36px;
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   border: 1px solid var(--border-color);
   background: transparent;
   color: var(--text-secondary);
@@ -3005,6 +3157,12 @@ html[dir="rtl"] .menu-page-btn {
   flex-direction: column;
   gap: 0.5rem;
   flex: 1;
+  /* Without this, a flex item's default min-width:auto floors its shrink at
+     its content's min-content size — the Date/Time fields' longer Arabic
+     labels and native input sizing pushed that floor past the row's
+     available width, overflowing the guests field out of the card instead
+     of everything shrinking to fit. */
+  min-width: 0;
 }
 
 .reserve-field span {
@@ -3017,6 +3175,7 @@ html[dir="rtl"] .menu-page-btn {
 
 .reserve-field input,
 .reserve-field textarea {
+  width: 100%;
   background: var(--bg-base);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-box);
@@ -3045,6 +3204,14 @@ html[dir="rtl"] .menu-page-btn {
 .reserve-field-guests {
   max-width: 90px;
   flex: 0 0 auto;
+}
+
+/* Date is always DD/MM/YYYY (never translated), so it doesn't need an equal
+   share of the row next to Time — :first-child is DOM order (always the
+   Date field) and stays correct regardless of the row's RTL visual mirror. */
+html[dir="rtl"] .reserve-field-row .reserve-field:first-child {
+  flex: 0 1 130px;
+  max-width: 130px;
 }
 
 .reserve-submit {
@@ -3180,7 +3347,7 @@ html[dir="rtl"] .menu-page-btn {
   padding: 3rem 3.5rem;
   width: 360px;
   max-width: 88vw;
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   background: rgba(18, 14, 12, 0.9);
   border: 1px solid rgba(246, 157, 28, 0.2);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
@@ -3199,13 +3366,13 @@ html[dir="rtl"] .menu-page-btn {
   width: 130px;
   height: 130px;
   margin: 0 auto 1.3rem;
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow:
     0 20px 60px rgba(188, 52, 51, 0.35),
-    inset 0 -5px 20px rgba(0, 0, 0, 0.2);
+    inset 0 -5px 20px transparentize(var(--color-accent), 0.5);
   animation: pulse 1.5s ease-in-out infinite;
   position: relative;
 }
@@ -3214,7 +3381,7 @@ html[dir="rtl"] .menu-page-btn {
   content: '';
   position: absolute;
   inset: -8px;
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   border: 3px solid rgba(246, 157, 28, 0.35);
   animation: ringPulse 2s ease-in-out infinite;
 }
@@ -3222,7 +3389,7 @@ html[dir="rtl"] .menu-page-btn {
 .logo-circle-icon {
   width: 100%;
   height: 100%;
-  border-radius: var(--radius-box);
+  border-radius: var(--radius-btn);
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
 }
 

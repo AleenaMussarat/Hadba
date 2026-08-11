@@ -156,14 +156,20 @@ const HeroCarousel = () => {
     }
   }, [navigateTo])
 
+  // Mirrors the 3D stack for Arabic: upcoming slides wait on the left and
+  // arrive moving right-to-left, matching RTL reading order instead of the
+  // LTR default (upcoming slides waiting on the right).
+  const isRTL = currentLang === 'ar'
+
   const getCardStyle = (index) => {
     const offset = index - progress
     const absOffset = Math.abs(offset)
+    const dirOffset = isRTL ? -offset : offset
 
     const translateZ = -absOffset * 190 + (1 - Math.min(absOffset, 1)) * 45
-    const translateX = offset * 480
+    const translateX = dirOffset * 480
     const translateY = Math.pow(absOffset, 1.25) * 18
-    const rotateY = offset * -24
+    const rotateY = dirOffset * -24
     const scale = Math.max(0.62, 1 - absOffset * 0.15)
     const opacity = Math.max(0, 1 - absOffset * 0.35)
     const blur = Math.min(absOffset * 7, 14)

@@ -185,7 +185,7 @@ const FeaturedMenu = ({ scrollTargetId, minimal = false }) => {
           <span className="menu-expand-details">
             <span className="menu-expand-details-row">
               <span className="menu-expand-name">{item.name}</span>
-              <span className="menu-expand-price"><RiyalSymbol />{item.price}</span>
+              <span className="menu-expand-price"><RiyalSymbol value={item.price} /></span>
             </span>
             {item.description && <span className="menu-expand-desc">{item.description}</span>}
           </span>

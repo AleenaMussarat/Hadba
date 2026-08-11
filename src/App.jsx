@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { LanguageProvider, getLanguageDir } from './i18n'
 import Navbar from './components/Navbar'
+import PageBorders from './components/PageBorders'
 import Hero from './components/Hero'
 import Menu from './components/Menu'
 import About from './components/About'
@@ -68,13 +69,14 @@ function App() {
           <ScrollToTop />
           <Navbar onReserveClick={() => setIsReserveOpen(true)} />
           <main>
+            <PageBorders />
             <Routes>
               <Route path="/" element={<Hero onReserveClick={() => setIsReserveOpen(true)} />} />
               <Route path="/about" element={<About />} />
               <Route path="/menu" element={<Menu />} />
               <Route path="/branches" element={<Branches />} />
               <Route path="/gallery" element={<Gallery />} />
-              <Route path="/contact" element={<Contact onReserveClick={() => setIsReserveOpen(true)} />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

@@ -1,35 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
-import { submitInquiry } from '../services/strapi'
+import { useReservationForm } from '../lib/useReservationForm'
 import { FaXmark, FaCircleCheck, FaTriangleExclamation } from 'react-icons/fa6'
 import reserveModalBg from '../../assets/images/GuidlinePictures/businesscards.jpeg'
-
-const emptyForm = { name: '', phone: '', guests: 2, date: '', time: '', notes: '' }
-
-// The date field is typed/displayed as DD/MM/YYYY, but Strapi's date field
-// needs ISO YYYY-MM-DD.
-const ddmmyyyyToISO = (value) => {
-  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value)
-  if (!match) return ''
-  const [, dd, mm, yyyy] = match
-  return `${yyyy}-${mm}-${dd}`
-}
 
 const ReserveModal = ({ isOpen, onClose }) => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
-  const [form, setForm] = useState(emptyForm)
-  const [submitted, setSubmitted] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitError, setSubmitError] = useState(false)
+  const { form, submitted, isSubmitting, submitError, handleChange, handleSubmit, reset } = useReservationForm()
 
   useEffect(() => {
-    if (isOpen) {
-      setForm(emptyForm)
-      setSubmitted(false)
-      setSubmitError(false)
-    }
+    if (isOpen) reset()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
   useEffect(() => {
@@ -46,27 +29,6 @@ const ReserveModal = ({ isOpen, onClose }) => {
   }, [isOpen, onClose])
 
   if (!isOpen) return null
-
-  const handleChange = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setSubmitError(false)
-    const isoDate = ddmmyyyyToISO(form.date)
-    if (!isoDate) {
-      setIsSubmitting(false)
-      setSubmitError(true)
-      return
-    }
-    const ok = await submitInquiry({ ...form, date: isoDate })
-    setIsSubmitting(false)
-    if (ok) {
-      setSubmitted(true)
-    } else {
-      setSubmitError(true)
-    }
-  }
 
   return (
     <div className="reserve-overlay" onClick={onClose}>

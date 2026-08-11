@@ -58,7 +58,7 @@ const Branches = () => {
                     <span className="contact-item-icon"><FaClock /></span>
                     <span>{branch.hours}</span>
                   </p>
-                  <a className="btn btn-secondary branch-directions" href={branch.mapsLink} target="_blank" rel="noreferrer">
+                  <a className="btn btn-primary branch-directions" href={branch.mapsLink} target="_blank" rel="noreferrer">
                     {t.branches.directionsLabel}
                   </a>
                 </div>

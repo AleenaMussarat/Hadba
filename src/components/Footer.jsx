@@ -37,7 +37,7 @@ const Footer = ({ onReserveClick }) => {
             <h4>{t.footer.contactTitle}</h4>
             <div className="footer-contact-rows">
               <p><FaLocationDot className="footer-contact-icon" /><span>{t.contact.address}</span></p>
-              <p><FaPhone className="footer-contact-icon" /><span>{t.contact.phone}</span></p>
+              <p><FaPhone className="footer-contact-icon" /><span dir="ltr">{t.contact.phone}</span></p>
               <p><FaClock className="footer-contact-icon" /><span>{t.contact.hours}</span></p>
             </div>
           </div>
