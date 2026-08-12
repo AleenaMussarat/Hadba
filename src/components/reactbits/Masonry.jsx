@@ -38,17 +38,26 @@ const useMeasure = () => {
   return [ref, size];
 };
 
+// Resolves each url's natural pixel dimensions alongside preloading it, so
+// the grid can size every tile to its own real aspect ratio instead of a
+// fixed/guessed height.
 const preloadImages = async urls => {
+  const dims = {};
   await Promise.all(
     urls.map(
       src =>
         new Promise(resolve => {
           const img = new Image();
+          img.onload = () => {
+            dims[src] = { w: img.naturalWidth, h: img.naturalHeight };
+            resolve();
+          };
+          img.onerror = () => resolve();
           img.src = src;
-          img.onload = img.onerror = () => resolve();
         })
     )
   );
+  return dims;
 };
 
 // Adapted from reactbits.dev's Masonry: swapped the hardcoded
@@ -76,6 +85,7 @@ const Masonry = ({
 
   const [containerRef, { width }] = useMeasure();
   const [imagesReady, setImagesReady] = useState(false);
+  const [imageDims, setImageDims] = useState({});
 
   const getInitialPosition = item => {
     const containerRect = containerRef.current?.getBoundingClientRect();
@@ -108,7 +118,15 @@ const Masonry = ({
   };
 
   useEffect(() => {
-    preloadImages(items.map(i => i.img)).then(() => setImagesReady(true));
+    let active = true;
+    preloadImages(items.map(i => i.img)).then(dims => {
+      if (!active) return;
+      setImageDims(dims);
+      setImagesReady(true);
+    });
+    return () => {
+      active = false;
+    };
   }, [items]);
 
   const { grid, containerHeight } = useMemo(() => {
@@ -120,7 +138,14 @@ const Masonry = ({
     const positioned = items.map(child => {
       const col = colHeights.indexOf(Math.min(...colHeights));
       const x = columnWidth * col;
-      const height = child.height / 2;
+      // Height follows each photo's own aspect ratio (scaled to the fixed
+      // column width) instead of a shared/guessed value — a portrait shot
+      // ends up taller, a landscape shot shorter, rather than every tile
+      // being forced to the same size. Falls back to a plausible ratio for
+      // the brief window before an image's real dimensions are known.
+      const dim = imageDims[child.img];
+      const aspect = dim && dim.w ? dim.h / dim.w : 1.15;
+      const height = columnWidth * aspect;
       const y = colHeights[col];
 
       colHeights[col] += height;
@@ -129,7 +154,7 @@ const Masonry = ({
     });
 
     return { grid: positioned, containerHeight: Math.max(0, ...colHeights) };
-  }, [columns, items, width]);
+  }, [columns, items, width, imageDims]);
 
   const hasMounted = useRef(false);
 

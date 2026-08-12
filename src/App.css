@@ -1367,6 +1367,14 @@ html[dir="rtl"] .mobile-menu.active {
   transition: flex 0.6s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
+/* Same white-with-logo fallback as .menu-item-media, adapted for this
+   panel's CSS-background (not <img>) rendering. */
+.menu-expand-panel.is-placeholder {
+  background-color: #fff;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
 .menu-expand-panel.is-active {
   flex: 3.4;
 }
@@ -2306,6 +2314,23 @@ html[dir="rtl"] .menu-page-btn {
   height: 100%;
   object-fit: cover;
   transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), filter 0.5s ease;
+}
+
+/* Dishes without real photography yet fall back to the Samdan mark on
+   white — contain (not cover) so the logo isn't cropped, and the bottom
+   darkening gradient below is dropped since there's no photo detail to
+   protect legibility against. */
+.menu-item-media.is-placeholder {
+  background: #fff;
+}
+
+.menu-item-media.is-placeholder img {
+  object-fit: contain;
+  padding: 2rem;
+}
+
+.menu-item-media.is-placeholder::after {
+  display: none;
 }
 
 .menu-item:hover .menu-item-media img {

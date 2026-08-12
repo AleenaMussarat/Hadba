@@ -157,7 +157,7 @@ const Menu = () => {
                 className={`menu-item ${isMobile ? 'menu-item-reveal' : 'fade-in-up'} ${item.featured ? 'featured' : ''}`}
                 style={isMobile ? undefined : { animationDelay: `${(index % 8) * 0.08}s` }}
               >
-                <div className="menu-item-media">
+                <div className={`menu-item-media ${item.isPlaceholder ? 'is-placeholder' : ''}`}>
                   <img src={item.image} alt={item.name} loading="lazy" />
                   {item.featured ? (
                     <span className="menu-badge">

@@ -83,7 +83,12 @@
       "PowerShell(Copy-Item -Path \"assets\\\\images\\\\Logos\\\\SingleYellow.png\" -Destination \"public\\\\brand\\\\pattern-side-orange.png\" -Force)",
       "PowerShell(Copy-Item -Path \"assets\\\\images\\\\Logos\\\\PatternRed.png\" -Destination \"public\\\\brand\\\\pattern-brand-red.png\" -Force)",
       "PowerShell(Copy-Item -Path \"assets\\\\images\\\\Logos\\\\PatternOrange.png\" -Destination \"public\\\\brand\\\\pattern-brand-orange.png\" -Force)",
-      "PowerShell(Copy-Item -Path \"assets\\\\images\\\\GuidlinePictures\\\\Najdi.jfif\" -Destination \"public\\\\brand\\\\photo-najdi-branch.jfif\" -Force)"
+      "PowerShell(Copy-Item -Path \"assets\\\\images\\\\GuidlinePictures\\\\Najdi.jfif\" -Destination \"public\\\\brand\\\\photo-najdi-branch.jfif\" -Force)",
+      "Read(//d/My Documents/ZEDESIGNS PROJECTS/Hadba/**)",
+      "PowerShell(Copy-Item -Path \"assets\\\\images\\\\Menu\\\\Liver.jfif\" -Destination \"public\\\\brand\\\\dish-kabda-baladi.jpg\" -Force)",
+      "PowerShell(Copy-Item -Path \"assets\\\\images\\\\Menu\\\\Eggs.jfif\" -Destination \"public\\\\brand\\\\dish-fried-eggs.jpg\" -Force)",
+      "PowerShell(Copy-Item -Path \"assets\\\\images\\\\Menu\\\\Tuna.jpeg\" -Destination \"public\\\\brand\\\\dish-tuna.jpg\" -Force)",
+      "PowerShell(Copy-Item -Path \"assets\\\\images\\\\Menu\\\\Naan.png\" -Destination \"public\\\\brand\\\\dish-southern-bread.png\" -Force)"
     ]
   }
 }

@@ -175,7 +175,7 @@ const FeaturedMenu = ({ scrollTargetId, minimal = false }) => {
         <button
           type="button"
           key={`${item.name}-${i}`}
-          className={`menu-expand-panel ${i === activeIndex ? 'is-active' : ''}`}
+          className={`menu-expand-panel ${i === activeIndex ? 'is-active' : ''} ${item.isPlaceholder ? 'is-placeholder' : ''}`}
           style={{ backgroundImage: `url(${item.image})` }}
           onClick={() => handlePanelClick(i)}
           aria-expanded={i === activeIndex}

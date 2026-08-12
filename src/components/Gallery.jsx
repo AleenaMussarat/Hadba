@@ -5,11 +5,6 @@ import { fetchGalleryImages } from '../services/strapi'
 import { FaXmark } from 'react-icons/fa6'
 import Masonry from './reactbits/Masonry'
 
-// Masonry needs a numeric height per item to pack columns — actual photos
-// don't share one aspect ratio, so this repeating pattern just gives the
-// grid visual rhythm; object/background-size:cover handles the crop.
-const MASONRY_HEIGHTS = [560, 420, 500, 360, 480, 440]
-
 const Gallery = () => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
@@ -48,7 +43,6 @@ const Gallery = () => {
       images.map((item, index) => ({
         id: `${item.caption}-${index}`,
         img: item.image,
-        height: MASONRY_HEIGHTS[index % MASONRY_HEIGHTS.length],
         caption: item.caption
       })),
     [images]

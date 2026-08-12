@@ -1,5 +1,14 @@
 const img = (id, w = 800) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=70`
 
+// The client's own product shots — white background, do not swap these for
+// stock photos. Everything else in MENU_ROWS uses 'logo' (the Samdan mark on
+// white) as a placeholder until real photography exists for that dish.
+const dishKabdaBaladi = '/brand/dish-kabda-baladi.jpg'
+const dishFriedEggs = '/brand/dish-fried-eggs.jpg'
+const dishTuna = '/brand/dish-tuna.jpg'
+const dishSouthernBread = '/brand/dish-southern-bread.png'
+const logoPlaceholder = '/brand/logo-red.png'
+
 export const menuImages = {
   lambKabsa: img('photo-1681116997174-76efb15220f4'),
   chickenKabsa: img('photo-1708184528306-f75a0a5118ee'),
@@ -12,130 +21,144 @@ export const menuImages = {
   hejaziSaleeg: img('photo-1719239885399-f87d992e0f18'),
   coffeeDates: img('photo-1604924434662-4127d9fa3070'),
   luqaimat: img('photo-1553499944-76f9d2bc9349'),
-  fattoush: img('photo-1540420773420-3366772f4999')
+  fattoush: img('photo-1540420773420-3366772f4999'),
+  kabdaBaladi: dishKabdaBaladi,
+  friedEggs: dishFriedEggs,
+  tuna: dishTuna,
+  southernBread: dishSouthernBread,
+  logo: logoPlaceholder
 }
 
 const diningRoom = '/brand/photo-riyadh-skyline.jpg'
 const najdiArchitecture = '/brand/photo-najdi-architecture.jpg'
 const najdiBranch = '/brand/photo-najdi-branch.jfif'
 const saduInterior = '/brand/photo-sadu-interior.jpg'
+
+// Breakfast spread photos (Menu folder, images 1-8)
+const breakfastSpread1 = '/brand/photo-breakfast-spread-1.png'
+const breakfastBread = '/brand/photo-breakfast-bread.png'
+const najdiBreakfastTable = '/brand/photo-najdi-breakfast-table.png'
+const eggsTomatoRelish = '/brand/photo-eggs-tomato-relish.png'
+const tomatoRelish = '/brand/photo-tomato-relish.png'
+const nawashefPhoto = '/brand/photo-nawashef.png'
+const tomatoPepperDip = '/brand/photo-tomato-pepper-dip.png'
+const hummusMeat = '/brand/photo-hummus-meat.png'
 const BRANCH_MAP_QUERY = 'Khalid bin Al Waleed Street, Qurtubah, Riyadh, Saudi Arabia'
 const branchMapsLink = `https://maps.google.com/?q=${encodeURIComponent(BRANCH_MAP_QUERY)}`
 
 // ---- Full real menu (from SAMDAN's printed menu) ----
 // Each row: [en name, ar name, en desc, ar desc, category key, price, calories|null, imageKey, featured?]
+// Category set + order as specified by the restaurant — Strapi's own
+// categoryEn/categoryAr fields need to be updated to match these exact
+// label strings (see note in Menu.jsx fetch call).
 export const CAT = {
-  traditional: { en: 'Main Dishes', ar: 'الأكلات الشعبية' },
+  mainDishes: { en: 'Main Dishes', ar: 'الأطباق الرئيسية' },
+  traditionalDishes: { en: 'Traditional Dishes', ar: 'الأكلات الشعبية' },
   breakfast: { en: 'Breakfast', ar: 'الفطور' },
-  madhghoot: { en: 'Madhghoot & Kabsa Barriya', ar: 'المضغوط' },
-  goatHaneeth: { en: 'Goat Haneeth', ar: 'الأطباق الرئيسية' },
-  lambHaneeth: { en: 'Lamb Haneeth', ar: 'الحاشي' },
+  camel: { en: 'Camel', ar: 'الجمل' },
+  mandi: { en: 'Mandi', ar: 'المندي' },
   chicken: { en: 'Chicken', ar: 'الدجاج' },
-  wholeLamb: { en: 'Whole Lamb', ar: 'لحم الذبيحة' },
-  riceSides: { en: 'Rice', ar: 'الرز' },
-  soupsPastries: { en: 'Soups & Pastries', ar: 'القدرات' },
+  rice: { en: 'Rice', ar: 'الرز' },
   sides: { en: 'Sides', ar: 'الإدامات' },
   salads: { en: 'Salads', ar: 'السلطات' },
-  drinks: { en: 'Drinks', ar: 'المشروبات' },
-  desserts: { en: 'Desserts', ar: 'الحلا' }
+  appetizers: { en: 'Appetizers', ar: 'المقبلات' },
+  drinks: { en: 'Drinks', ar: 'المشروبات' }
 }
 
 export const CATEGORY_ORDER = Object.keys(CAT)
 
+// imageKey 'logo' = no real dish photo yet, renders as the Samdan mark on
+// white (see .is-placeholder in App.css) until real photography exists.
 const MENU_ROWS = [
-  // Breakfast
-  ['Kabda Baladi', 'كبدة بلدي', 'Sautéed local liver with onions and warm spices', 'كبدة طازجة سوتيه مع البصل والبهارات الدافئة', 'breakfast', '25', 420, 'margoog'],
-  ['Muqalqal Lahm', 'مقلقل لحم', 'Pan-tossed beef with peppers, onion, and tomato', 'لحم مقلقل مع الفلفل والبصل والطماطم', 'breakfast', '30', 510, 'margoog'],
-  ['Muqalqal Dajaj', 'مقلقل دجاج', 'Pan-tossed chicken with peppers and tomato', 'دجاج مقلقل مع الفلفل والطماطم', 'breakfast', '20', 430, 'chickenKabsa'],
-  ['Nawashef', 'نواشف', 'Traditional dried-meat morning stew', 'طبق فطور تقليدي من اللحم المجفف', 'breakfast', '30', 540, 'margoog'],
-  ['Homaisa', 'حميسة', 'Slow-simmered wheat and meat breakfast porridge', 'قمح مطهو ببطء مع اللحم، فطور تقليدي', 'breakfast', '27', 390, 'jarish'],
-  ['Tuna', 'تونة', 'Fresh tuna breakfast plate with vegetables', 'طبق تونة طازج مع الخضار', 'breakfast', '15', 280, 'fattoush'],
-  ['Shakshuka', 'شكشوكة', 'Eggs poached in a spiced tomato and pepper sauce', 'بيض مطهو في صلصة الطماطم والفلفل المتبلة', 'breakfast', '10', 330, 'margoog'],
-  ['Lahsa', 'لحسة', 'Warm spiced flour porridge, a Najdi breakfast classic', 'عصيدة دقيق دافئة ومتبلة، طبق نجدي تقليدي', 'breakfast', '12', 350, 'jarish'],
-  ['Fried Eggs', 'بيض عيون', 'Two eggs, sunny side up, with fresh bread', 'بيضتان مقليتان مع خبز طازج', 'breakfast', '10', 240, 'margoog'],
-  ['Foul', 'فول', 'Slow-cooked fava beans with olive oil and spices', 'فول مدمس مطهو ببطء مع زيت الزيتون والبهارات', 'breakfast', '10', 360, 'margoog'],
-  ['Qishta & Honey', 'قشطة وعسل', 'Clotted cream drizzled with natural honey', 'قشطة طازجة مغطاة بالعسل الطبيعي', 'breakfast', '20', 420, 'luqaimat'],
+  // Main Dishes (تيس / goat haneeth, plus raw butchered lamb)
+  ['Goat Haneeth Bashawer', 'نفر تيس حنيذ بشاور', 'Individual slow-roasted goat haneeth with bashawer-style rice', 'حنيذ تيس فردي مطهو ببطء مع أرز على طريقة البشاور', 'mainDishes', '95', 2467, 'logo'],
+  ['Goat Haneeth Shaabi', 'نفر تيس حنيذ شعبي', 'Individual goat haneeth, traditional folk-style rice', 'حنيذ تيس فردي مع أرز على الطريقة الشعبية', 'mainDishes', '95', 2467, 'logo'],
+  ['Goat Haneeth Saleeg', 'نفر تيس حنيذ سليق', 'Individual goat haneeth served with creamy saleeg rice', 'حنيذ تيس فردي يقدم مع أرز السليق الكريمي', 'mainDishes', '95', 2467, 'logo'],
+  ['Goat Haneeth Mathloutha', 'نفر تيس حنيذ مثلوثة', 'Individual slow-roasted goat haneeth over spiced rice', 'حنيذ تيس فردي مطهو ببطء فوق أرز متبل', 'mainDishes', '100', 2467, 'logo', true],
+  ['Quarter Goat Haneeth', 'ربع تيس حنيذ', 'Slow-roasted quarter goat haneeth — serves 2–3', 'ربع تيس حنيذ مطهو ببطء - يكفي ٢-٣ أشخاص', 'mainDishes', '380', 9870, 'logo'],
+  ['Half Goat Haneeth', 'نصف تيس حنيذ', 'Slow-roasted half goat haneeth — serves 4–6', 'نصف تيس حنيذ مطهو ببطء - يكفي ٤-٦ أشخاص', 'mainDishes', '760', 20350, 'logo', true],
+  ['Whole Goat Haneeth', 'تيس كامل حنيذ', 'Slow-roasted whole goat haneeth — serves 8–10', 'تيس كامل حنيذ مطهو ببطء - يكفي ٨-١٠ أشخاص', 'mainDishes', '1520', 40750, 'logo'],
+  ['Quarter Lamb', 'ربع ذبيحة', 'Quarter raw lamb, butchered to order — serves 2–3', 'ربع ذبيحة نيّة حسب الطلب - يكفي ٢-٣ أشخاص', 'mainDishes', '350', null, 'logo'],
+  ['Half Lamb', 'نصف ذبيحة', 'Half raw lamb, butchered to order — serves 4–6', 'نصف ذبيحة نيّة حسب الطلب - يكفي ٤-٦ أشخاص', 'mainDishes', '700', null, 'logo'],
+  ['Whole Lamb', 'ذبيحة كاملة', 'Whole raw lamb, butchered to order — serves 8–10', 'ذبيحة كاملة نيّة حسب الطلب - يكفي ٨-١٠ أشخاص', 'mainDishes', '1400', null, 'logo'],
 
   // Traditional Dishes
-  ['Areeka Janoubia', 'عريكة جنوبية', 'Southern-style bread mash with meat and ghee', 'عريكة على الطريقة الجنوبية مع اللحم والسمن', 'traditional', '35', 690, 'jarish', true],
-  ['Mashghoutha', 'مشغوثة', 'Traditional mashed bread and meat dish', 'طبق تقليدي من الخبز المهروس واللحم', 'traditional', '35', 610, 'margoog'],
-  ['Fattah with Ghee & Honey', 'فتة بالسمن والعسل', 'Layered bread soaked in ghee and honey', 'خبز مطبق منقوع بالسمن والعسل', 'traditional', '20', 780, 'luqaimat'],
-  ['Marasa', 'مرسة', 'Traditional Najdi bread and broth dish', 'طبق نجدي تقليدي من الخبز والمرق', 'traditional', '20', 480, 'jarish'],
-  ['Maksaf', 'مكسف', 'Hearty traditional bread and meat mash', 'طبق تراثي دسم من الخبز واللحم المهروس', 'traditional', '20', 640, 'margoog'],
-  ['Local Ghee', 'سمن بلدي', 'Pure traditional Saudi ghee', 'سمن بلدي أصيل', 'traditional', '9', 180, 'jarish'],
-  ['Natural Honey', 'عسل طبيعي', 'Pure natural Saudi honey', 'عسل طبيعي سعودي خالص', 'traditional', '10', 95, 'luqaimat'],
-  ['Radeefa', 'رضيفة', 'Traditional bread side', 'طبق خبز تقليدي', 'traditional', '6', 320, 'jarish'],
+  ['Areeka Janoubia', 'عريكة جنوبية', 'Southern-style bread mash with meat and ghee', 'عريكة على الطريقة الجنوبية مع اللحم والسمن', 'traditionalDishes', '35', 690, 'logo', true],
+  ['Mashghoutha', 'مشغوثة', 'Traditional mashed bread and meat dish', 'طبق تقليدي من الخبز المهروس واللحم', 'traditionalDishes', '35', 610, 'logo'],
+  ['Fattah with Ghee & Honey', 'فتة بالسمن والعسل', 'Layered bread soaked in ghee and honey', 'خبز مطبق منقوع بالسمن والعسل', 'traditionalDishes', '20', 780, 'logo'],
+  ['Marasa', 'مرسة', 'Traditional Najdi bread and broth dish', 'طبق نجدي تقليدي من الخبز والمرق', 'traditionalDishes', '20', 480, 'logo'],
+  ['Maksaf', 'مكسف', 'Hearty traditional bread and meat mash', 'طبق تراثي دسم من الخبز واللحم المهروس', 'traditionalDishes', '20', 640, 'logo'],
+  ['Local Ghee', 'سمن بلدي', 'Pure traditional Saudi ghee', 'سمن بلدي أصيل', 'traditionalDishes', '9', 180, 'logo'],
+  ['Natural Honey', 'عسل طبيعي', 'Pure natural Saudi honey', 'عسل طبيعي سعودي خالص', 'traditionalDishes', '10', 95, 'logo'],
+  ['Radeefa', 'رضيفة', 'Traditional bread side', 'طبق خبز تقليدي', 'traditionalDishes', '6', 320, 'logo'],
 
-  // Madhghoot & Kabsa Barriya
-  ['Madhghoot Ghanam', 'مضغوط غنم', 'Rice slow-pressed with tender mutton and warm spices', 'أرز مضغوط ببطء مع لحم الغنم الطري والبهارات الدافئة', 'madhghoot', '95', 980, 'lambKabsa'],
-  ['Madhghoot Hashi', 'مضغوط حاشي', 'Rice slow-pressed with tender lamb and warm spices', 'أرز مضغوط ببطء مع لحم الحاشي الطري والبهارات الدافئة', 'madhghoot', '75', 900, 'kabsaMashawi'],
-  ['Arabic Madhghoot Ghanam', 'مضغوط عربي غنم', 'Arabic-style pressed rice with mutton', 'أرز مضغوط على الطريقة العربية مع لحم الغنم', 'madhghoot', '95', 1040, 'hejaziMandi'],
-  ['Arabic Madhghoot Hashi', 'مضغوط عربي حاشي', 'Arabic-style pressed rice with lamb', 'أرز مضغوط على الطريقة العربية مع لحم الحاشي', 'madhghoot', '75', 950, 'hejaziSaleeg'],
-  ['Kabsa Barriya Ghanam', 'كبسة بريه غنم', 'Open-fire Bedouin-style kabsa with mutton', 'كبسة بريّة على الفحم مع لحم الغنم', 'madhghoot', '95', 950, 'lambKabsa'],
-  ['Kabsa Barriya Hashi', 'كبسة بريه حاشي', 'Open-fire Bedouin-style kabsa with lamb', 'كبسة بريّة على الفحم مع لحم الحاشي', 'madhghoot', '75', 870, 'kabsaMashawi'],
+  // Breakfast
+  ['Kabda Baladi', 'كبدة بلدي', 'Sautéed local liver with onions and warm spices', 'كبدة طازجة سوتيه مع البصل والبهارات الدافئة', 'breakfast', '25', 420, 'kabdaBaladi'],
+  ['Muqalqal Lahm', 'مقلقل لحم', 'Pan-tossed beef with peppers, onion, and tomato', 'لحم مقلقل مع الفلفل والبصل والطماطم', 'breakfast', '30', 510, 'logo'],
+  ['Muqalqal Dajaj', 'مقلقل دجاج', 'Pan-tossed chicken with peppers and tomato', 'دجاج مقلقل مع الفلفل والطماطم', 'breakfast', '20', 430, 'logo'],
+  ['Nawashef', 'نواشف', 'Traditional dried-meat morning stew', 'طبق فطور تقليدي من اللحم المجفف', 'breakfast', '30', 540, 'logo'],
+  ['Homaisa', 'حميسة', 'Slow-simmered wheat and meat breakfast porridge', 'قمح مطهو ببطء مع اللحم، فطور تقليدي', 'breakfast', '27', 390, 'logo'],
+  ['Tuna', 'تونة', 'Fresh tuna breakfast plate with vegetables', 'طبق تونة طازج مع الخضار', 'breakfast', '15', 280, 'tuna'],
+  ['Shakshuka', 'شكشوكة', 'Eggs poached in a spiced tomato and pepper sauce', 'بيض مطهو في صلصة الطماطم والفلفل المتبلة', 'breakfast', '10', 330, 'logo'],
+  ['Lahsa', 'لحسة', 'Warm spiced flour porridge, a Najdi breakfast classic', 'عصيدة دقيق دافئة ومتبلة، طبق نجدي تقليدي', 'breakfast', '12', 350, 'logo'],
+  ['Fried Eggs', 'بيض عيون', 'Two eggs, sunny side up, with fresh bread', 'بيضتان مقليتان مع خبز طازج', 'breakfast', '10', 240, 'friedEggs'],
+  ['Foul', 'فول', 'Slow-cooked fava beans with olive oil and spices', 'فول مدمس مطهو ببطء مع زيت الزيتون والبهارات', 'breakfast', '10', 360, 'logo'],
+  ['Qishta & Honey', 'قشطة وعسل', 'Clotted cream drizzled with natural honey', 'قشطة طازجة مغطاة بالعسل الطبيعي', 'breakfast', '20', 420, 'logo'],
 
-  // Goat Haneeth (Main Dishes)
-  ['Nafar Haneeth Mathloutha', 'نفر تيس حنيذ مثلوثة', 'Individual slow-roasted goat haneeth over spiced rice', 'حنيذ تيس فردي مطهو ببطء فوق أرز متبل', 'goatHaneeth', '100', 2467, 'hejaziMandi', true],
-  ['Nafar Haneeth Saleeg', 'نفر تيس حنيذ سليق', 'Individual goat haneeth served with creamy saleeg rice', 'حنيذ تيس فردي يقدم مع أرز السليق الكريمي', 'goatHaneeth', '95', 2467, 'saleeg'],
-  ['Nafar Haneeth Shaabi', 'نفر تيس حنيذ شعبي', 'Individual goat haneeth, traditional folk style', 'حنيذ تيس فردي على الطريقة الشعبية', 'goatHaneeth', '95', 2467, 'hejaziMandi'],
-  ['Nafar Haneeth Bashawer', 'نفر تيس حنيذ بشاور', 'Individual goat haneeth with bashawer-style rice', 'حنيذ تيس فردي مع أرز على طريقة البشاور', 'goatHaneeth', '95', 2467, 'kabsaMashawi'],
-  ['Quarter Goat Haneeth', 'ربع تيس حنيذ', 'Slow-roasted quarter goat haneeth — serves 2–3', 'ربع تيس حنيذ مطهو ببطء - يكفي ٢-٣ أشخاص', 'goatHaneeth', '380', 9870, 'hejaziMandi'],
-  ['Half Goat Haneeth', 'نصف تيس حنيذ', 'Slow-roasted half goat haneeth — serves 4–6', 'نصف تيس حنيذ مطهو ببطء - يكفي ٤-٦ أشخاص', 'goatHaneeth', '760', 20350, 'hejaziMandi', true],
-  ['Whole Goat Haneeth', 'تيس كامل حنيذ', 'Slow-roasted whole goat haneeth — serves 8–10', 'تيس كامل حنيذ مطهو ببطء - يكفي ٨-١٠ أشخاص', 'goatHaneeth', '1520', 40750, 'hejaziMandi'],
+  // Camel (حاشي / young camel haneeth)
+  ['Camel Haneeth Bashawer', 'حاشي حنيذ بشاور', 'Individual camel haneeth with bashawer-style rice', 'حنيذ حاشي فردي مع أرز على طريقة البشاور', 'camel', '75', 760, 'logo'],
+  ['Camel Haneeth Shaabi', 'حاشي حنيذ شعبي', 'Individual camel haneeth, traditional folk style', 'حنيذ حاشي فردي على الطريقة الشعبية', 'camel', '75', 650, 'logo'],
+  ['Camel Haneeth Saleeg', 'حاشي حنيذ سليق', 'Individual camel haneeth served with creamy saleeg rice', 'حنيذ حاشي فردي يقدم مع أرز السليق الكريمي', 'camel', '75', 720, 'logo'],
+  ['Camel Haneeth Mathloutha', 'حاشي حنيذ مثلوثة', 'Individual slow-roasted camel haneeth over spiced rice', 'حنيذ حاشي فردي مطهو ببطء فوق أرز متبل', 'camel', '80', 780, 'logo'],
 
-  // Lamb Haneeth (Hashi)
-  ['Hashi Haneeth Mathloutha', 'حاشي حنيذ مثلوثة', 'Individual slow-roasted lamb haneeth over spiced rice', 'حنيذ حاشي فردي مطهو ببطء فوق أرز متبل', 'lambHaneeth', '80', 780, 'lambKabsa'],
-  ['Hashi Haneeth Saleeg', 'حاشي حنيذ سليق', 'Individual lamb haneeth served with creamy saleeg rice', 'حنيذ حاشي فردي يقدم مع أرز السليق الكريمي', 'lambHaneeth', '75', 720, 'saleeg'],
-  ['Hashi Haneeth Shaabi', 'حاشي حنيذ شعبي', 'Individual lamb haneeth, traditional folk style', 'حنيذ حاشي فردي على الطريقة الشعبية', 'lambHaneeth', '75', 650, 'lambKabsa'],
-  ['Hashi Haneeth Bashawer', 'حاشي حنيذ بشاور', 'Individual lamb haneeth with bashawer-style rice', 'حنيذ حاشي فردي مع أرز على طريقة البشاور', 'lambHaneeth', '75', 760, 'kabsaMashawi'],
+  // Mandi (مضغوط / pressed rice with lamb or camel)
+  ['Lamb Mandi', 'مضغوط غنم', 'Rice slow-pressed with tender mutton and warm spices', 'أرز مضغوط ببطء مع لحم الغنم الطري والبهارات الدافئة', 'mandi', '95', 980, 'logo'],
+  ['Camel Mandi', 'مضغوط حاشي', 'Rice slow-pressed with tender camel meat and warm spices', 'أرز مضغوط ببطء مع لحم الحاشي الطري والبهارات الدافئة', 'mandi', '75', 900, 'logo'],
+  ['Lamb Mandi Arabic', 'مضغوط عربي غنم', 'Arabic-style pressed rice with mutton', 'أرز مضغوط على الطريقة العربية مع لحم الغنم', 'mandi', '95', 1040, 'logo'],
+  ['Camel Mandi Arabic', 'مضغوط عربي حاشي', 'Arabic-style pressed rice with camel meat', 'أرز مضغوط على الطريقة العربية مع لحم الحاشي', 'mandi', '75', 950, 'logo'],
+  ['Lamb Kabsa', 'كبسة بريه غنم', 'Open-fire Bedouin-style kabsa with mutton', 'كبسة بريّة على الفحم مع لحم الغنم', 'mandi', '95', 950, 'logo'],
+  ['Camel Kabsa', 'كبسة بريه حاشي', 'Open-fire Bedouin-style kabsa with camel meat', 'كبسة بريّة على الفحم مع لحم الحاشي', 'mandi', '75', 870, 'logo'],
 
   // Chicken
-  ['Whole Chicken (Madhbi-Haneeth)', 'حبة دجاج (مضبي - حنيذ)', 'Whole chicken, roasted or Madhbi-style, over spiced rice', 'دجاجة كاملة مشوية أو مضبي فوق أرز متبل', 'chicken', '50', 2625, 'chickenKabsa'],
-  ['Half Chicken (Madhbi-Haneeth)', 'نصف دجاج (مضبي - حنيذ)', 'Half chicken, roasted or Madhbi-style, over spiced rice', 'نصف دجاجة مشوية أو مضبي فوق أرز متبل', 'chicken', '25', 1313, 'hejaziSaleeg'],
-
-  // Whole Lamb
-  ['Quarter Lamb', 'ربع ذبيحة', 'Quarter raw lamb, butchered to order — serves 2–3', 'ربع ذبيحة نيّة حسب الطلب - يكفي ٢-٣ أشخاص', 'wholeLamb', '350', null, 'lambKabsa'],
-  ['Half Lamb', 'نص ذبيحة', 'Half raw lamb, butchered to order — serves 4–6', 'نصف ذبيحة نيّة حسب الطلب - يكفي ٤-٦ أشخاص', 'wholeLamb', '700', null, 'lambKabsa'],
-  ['Whole Lamb', 'ذبيحة كاملة', 'Whole raw lamb, butchered to order — serves 8–10', 'ذبيحة كاملة نيّة حسب الطلب - يكفي ٨-١٠ أشخاص', 'wholeLamb', '1400', null, 'lambKabsa'],
+  ['Whole Chicken (Madhbi-Haneeth)', 'حبة دجاج (مضبي - حنيذ)', 'Whole chicken, roasted or Madhbi-style, over spiced rice', 'دجاجة كاملة مشوية أو مضبي فوق أرز متبل', 'chicken', '50', 2625, 'logo'],
+  ['Half Chicken (Madhbi-Haneeth)', 'نصف دجاج (مضبي - حنيذ)', 'Half chicken, roasted or Madhbi-style, over spiced rice', 'نصف دجاجة مشوية أو مضبي فوق أرز متبل', 'chicken', '25', 1313, 'logo'],
 
   // Rice
-  ['Rice Bashawer', 'رز بشاور', 'Fragrant bashawer-style rice', 'أرز على طريقة البشاور العطر', 'riceSides', '10', null, 'jarish'],
-  ['Rice Shaabi', 'رز شعبي', 'Traditional folk-style rice', 'أرز على الطريقة الشعبية', 'riceSides', '10', null, 'saleeg'],
-  ['Sahn Qasdeer (Medium)', 'صحن قصدير وسط', 'Medium tin-plate rice portion', 'صحن قصدير أرز - حجم وسط', 'riceSides', '6', null, 'jarish'],
-  ['Sahn Qasdeer (Large)', 'صحن قصدير كبير', 'Large tin-plate rice portion', 'صحن قصدير أرز - حجم كبير', 'riceSides', '10', null, 'saleeg'],
-
-  // Soups & Pastries
-  ['Samdan Soup', 'شوربة سمدان', 'Our signature house soup', 'شوربتنا المميزة الخاصة بسمدان', 'soupsPastries', '5', 180, 'margoog'],
-  ['Meat Samosa', 'سمبوسة لحم', 'Crisp pastry filled with spiced meat', 'سمبوسة مقرمشة محشوة باللحم المتبل', 'soupsPastries', '3', 130, 'mutabbaq'],
+  ['Rice Bashawer', 'رز بشاور', 'Fragrant bashawer-style rice', 'أرز على طريقة البشاور العطر', 'rice', '10', null, 'logo'],
+  ['Rice Shaabi', 'رز شعبي', 'Traditional folk-style rice', 'أرز على الطريقة الشعبية', 'rice', '10', null, 'logo'],
+  ['Sahn Qasdeer (Medium)', 'صحن قصدير وسط', 'Medium tin-plate rice portion', 'صحن قصدير أرز - حجم وسط', 'rice', '6', null, 'logo'],
+  ['Sahn Qasdeer (Large)', 'صحن قصدير كبير', 'Large tin-plate rice portion', 'صحن قصدير أرز - حجم كبير', 'rice', '10', null, 'logo'],
 
   // Sides
-  ['Jareesh (Side)', 'جريش', 'Cracked wheat side, simmered with spices', 'جريش جانبي مطهو مع البهارات', 'sides', '10', 577, 'jarish'],
-  ['Qursan', 'قرصان', 'Traditional layered bread side', 'خبز مطبق تقليدي', 'sides', '10', 447, 'mutabbaq'],
-  ['Musaqqaa', 'مسقعة', 'Sautéed vegetable and meat side', 'خضار ولحم سوتيه', 'sides', '10', 543, 'margoog'],
-  ['Bamia Lahm', 'بامية لحم', 'Okra stewed with tender meat', 'بامية مطهوة مع اللحم الطري', 'sides', '15', 340, 'margoog'],
-  ['Mulukhiyah', 'ملوخية', 'Traditional jute-leaf stew', 'طبق الملوخية التقليدي', 'sides', '10', 116, 'margoog'],
-  ['Vegetable Idam', 'ايدام خضار', 'Mixed vegetable stew', 'إيدام خضار مشكل', 'sides', '10', 190, 'margoog'],
-  ['Southern Bread', 'خبز جنوبي', 'Fresh-baked traditional southern bread', 'خبز جنوبي طازج تقليدي', 'sides', '5', 260, 'jarish'],
+  ['Jareesh (Side)', 'جريش', 'Cracked wheat side, simmered with spices', 'جريش جانبي مطهو مع البهارات', 'sides', '10', 577, 'logo'],
+  ['Qursan', 'قرصان', 'Traditional layered bread side', 'خبز مطبق تقليدي', 'sides', '10', 447, 'logo'],
+  ['Musaqqaa', 'مسقعة', 'Sautéed vegetable and meat side', 'خضار ولحم سوتيه', 'sides', '10', 543, 'logo'],
+  ['Bamia Lahm', 'بامية لحم', 'Okra stewed with tender meat', 'بامية مطهوة مع اللحم الطري', 'sides', '15', 340, 'logo'],
+  ['Mulukhiyah', 'ملوخية', 'Traditional jute-leaf stew', 'طبق الملوخية التقليدي', 'sides', '10', 116, 'logo'],
+  ['Vegetable Idam', 'ايدام خضار', 'Mixed vegetable stew', 'إيدام خضار مشكل', 'sides', '10', 190, 'logo'],
+  ['Southern Bread', 'خبز جنوبي', 'Fresh-baked traditional southern bread', 'خبز جنوبي طازج تقليدي', 'sides', '5', 260, 'southernBread'],
+  ['Kunafa', 'كنافة', 'Crisp shredded pastry with cheese and syrup', 'كنافة مقرمشة بالجبن والقطر', 'sides', '10', 560, 'logo', true],
+  ['Crème Caramel', 'كريم كرميل', 'Silky caramel custard dessert', 'حلا الكريم كرميل الحريري', 'sides', '10', 290, 'logo'],
 
   // Salads
-  ['Green Salad', 'سلطة خضراء', 'Crisp seasonal green salad', 'سلطة خضراء طازجة', 'salads', '10', 90, 'fattoush'],
-  ['Laban Khiyar', 'لبن خيار', 'Cucumber and yogurt salad', 'سلطة اللبن والخيار', 'salads', '10', 120, 'fattoush'],
-  ['Samtara', 'سمطرة', 'Traditional Saudi vegetable salad', 'سلطة سعودية تقليدية', 'salads', '4', 170, 'fattoush'],
-  ['Spicy Salad', 'سلطة حارة', 'Chopped salad with a spiced dressing', 'سلطة مفرومة مع تتبيلة حارة', 'salads', '0', 70, 'fattoush'],
-  ['Tahini', 'طحينية', 'Traditional sesame tahini dip', 'طحينة تقليدية', 'salads', '0', 180, 'fattoush'],
+  ['Green Salad', 'سلطة خضراء', 'Crisp seasonal green salad', 'سلطة خضراء طازجة', 'salads', '10', 90, 'logo'],
+  ['Laban Khiyar', 'لبن خيار', 'Cucumber and yogurt salad', 'سلطة اللبن والخيار', 'salads', '10', 120, 'logo'],
+  ['Samtara', 'سمطرة', 'Traditional Saudi vegetable salad', 'سلطة سعودية تقليدية', 'salads', '4', 170, 'logo'],
+  ['Spicy Salad', 'سلطة حارة', 'Chopped salad with a spiced dressing', 'سلطة مفرومة مع تتبيلة حارة', 'salads', '0', 70, 'logo'],
+  ['Tahini', 'طحينية', 'Traditional sesame tahini dip', 'طحينة تقليدية', 'salads', '0', 180, 'logo'],
+
+  // Appetizers
+  ['Samdan Soup', 'شوربة سمدان', 'Our signature house soup', 'شوربتنا المميزة الخاصة بسمدان', 'appetizers', '5', 180, 'logo'],
+  ['Meat Samosa', 'سمبوسة لحم', 'Crisp pastry filled with spiced meat', 'سمبوسة مقرمشة محشوة باللحم المتبل', 'appetizers', '3', 130, 'logo'],
 
   // Drinks
-  ['Laban Samdan', 'لبن سمدان', 'Our house-style traditional buttermilk', 'لبن سمدان التقليدي الخاص بنا', 'drinks', '5', 160, 'coffeeDates'],
-  ['Soft Drink', 'مشروب غازي', 'Assorted soft drinks', 'مشروبات غازية متنوعة', 'drinks', '4', 132, 'coffeeDates'],
-  ['Al-Qarya Laban', 'لبن القرية', 'Chilled traditional laban', 'لبن القرية بارد', 'drinks', '4', 175, 'coffeeDates'],
-  ['Almarai Laban', 'لبن مراعي', 'Chilled Almarai laban', 'لبن مراعي بارد', 'drinks', '2', 120, 'coffeeDates'],
-  ['Water', 'ماء', 'Bottled water', 'مياه معدنية', 'drinks', '1', 0, 'coffeeDates'],
-  ['Tea', 'شاهي تلقية', 'Traditional Saudi tea', 'شاهي سعودي تقليدي', 'drinks', '3', 2, 'coffeeDates'],
-  ['Arabic Coffee Pot with Dates', 'دلة مع التمر', 'Traditional dallah of qahwa served with premium dates', 'دلة قهوة عربية تقدم مع أجود أنواع التمر', 'drinks', '20', 220, 'coffeeDates'],
-
-  // Desserts
-  ['Kunafa', 'كنافة', 'Crisp shredded pastry with cheese and syrup', 'كنافة مقرمشة بالجبن والقطر', 'desserts', '10', 560, 'luqaimat', true],
-  ['Crème Caramel', 'كريم كرميل', 'Silky caramel custard dessert', 'حلا الكريم كرميل الحريري', 'desserts', '10', 290, 'luqaimat']
+  ['Laban Samdan', 'لبن سمدان', 'Our house-style traditional buttermilk', 'لبن سمدان التقليدي الخاص بنا', 'drinks', '5', 160, 'logo'],
+  ['Soft Drink', 'مشروب غازي', 'Assorted soft drinks', 'مشروبات غازية متنوعة', 'drinks', '4', 132, 'logo'],
+  ['Al-Qarya Laban', 'لبن القرية', 'Chilled traditional laban', 'لبن القرية بارد', 'drinks', '4', 175, 'logo'],
+  ['Almarai Laban', 'لبن مراعي', 'Chilled Almarai laban', 'لبن مراعي بارد', 'drinks', '2', 120, 'logo'],
+  ['Water', 'ماء', 'Bottled water', 'مياه معدنية', 'drinks', '1', 0, 'logo'],
+  ['Tea', 'شاهي تلقية', 'Traditional Saudi tea', 'شاهي سعودي تقليدي', 'drinks', '3', 2, 'logo'],
+  ['Arabic Coffee Pot with Dates', 'دلة مع التمر', 'Traditional dallah of qahwa served with premium dates', 'دلة قهوة عربية تقدم مع أجود أنواع التمر', 'drinks', '20', 220, 'logo']
 ]
 
 const buildMenuItems = (lang) =>
@@ -146,6 +169,7 @@ const buildMenuItems = (lang) =>
     price,
     calories: calories || undefined,
     image: menuImages[imageKey],
+    isPlaceholder: imageKey === 'logo',
     featured: !!featured
   }))
 
@@ -251,7 +275,15 @@ export const translations = {
         { caption: 'Kabsa Mashawi', image: menuImages.kabsaMashawi },
         { caption: 'Saleeg', image: menuImages.saleeg },
         { caption: 'Arabic Coffee & Dates', image: menuImages.coffeeDates },
-        { caption: 'Luqaimat', image: menuImages.luqaimat }
+        { caption: 'Luqaimat', image: menuImages.luqaimat },
+        { caption: 'Traditional Breakfast Spread', image: breakfastSpread1 },
+        { caption: 'Golden Breakfast Bread', image: breakfastBread },
+        { caption: 'Najdi Breakfast Table', image: najdiBreakfastTable },
+        { caption: 'Eggs & Tomato Relish', image: eggsTomatoRelish },
+        { caption: 'Spiced Tomato Relish', image: tomatoRelish },
+        { caption: 'Spiced Meat Nawashef', image: nawashefPhoto },
+        { caption: 'Tomato & Pepper Dip', image: tomatoPepperDip },
+        { caption: 'Hummus with Spiced Meat', image: hummusMeat }
       ]
     },
     notFound: {
@@ -388,7 +420,15 @@ export const translations = {
         { caption: 'كبسة مشاوي', image: menuImages.kabsaMashawi },
         { caption: 'سليق', image: menuImages.saleeg },
         { caption: 'قهوة عربية وتمر', image: menuImages.coffeeDates },
-        { caption: 'لقيمات', image: menuImages.luqaimat }
+        { caption: 'لقيمات', image: menuImages.luqaimat },
+        { caption: 'مائدة فطور تقليدية', image: breakfastSpread1 },
+        { caption: 'خبز الفطور الذهبي', image: breakfastBread },
+        { caption: 'مائدة فطور نجدية', image: najdiBreakfastTable },
+        { caption: 'بيض ومرقة طماطم', image: eggsTomatoRelish },
+        { caption: 'مرقة طماطم متبلة', image: tomatoRelish },
+        { caption: 'نواشف باللحم المتبل', image: nawashefPhoto },
+        { caption: 'غموس طماطم وفلفل', image: tomatoPepperDip },
+        { caption: 'حمص باللحم المتبل', image: hummusMeat }
       ]
     },
     notFound: {
