@@ -246,7 +246,7 @@ export const translations = {
       phone: '+966 55 518 5657',
       email: 'reservations@samdan.sa',
       hours: 'Daily 12:00 PM – 12:00 AM',
-      mapTitle: 'Find Us on the Map'
+      // mapTitle: 'Find Us on the Map'
     },
     branches: {
       eyebrow: 'Find Us',
@@ -392,7 +392,7 @@ export const translations = {
       phone: '+966 55 518 5657',
       email: 'reservations@samdan.sa',
       hours: 'يومياً ١٢:٠٠ ظهراً - ١٢:٠٠ منتصف الليل',
-      mapTitle: 'ابحث عنا على الخريطة'
+      // mapTitle: 'ابحث عنا على الخريطة'
     },
     branches: {
       eyebrow: 'موقعنا',
