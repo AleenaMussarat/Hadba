@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
 import { fetchBranches } from '../services/strapi'
-import { FaLocationDot, FaClock } from 'react-icons/fa6'
+import { FaLocationDot, FaClock, FaDiamondTurnRight } from 'react-icons/fa6'
 import ParallaxImage from './ParallaxImage'
 
 const Branches = () => {
@@ -59,6 +59,7 @@ const Branches = () => {
                     <span>{branch.hours}</span>
                   </p>
                   <a className="btn btn-primary branch-directions" href={branch.mapsLink} target="_blank" rel="noreferrer">
+                    <FaDiamondTurnRight />
                     {t.branches.directionsLabel}
                   </a>
                 </div>

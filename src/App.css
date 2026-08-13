@@ -623,7 +623,7 @@ html[dir="rtl"] .btn-reserve {
   width: 85%;
   max-width: 400px;
   height: 100vh;
-  background: var(--bg-elevated);
+  background: linear-gradient(180deg, rgba(188, 52, 51, 0.97) 0%, rgba(143, 39, 38, 0.98) 100%);
   z-index: 1001;
   padding: 1.5rem;
   transition: right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -631,6 +631,26 @@ html[dir="rtl"] .btn-reserve {
   flex-direction: column;
   overflow-y: auto;
   box-shadow: -10px 0 40px var(--shadow-color);
+}
+
+/* Subtle brand texture instead of a flat red fill — a separate low-opacity
+   layer (not the pattern directly as the panel's background) so it reads as
+   a faint texture, not a loud wallpaper fighting the nav links on top. */
+.mobile-menu::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('/brand/pattern-brand-orange.png');
+  background-size: 260px auto;
+  background-repeat: repeat;
+  opacity: 0.22;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mobile-menu > * {
+  position: relative;
+  z-index: 1;
 }
 
 .mobile-menu.active {
@@ -654,7 +674,7 @@ html[dir="rtl"] .mobile-menu.active {
   align-items: center;
   margin-bottom: 1.8rem;
   padding-bottom: 1.2rem;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .mobile-menu-header .logo-mark {
@@ -669,7 +689,7 @@ html[dir="rtl"] .mobile-menu.active {
   background: none;
   border: none;
   font-size: 1.8rem;
-  color: var(--text-primary);
+  color: var(--text-on-dark-primary);
   cursor: pointer;
   padding: 8px;
   transition: color 0.3s, transform 0.3s;
@@ -712,7 +732,7 @@ html[dir="rtl"] .mobile-menu.active {
   gap: 1rem;
   padding: 0.8rem 1.5rem;
   text-decoration: none;
-  color: var(--text-secondary);
+  color: var(--text-on-dark-secondary);
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
   font-size: 1.1rem;
@@ -722,8 +742,8 @@ html[dir="rtl"] .mobile-menu.active {
 
 .mobile-nav-link:hover,
 .mobile-nav-link.active {
-  background: rgba(246, 157, 28, 0.08);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-on-dark-primary);
 }
 
 .mobile-nav-link-text {
@@ -745,7 +765,7 @@ html[dir="rtl"] .mobile-menu.active {
 .mobile-menu-footer {
   margin-top: auto;
   padding-top: 1.5rem;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .mobile-reserve {
@@ -800,7 +820,7 @@ html[dir="rtl"] .mobile-menu.active {
   }
 
   .logo-mark {
-    height: 42px;
+    height: 50px;
   }
 }
 
@@ -818,7 +838,7 @@ html[dir="rtl"] .mobile-menu.active {
   }
 
   .logo-mark {
-    height: 34px;
+    height: 42px;
   }
 
   .nav-actions .btn-reserve {
@@ -2692,6 +2712,19 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   .contact-form-block {
     padding: 1.8rem;
   }
+
+  .reserve-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .reserve-title {
+    font-size: 1.25rem;
+  }
+
+  .reserve-subtitle {
+    text-align: center;
+  }
 }
 
 .map-card iframe {
@@ -2730,6 +2763,20 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 
   .map-card iframe {
     min-height: 320px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* The heading's own margin-bottom (4.5rem, from .section-heading) collapses
+     with a top margin here instead of adding to it, so a small addition was
+     silently swallowed — this value has to be bigger than that 4.5rem to
+     have any effect at all, since collapsing takes the max of the two, not
+     the sum. .page-intro-bg is also transform: scale(1.08), which pushes its
+     rendered bottom edge past its own 500px box, so the grid needs real
+     clearance, not just a token gap, to stop the heading and photo band
+     overlapping on narrow screens where the heading text wraps taller. */
+  .contact-grid {
+    margin-top: 8rem;
   }
 }
 
@@ -3388,8 +3435,8 @@ html[dir="rtl"] .reserve-field-row .reserve-field:first-child {
   }
 
   .reserve-submit {
-    width: 100%;
-    min-width: 0;
+    width: auto;
+    min-width: 160px;
   }
 }
 
