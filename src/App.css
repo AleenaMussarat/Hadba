@@ -18,22 +18,31 @@
   --color-sand: #D9B88A;
   --color-sand-muted: #A6875F;
 
-  /* Dark surfaces — neutral matte black/charcoal instead of a warm brown
-     tint, so the red/orange accents read more distinctly against it. */
-  --bg-base: #0D0D0D;
-  --bg-elevated: #1A1A1A;
-  --bg-elevated-2: #242424;
-  --bg-overlay: rgba(13, 13, 13, 0.92);
+  /* Light surfaces — white base with a faint warm off-white step for
+     "elevated" cards, so surfaces still read as layered without going dark. */
+  --bg-base: #FFFFFF;
+  --bg-elevated: #F7F3EE;
+  --bg-elevated-2: #EFE6D8;
+  --bg-overlay: rgba(255, 255, 255, 0.92);
 
-  /* Text */
-  --text-primary: #F5ECE1;
-  --text-secondary: #C7B9A8;
-  --text-muted: #8C7C6A;
+  /* Text — dark warm brown/black instead of cream, now that surfaces are light. */
+  --text-primary: #221910;
+  --text-secondary: #5C4F3F;
+  --text-muted: #7A6B58;
+
+  /* Kept light on purpose: navbar/footer/hero (red or orange fill) and the
+     dark-scrimmed photo cards (dish carousel, story panels, branches box,
+     contact form, gallery lightbox, loading screen) still have dark/colorful
+     backgrounds even though the page base flipped to white, so their own
+     text stays on this separate light set instead of --text-primary etc. */
+  --text-on-dark-primary: #F5ECE1;
+  --text-on-dark-secondary: #C7B9A8;
+  --text-on-dark-muted: #8C7C6A;
 
   /* Borders / shadows */
-  --border-color: rgba(246, 157, 28, 0.16);
-  --border-color-strong: rgba(246, 157, 28, 0.4);
-  --shadow-color: rgba(0, 0, 0, 0.55);
+  --border-color: rgba(34, 25, 16, 0.12);
+  --border-color-strong: rgba(34, 25, 16, 0.28);
+  --shadow-color: rgba(30, 20, 10, 0.16);
 
   --navbar-height: 112px;
   --navbar-transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -80,9 +89,14 @@ body {
   line-height: 1.6;
 }
 
+/* overflow-x: clip (not hidden) — hidden on one axis forces the other axis's
+   computed value to auto, which turns .app into a scroll-clipping ancestor
+   and silently breaks position: sticky for everything inside it (e.g. the
+   About page's pinned pattern image). clip contains the same full-bleed
+   horizontal breakout elements without that side effect. */
 .app {
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: clip;
   position: relative;
 }
 
@@ -105,22 +119,13 @@ body {
 }
 
 /* ===== PAGE BORDERS (traditional Sadu-weave frame) ===== */
-/* Positioned against <main> (not .app) so the border only runs the height of
-   the routed page content — it stops before the footer instead of framing
-   the whole document. */
 main {
   position: relative;
 }
 
-/* Width scales with viewport instead of a fixed px value: a flat width that
-   cleared the navbar's own edge padding on a wide monitor was wider than
-   that same padding on an ordinary 1366–1440px laptop screen, so the border
-   only ever showed once zoomed out enough to shrink the effective viewport.
-   Scaling with vw (capped both ends) keeps it clear of the navbar logo/links
-   at every desktop width instead of just the widest ones. */
 .page-border {
   position: absolute;
-  top: 0;
+  top: 520px;
   bottom: 0;
   width: clamp(14px, 2vw, 30px);
   background-repeat: repeat-y;
@@ -147,6 +152,28 @@ main {
 html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--navbar-height);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent) var(--color-primary-dark);
+}
+
+/* ===== SCROLLBAR (brand red track, yellow-to-orange thumb) ===== */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-primary-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(180deg, var(--color-accent-light), var(--color-accent));
+  border-radius: 8px;
+  border: 2px solid var(--color-primary-dark);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-image: linear-gradient(180deg, var(--color-accent), var(--color-accent-dark));
 }
 
 /* ===== SHARED SECTION UTILITIES ===== */
@@ -231,7 +258,7 @@ html {
 .btn-secondary {
   background: transparent;
   color: var(--color-accent);
-  border: 2px solid var(--border-color-strong);
+  border: 2px solid var(--color-accent);
 }
 
 .btn-secondary:hover {
@@ -367,7 +394,7 @@ html {
   width: 4px;
   height: 4px;
   transform: rotate(45deg);
-  background: var(--border-color-strong);
+  background: var(--bg-base);
   margin-inline-end: 0.1rem;
 }
 
@@ -377,7 +404,7 @@ html {
   align-items: center;
   padding: 0.5rem 1.3rem;
   text-decoration: none;
-  color: var(--text-secondary);
+  color: var(--text-on-dark-secondary);
   font-family: 'Playfair Display', serif;
   font-weight: 600;
   font-size: 1.02rem;
@@ -405,7 +432,7 @@ html[dir="rtl"] .nav-link {
 .nav-link-indicator {
   width: 20px;
   height: 3px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  background: linear-gradient(90deg, var(--color-accent-light), var(--color-accent));
   border-radius: 0;
   opacity: 0;
   transform: translateY(-5px) scaleX(0);
@@ -421,7 +448,7 @@ html[dir="rtl"] .nav-link {
 
 .nav-link:hover,
 .nav-link.active {
-  color: var(--text-primary);
+  color: var(--text-on-dark-primary);
 }
 
 
@@ -471,7 +498,7 @@ html[dir="rtl"] .nav-link {
   font-family: 'Montserrat', sans-serif;
   font-size: 0.75rem;
   cursor: pointer;
-  color: var(--text-secondary);
+  color: var(--text-on-dark-secondary);
   transition: all 0.3s;
   letter-spacing: 0.5px;
 }
@@ -483,7 +510,7 @@ html[dir="rtl"] .nav-link {
 }
 
 .lang-toggle button:hover:not(.active) {
-  color: var(--text-primary);
+  color: var(--text-on-dark-primary);
 }
 
 .lang-divider {
@@ -553,7 +580,7 @@ html[dir="rtl"] .btn-reserve {
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: var(--text-primary);
+  color: var(--text-on-dark-primary);
   cursor: pointer;
   padding: 8px;
   border-radius: var(--radius-btn);
@@ -658,7 +685,7 @@ html[dir="rtl"] .mobile-menu.active {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  /* gap: 0.2rem; */
 }
 
 .mobile-nav-links li {
@@ -810,10 +837,6 @@ html[dir="rtl"] .mobile-menu.active {
 }
 
 /* ===== HERO ===== */
-.hero .page-intro-bg {
-  height: 420px;
-}
-
 .hero {
   padding: calc(var(--navbar-height) + 2.5rem) 0 3rem;
   display: flex;
@@ -915,7 +938,7 @@ html[dir="rtl"] .mobile-menu.active {
   align-items: center;
   gap: 1.2rem;
   padding-inline-start: 1.3rem;
-  border-inline-start: 2px solid var(--color-primary);
+  /* border-inline-start: 2px solid var(--color-primary); */
 }
 
 .hero-card-icon-badge {
@@ -1143,45 +1166,6 @@ html[dir="rtl"] .mobile-menu.active {
   gap: 1.4rem;
 }
 
-.dish-carousel-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 200;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid var(--border-color-strong);
-  background: var(--bg-elevated);
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.3s;
-  flex-shrink: 0;
-}
-
-.dish-carousel-arrow.prev {
-  left: 0.5rem;
-}
-
-.dish-carousel-arrow.next {
-  right: 0.5rem;
-}
-
-.dish-carousel-arrow:hover:not(:disabled) {
-  background: var(--color-accent);
-  color: #1A1108;
-  border-color: transparent;
-  transform: translateY(-50%) scale(1.08);
-}
-
-.dish-carousel-arrow:disabled {
-  opacity: 0.3;
-  cursor: default;
-}
-
 .dish-carousel-dots {
   display: flex;
   align-items: center;
@@ -1193,7 +1177,7 @@ html[dir="rtl"] .mobile-menu.active {
   height: 8px;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--color-accent);
   cursor: pointer;
   padding: 0;
   transition: all 0.3s;
@@ -1276,6 +1260,17 @@ html[dir="rtl"] .mobile-menu.active {
   padding: 0 0 3rem;
 }
 
+/* Only the Home page's non-minimal instance keeps the dark red-patterned
+   background — its heading needs to stay on the light on-dark text set
+   instead of the (now dark, white-page-appropriate) shared defaults. */
+.featured-menu-section:not(.is-minimal) .section-title {
+  color: var(--text-on-dark-primary);
+}
+
+.featured-menu-section:not(.is-minimal) .section-copy {
+  color: var(--text-on-dark-secondary);
+}
+
 .menu-curated-section {
   position: relative;
   /* Padding lives here rather than on .section-menu so the trailing gap
@@ -1287,7 +1282,9 @@ html[dir="rtl"] .mobile-menu.active {
 
 /* Full-bleed yellow backdrop for just this block (not the whole
    .section-menu, which also covers the "Our Signature Dishes" intro above
-   it) — same breakout technique used elsewhere for full-bleed sections. */
+   it) — same breakout technique used elsewhere for full-bleed sections. Dark
+   gradient baked into the same background-image (not a separate scrim layer)
+   so the yellow doesn't fight the heading/cards on top of it. */
 .menu-curated-section::before {
   content: '';
   position: absolute;
@@ -1296,10 +1293,9 @@ html[dir="rtl"] .mobile-menu.active {
   width: 100vw;
   height: 100%;
   transform: translateX(-50%);
-  background-image: url('/brand/pattern-brand-orange.png');
-  background-size: 480px auto;
-  background-repeat: repeat;
-  opacity: 0.55;
+  background-image: linear-gradient(rgba(13, 13, 13, 0.72), rgba(13, 13, 13, 0.78)), url('/brand/pattern-brand-orange.png');
+  background-size: cover, 480px auto;
+  background-repeat: no-repeat, repeat;
   z-index: 0;
 }
 
@@ -1332,7 +1328,7 @@ html[dir="rtl"] .mobile-menu.active {
   font-size: 3.2rem;
   font-weight: 700;
   line-height: 1.2;
-  color: var(--text-primary);
+  color: var(--text-on-dark-primary);
 }
 
 .menu-separator-subtitle {
@@ -1588,13 +1584,27 @@ html[dir="rtl"] .btn-view-menu-arrow {
 }
 
 /* ===== ABOUT / STORY ===== */
+/* Brand pattern tiled across the whole page (not white, not a solid color)
+   — the only other background on this page is the hero photo band above.
+   Dark gradient baked into the same background-image (not a separate scrim
+   layer), same treatment used for the menu-curated section and the
+   contact/reserve forms. */
 .section-about {
-  background:
-    radial-gradient(ellipse 900px 500px at 100% 0%, rgba(217, 184, 138, 0.08), transparent 70%),
-    var(--bg-base);
+  background-image:
+    linear-gradient(rgba(13, 13, 13, 0.72), rgba(13, 13, 13, 0.78)),
+    url('/brand/pattern-brand-orange.png');
+  background-size: cover, 480px auto;
+  background-repeat: no-repeat, repeat;
   position: relative;
-  overflow: hidden;
   padding-top: calc(var(--navbar-height) + 3rem);
+}
+
+.section-about .section-title {
+  color: var(--text-on-dark-primary);
+}
+
+.section-about .section-copy {
+  color: var(--text-on-dark-secondary);
 }
 
 @media (max-width: 768px) {
@@ -1619,6 +1629,15 @@ html[dir="rtl"] .btn-view-menu-arrow {
   max-width: 640px;
 }
 
+/* The description paragraph between the visual and the story cards — a
+   direct child of .container, not nested in .about-intro, so it's targeted
+   separately from the intro copy above. */
+.section-about .container > .section-copy {
+  text-align: center;
+  max-width: 640px;
+  margin: 2.5rem auto;
+}
+
 .about-intro-visual {
   position: relative;
   height: min(78vh, 640px);
@@ -1629,13 +1648,10 @@ html[dir="rtl"] .btn-view-menu-arrow {
 
 /* Breaks out of .container to full viewport width regardless of how deeply
    nested it is — the standard full-bleed trick (center via left:50%, size
-   via 100vw, pull back by half that width). The image itself scales up in
-   place (transform: scale, driven from JS scroll progress) as the section
-   enters view, with a dark overlay fading in tandem — see the
-   progress/patternScale/patternOverlayOpacity comment in About.jsx. Using
-   transform instead of animating width/height means the box's own
-   footprint never changes, so this can't feed back into the very
-   scroll-position measurement that drives it. */
+   via 100vw, pull back by half that width). No background of its own (was
+   a solid fill) — .about-intro-pattern-inner scales up from 55% as the
+   section enters view, and .section-about's own pattern background now
+   shows through the margin around the shrunk image instead. */
 .about-intro-pattern {
   position: absolute;
   top: 0;
@@ -1647,12 +1663,19 @@ html[dir="rtl"] .btn-view-menu-arrow {
   z-index: 0;
 }
 
+/* Image + vignette scale together as one unit so the dark tint always sits
+   exactly over the visible image, instead of a full-container overlay that
+   would show as a flat grey slab around a not-yet-expanded image. */
+.about-intro-pattern-inner {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.2s linear;
+}
+
 .about-intro-pattern img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.7;
-  transition: transform 0.2s linear;
 }
 
 .about-intro-pattern-vignette {
@@ -1707,16 +1730,17 @@ html[dir="rtl"] .btn-view-menu-arrow {
   padding: 1.4rem 1.1rem;
   gap: 0.8rem;
   font-size: 0.85rem;
-  border: 1px solid rgba(246, 157, 28, 0.35);
-  background: rgba(18, 14, 12, 0.82);
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-primary);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
 }
 
 .about-intro-flank .highlight-card:hover {
-  border-color: var(--color-accent);
-  background: rgba(18, 14, 12, 0.92);
+  border-color: var(--color-accent-dark);
+  background: #fff;
 }
 
 .about-intro-flank .highlight-card img {
@@ -1772,31 +1796,59 @@ html[dir="rtl"] .btn-view-menu-arrow {
 }
 
 
-/* Atmospheric background image behind a page's intro heading, fading
-   smoothly down into the page's base dark color rather than sitting as a
-   hard-edged banner. Shared across every section-heading intro (About,
-   Menu, Branches, Gallery, Contact) so they all read as one consistent
-   page treatment instead of About being the odd one out. */
+/* Atmospheric background image behind a page's intro heading — same 500px
+   height and blur on every page (Hero, About, Menu, Branches, Gallery,
+   Contact) so they read as one consistent treatment. The blur (rather than
+   a dark/white scrim) is what keeps heading text legible over a busy photo;
+   scale(1.08) hides the softened edge the blur would otherwise expose at
+   the box's boundary, cropped by this element's own overflow:hidden. */
 .page-intro-bg {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 680px;
+  height: 500px;
   overflow: hidden;
   z-index: 0;
   pointer-events: none;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  opacity: 0.32;
+  opacity: 1;
+  filter: blur(4px);
+  transform: scale(1.08);
 }
 
+/* Black scrim on top of the (already blurred) photo so the yellow eyebrow
+   and white heading sitting on this band stay readable against it. */
 .page-intro-bg::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(13, 13, 13, 0.45) 0%, rgba(13, 13, 13, 0.75) 55%, var(--bg-base) 100%);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Scoped per page (not a blanket .section-title override) — these same
+   classes are reused elsewhere on plain white backgrounds (FeaturedMenu,
+   NotFound) where white text would disappear. Only the heading sitting
+   directly on the photo band, in each page's own .section-heading, flips
+   to white/yellow. About isn't here — its whole section is dark (see
+   .section-about below), not just its photo band, so it gets its own
+   section-wide rule instead of this photo-band-only one. */
+.hero .section-heading .section-title,
+.section-menu .section-heading .section-title,
+.section-branches .section-heading .section-title,
+.section-gallery .section-heading .section-title,
+.contact-section .section-heading .section-title {
+  color: #fff;
+}
+
+.hero .section-heading .section-copy,
+.section-menu .section-heading .section-copy,
+.section-branches .section-heading .section-copy,
+.section-gallery .section-heading .section-copy,
+.contact-section .section-heading .section-copy {
+  color: rgba(255, 255, 255, 0.85);
 }
 
 @keyframes fadeInUp {
@@ -1823,6 +1875,8 @@ html[dir="rtl"] .btn-view-menu-arrow {
    scrollbar. useWindowScroll mode expects a normal-flow wrapper, not a
    scroll box. */
 .section-about .story-scroll-stack {
+  position: relative;
+  z-index: 1;
   margin-top: 5rem;
   height: auto;
   overflow: visible;
@@ -1838,6 +1892,7 @@ html[dir="rtl"] .btn-view-menu-arrow {
 }
 
 .story-scroll-stack .story-card-panel {
+  position: relative;
   height: auto;
   /* Cards have different amounts of copy, so without a shared floor the
      shorter "Our Promise" card scales/stacks on top while the taller "Our
@@ -1857,32 +1912,50 @@ html[dir="rtl"] .btn-view-menu-arrow {
   padding: 1.8rem;
   border-radius: var(--radius-btn);
   border: 1px solid var(--border-color);
-  background-size: cover;
-  background-position: center;
+  overflow: hidden;
   box-shadow: 0 20px 45px var(--shadow-color);
   text-align: center;
 }
 
-/* Each card gets its own photo — same dark overlay gradient layered over
-   all three so the light-colored text stays legible without a separate
-   overlay element, but a different background image per card instead of
-   one shared photo. */
+/* Each card's photo sits on a blurred ::before instead of directly on the
+   card's own background — a filter: blur() on the card itself would blur
+   the text with it, so the image is isolated on its own layer behind the
+   content. scale(1.12) hides the softened edge the blur exposes at the
+   card's boundary, cropped by the panel's own overflow: hidden. No dark
+   overlay — the blur alone (not a darkening scrim) is what keeps the
+   light-colored text legible over it. */
+.story-card-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* A flat blur wasn't enough on its own — the light warm text (tuned for a
+     dark backdrop) lost contrast against the brighter parts of these blurred
+     photos. This gradient is a lot lighter than the 0.84-0.88 solid tint
+     these cards had before (kept it a blur, not a dark card), just enough
+     of a shadow for the text to stay readable everywhere on the photo. */
+  background-image: linear-gradient(rgba(10, 8, 6, 0.35), rgba(10, 8, 6, 0.6)), var(--card-photo);
+  background-size: cover;
+  background-position: center;
+  filter: blur(12px);
+  transform: scale(1.12);
+  z-index: 0;
+}
+
+.story-card-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
 .story-card-chef {
-  background-image:
-    linear-gradient(rgba(10, 8, 6, 0.84), rgba(10, 8, 6, 0.88)),
-    url('../assets/images/GuidlinePictures/costume.jpeg');
+  --card-photo: url('../assets/images/GuidlinePictures/costume.jpeg');
 }
 
 .story-card-promise {
-  background-image:
-    linear-gradient(rgba(10, 8, 6, 0.84), rgba(10, 8, 6, 0.88)),
-    url('../assets/images/GuidlinePictures/billboard2.jfif');
+  --card-photo: url('../assets/images/GuidlinePictures/billboard2.jfif');
 }
 
 .story-card-ambience {
-  background-image:
-    linear-gradient(rgba(10, 8, 6, 0.84), rgba(10, 8, 6, 0.88)),
-    url('../assets/images/GuidlinePictures/ambience.jfif');
+  --card-photo: url('../assets/images/GuidlinePictures/ambience.jfif');
 }
 
 /* Staircase layout: each card keeps a fixed horizontal position (left,
@@ -1921,6 +1994,7 @@ html[dir="rtl"] .btn-view-menu-arrow {
 
 .story-card-panel .info-card-name {
   justify-content: center;
+  color: var(--text-on-dark-primary);
 }
 
 .story-card-panel h3 {
@@ -1932,7 +2006,7 @@ html[dir="rtl"] .btn-view-menu-arrow {
 }
 
 .story-card-panel p {
-  color: var(--text-secondary);
+  color: var(--bg-base);
   font-size: 1rem;
   line-height: 1.75;
 }
@@ -1983,7 +2057,7 @@ html[dir="rtl"] .btn-view-menu-arrow {
 }
 
 .section-intro {
-  color: var(--color-sand) !important;
+  color: var(--text-on-dark-primary) !important;
   font-style: italic;
   font-size: 1.05rem !important;
   margin-bottom: 0.8rem !important;
@@ -2041,10 +2115,17 @@ html[dir="rtl"] .btn-view-menu-arrow {
 }
 
 .info-card-role {
-  color: var(--color-sand) !important;
+  color: var(--color-sand-muted) !important;
   font-weight: 500;
   font-size: 0.8rem !important;
   font-style: italic;
+}
+
+/* The chef-bio variant sits on the dark photo-scrimmed story card (see
+   .story-card-chef) instead of a light .info-card, so it needs the lighter
+   sand tone back instead of the muted one above. */
+.story-card-panel .info-card-role {
+  color: var(--color-sand) !important;
 }
 
 .info-card-role::before {
@@ -2168,7 +2249,7 @@ html[dir="rtl"] .btn-view-menu-arrow {
 
 .menu-filter-pill {
   background: var(--color-primary-dark);
-  color: var(--text-primary);
+  color: var(--text-on-dark-primary);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-btn);
   padding: 0.6rem 1.2rem;
@@ -2186,13 +2267,13 @@ html[dir="rtl"] .menu-filter-pill {
 
 .menu-filter-pill:hover {
   color: #fff;
-  background: var(--color-primary);
+  background: var(--color-accent);
   border-color: rgba(255, 255, 255, 0.3);
 }
 
 .menu-filter-pill.active {
   color: #fff;
-  background: var(--color-primary);
+  background: var(--color-accent-dark);
   border-color: var(--color-accent);
 }
 
@@ -2243,7 +2324,7 @@ html[dir="rtl"] .menu-page-btn {
 }
 
 .menu-page-label {
-  color: var(--text-secondary);
+  color: var(--text-on-dark-primary);
   font-size: 0.85rem;
   white-space: nowrap;
 }
@@ -2272,15 +2353,29 @@ html[dir="rtl"] .menu-page-btn {
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-btn);
   overflow: hidden;
+  cursor: pointer;
   will-change: transform;
   transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s ease, box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   box-shadow: 0 0 0 var(--shadow-color);
 }
 
 .menu-item:hover {
-  border-color: var(--color-accent);
+  background: var(--color-accent);
+  border-color: var(--color-primary-dark);
   transform: translateY(-8px);
   box-shadow: 0 22px 45px var(--shadow-color);
+}
+
+.menu-item:hover .menu-item-top h4 {
+  color: #1A1108;
+}
+
+.menu-item:hover .menu-item-top p {
+  color: rgba(26, 17, 8, 0.75);
+}
+
+.menu-item:hover .menu-item-calories {
+  color: #6B4A1F;
 }
 
 .menu-item.featured {
@@ -2379,13 +2474,13 @@ html[dir="rtl"] .menu-page-btn {
 
 .menu-item-top h4 {
   font-family: 'Playfair Display', serif;
-  color: var(--text-primary);
+  color: var(--text-on-dark-primary);
   font-size: 1.15rem;
   font-weight: 700;
 }
 
 .menu-item-top p {
-  color: var(--text-secondary);
+  color: var(--text-on-dark-secondary);
   font-size: 0.9rem;
   line-height: 1.55;
   width: 100%;
@@ -2547,18 +2642,17 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
+  background: var(--color-accent);
+  border: 1px solid transparent;
+  color: #fff;
   font-size: 1.2rem;
   text-decoration: none;
   transition: all 0.3s;
 }
 
 .social-links a:hover {
-  background: var(--color-accent);
-  border-color: transparent;
-  color: #1A1108;
+  background: var(--color-accent-dark);
+  color: #fff;
   transform: translateY(-3px);
 }
 
@@ -2577,13 +2671,15 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   z-index: 1;
   min-width: 0;
   padding: 2.5rem;
-  /* Darkening gradient over the photo so the heading, field labels, and
-     subtitle text (all sitting directly on this background, unlike the
-     inputs which have their own opaque fill) stay legible throughout. */
-  background-image: linear-gradient(180deg, rgba(26, 26, 26, 0.82) 0%, rgba(26, 26, 26, 0.88) 100%), url('../assets/images/GuidlinePictures/businesscards.jpeg');
-  background-size: cover;
+  /* Dark wash over the brand pattern — heading, field labels, and subtitle
+     text (all sitting directly on this background, unlike the inputs which
+     have their own opaque white fill) switch to the light/on-dark text set
+     — shared with .reserve-modal's identical background treatment. */
+  background-image: linear-gradient(rgba(13, 13, 13, 0.72), rgba(13, 13, 13, 0.78)), url('/brand/pattern-brand-orange.png');
+  background-size: cover, 320px auto;
   background-position: center;
-  border: 1px solid var(--border-color);
+  background-repeat: no-repeat, repeat;
+  border: 1px solid var(--color-accent);
   border-radius: var(--radius-btn);
   box-shadow: 0 20px 45px var(--shadow-color);
 }
@@ -2604,7 +2700,6 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   min-height: 440px;
   border: 0;
   display: block;
-  filter: invert(92%) hue-rotate(180deg) contrast(90%) grayscale(20%);
 }
 
 @media (max-width: 992px) {
@@ -2700,7 +2795,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 .branch-card-body h3 {
   font-family: 'Playfair Display', serif;
   font-size: 1.3rem;
-  color: var(--text-primary);
+  color: var(--text-on-dark-primary);
   margin-bottom: 1rem;
 }
 
@@ -2708,7 +2803,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  color: var(--text-secondary);
+  color: var(--text-on-dark-secondary);
   font-size: 0.9rem;
   margin-bottom: 0.8rem;
 }
@@ -2775,7 +2870,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   border-radius: var(--radius-btn);
   border: 1px solid var(--border-color-strong);
   background: rgba(18, 14, 12, 0.75);
-  color: var(--text-primary);
+  color: var(--text-on-dark-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2845,7 +2940,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 
 .footer-brand h4,
 .footer-col h4 {
-  color: var(--text-primary);
+  color: var(--text-on-dark-primary);
   font-family: 'Playfair Display', serif;
   font-size: 1rem;
   font-weight: 700;
@@ -2874,7 +2969,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 }
 
 .footer-quote {
-  color: var(--text-primary);
+  color: var(--text-on-dark-primary);
   font-family: 'Playfair Display', serif;
   font-style: italic;
   font-size: 0.9rem;
@@ -2921,6 +3016,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 
 .footer-links a:hover {
   color: var(--color-accent);
+  font-weight: 700;
 }
 
 .footer-links a:hover .footer-link-icon {
@@ -3091,7 +3187,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   overflow-x: hidden;
   overflow-y: auto;
   background: var(--bg-elevated);
-  border: 1px solid var(--border-color-strong);
+  border: 1px solid var(--color-accent);
   border-radius: var(--radius-btn);
   padding: 2.4rem;
   box-shadow: 0 30px 80px var(--shadow-color);
@@ -3102,20 +3198,9 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-}
-
-.reserve-modal-bg img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 1;
-}
-
-.reserve-modal-bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, var(--bg-elevated) 0%, rgba(26, 26, 26, 0.7) 45%, var(--bg-elevated) 100%);
+  background-image: linear-gradient(rgba(13, 13, 13, 0.72), rgba(13, 13, 13, 0.78)), url('/brand/pattern-brand-orange.png');
+  background-size: cover, 320px auto;
+  background-repeat: no-repeat, repeat;
 }
 
 .reserve-modal-content {
@@ -3130,9 +3215,9 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   width: 36px;
   height: 36px;
   border-radius: var(--radius-btn);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--color-accent);
   background: transparent;
-  color: var(--text-secondary);
+  color: var(--text-on-dark-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3141,8 +3226,8 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 }
 
 .reserve-close:hover {
-  color: var(--text-primary);
-  border-color: var(--border-color-strong);
+  color: var(--text-on-dark-primary);
+  border-color: var(--color-accent-dark);
 }
 
 .reserve-heading {
@@ -3162,11 +3247,11 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 .reserve-title {
   font-family: 'Playfair Display', serif;
   font-size: 1.6rem;
-  color: var(--text-primary);
+  color: var(--text-on-dark-primary);
 }
 
 .reserve-subtitle {
-  color: var(--text-secondary);
+  color: var(--text-on-dark-secondary);
   font-size: 0.95rem;
   margin-bottom: 1.8rem;
 }
@@ -3202,7 +3287,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 .reserve-field textarea {
   width: 100%;
   background: var(--bg-base);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--color-accent);
   border-radius: var(--radius-box);
   padding: 0.75rem 0.9rem;
   color: var(--text-primary);
@@ -3214,7 +3299,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 .reserve-field input:focus,
 .reserve-field textarea:focus {
   outline: none;
-  border-color: var(--color-accent);
+  border-color: var(--color-accent-dark);
 }
 
 .reserve-field textarea {
@@ -3278,12 +3363,12 @@ html[dir="rtl"] .reserve-field-row .reserve-field:first-child {
 .reserve-success h3 {
   font-family: 'Playfair Display', serif;
   font-size: 1.4rem;
-  color: var(--text-primary);
+  color: var(--text-on-dark-primary);
   margin-bottom: 0.7rem;
 }
 
 .reserve-success p {
-  color: var(--text-secondary);
+  color: var(--text-on-dark-secondary);
   font-size: 0.95rem;
   line-height: 1.6;
   margin-bottom: 1.8rem;
@@ -3315,7 +3400,7 @@ html[dir="rtl"] .reserve-field-row .reserve-field:first-child {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #120E0C;
+  background: var(--bg-base);
   overflow: hidden;
   z-index: 9999;
   animation: fadeIn 0.5s ease;
@@ -3373,9 +3458,9 @@ html[dir="rtl"] .reserve-field-row .reserve-field:first-child {
   width: 360px;
   max-width: 88vw;
   border-radius: var(--radius-btn);
-  background: rgba(18, 14, 12, 0.9);
-  border: 1px solid rgba(246, 157, 28, 0.2);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  background: var(--bg-elevated);
+  border: 1px solid rgba(246, 157, 28, 0.3);
+  box-shadow: 0 30px 80px var(--shadow-color);
 }
 
 .loading-screen.exiting .loading-glass {
@@ -3614,9 +3699,9 @@ html[dir="rtl"] .reserve-field-row .reserve-field:first-child {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  border: 1px solid var(--border-color-strong);
-  background: var(--bg-elevated);
-  color: var(--text-primary);
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, var(--color-accent-light), var(--color-accent-dark));
+  color: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3636,9 +3721,8 @@ html[dir="rtl"] .reserve-field-row .reserve-field:first-child {
 }
 
 .back-to-top:hover {
-  background: var(--color-accent);
-  color: #1A1108;
-  border-color: transparent;
+  color: var(--color-primary-dark);
+  transform: translateY(-3px);
 }
 
 @media (max-width: 768px) {

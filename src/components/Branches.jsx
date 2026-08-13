@@ -30,7 +30,7 @@ const Branches = () => {
 
   return (
     <section className="section section-branches">
-      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-riyadh-skyline.jpg)' }} aria-hidden="true" />
+      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.jpg)' }} aria-hidden="true" />
       <div className="container">
         <div className="section-heading">
           <p className="eyebrow eyebrow-icon fade-in-up" style={{ animationDelay: '0.05s' }}>

@@ -21,10 +21,10 @@ const About = () => {
   const [progress, setProgress] = useState(0)
 
   // Continuous scroll progress (not a boolean) so the pattern image can
-  // expand and shift opacity smoothly as this section scrolls into view,
-  // rather than snapping. The highlight cards then slide in once progress
-  // crosses CARDS_IN_AT, so they visibly follow the image's expand instead
-  // of arriving at the same time as it.
+  // expand smoothly as this section scrolls into view, rather than
+  // snapping. The highlight cards then slide in once progress crosses
+  // CARDS_IN_AT, so they visibly follow the image's expand instead of
+  // arriving at the same time as it.
   useEffect(() => {
     const el = visualRef.current
     if (!el) return
@@ -56,12 +56,11 @@ const About = () => {
   }, [])
 
   const patternScale = 0.55 + progress * 0.45
-  const patternOverlayOpacity = 0.85 - progress * 0.35
   const flanksOpen = progress > CARDS_IN_AT
 
   return (
     <section className="section section-about">
-      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-riyadh-skyline.jpg)' }} aria-hidden="true" />
+      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.jpg)' }} aria-hidden="true" />
 
       <div className="container">
         <div className="about-intro">
@@ -71,36 +70,38 @@ const About = () => {
           </p>
           <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{t.story.title}</h2>
           <p className="section-copy section-intro fade-in-up" style={{ animationDelay: '0.25s' }}>{t.story.intro}</p>
+        </div>
 
-          <div ref={visualRef} className={`about-intro-visual fade-in-up ${flanksOpen ? 'is-open' : ''}`} style={{ animationDelay: '0.3s' }}>
-            <div className="about-intro-pattern">
-              <img src={patternBg} alt="" style={{ transform: `scale(${patternScale})` }} />
-              <span className="about-intro-pattern-vignette" style={{ opacity: patternOverlayOpacity }} aria-hidden="true" />
-            </div>
-
-            <div className="about-intro-visual-content">
-              <div className="about-intro-flank left">
-                {t.story.highlights.slice(0, 2).map((item, i) => (
-                  <div key={item} className="highlight-card">
-                    <img src={HIGHLIGHT_ICONS[i]} alt="" />
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="about-intro-flank right">
-                {t.story.highlights.slice(2, 4).map((item, i) => (
-                  <div key={item} className="highlight-card">
-                    <img src={HIGHLIGHT_ICONS[i + 2]} alt="" />
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
+        <div ref={visualRef} className={`about-intro-visual fade-in-up ${flanksOpen ? 'is-open' : ''}`} style={{ animationDelay: '0.3s' }}>
+          <div className="about-intro-pattern">
+            <div className="about-intro-pattern-inner" style={{ transform: `scale(${patternScale})` }}>
+              <img src={patternBg} alt="" />
+              <span className="about-intro-pattern-vignette" aria-hidden="true" />
             </div>
           </div>
 
-          <p className="section-copy fade-in-up" style={{ animationDelay: '0.4s' }}>{t.story.description}</p>
+          <div className="about-intro-visual-content">
+            <div className="about-intro-flank left">
+              {t.story.highlights.slice(0, 2).map((item, i) => (
+                <div key={item} className="highlight-card">
+                  <img src={HIGHLIGHT_ICONS[i]} alt="" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="about-intro-flank right">
+              {t.story.highlights.slice(2, 4).map((item, i) => (
+                <div key={item} className="highlight-card">
+                  <img src={HIGHLIGHT_ICONS[i + 2]} alt="" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
+
+        <p className="section-copy fade-in-up" style={{ animationDelay: '0.4s' }}>{t.story.description}</p>
 
         <ScrollStack
           useWindowScroll

@@ -3,7 +3,6 @@ import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
 import { useReservationForm } from '../lib/useReservationForm'
 import { FaXmark, FaCircleCheck, FaTriangleExclamation } from 'react-icons/fa6'
-import reserveModalBg from '../../assets/images/GuidlinePictures/businesscards.jpeg'
 
 const ReserveModal = ({ isOpen, onClose }) => {
   const { currentLang } = useLanguage()
@@ -33,9 +32,7 @@ const ReserveModal = ({ isOpen, onClose }) => {
   return (
     <div className="reserve-overlay" onClick={onClose}>
       <div className="reserve-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="reserve-modal-bg" aria-hidden="true">
-          <img src={reserveModalBg} alt="" />
-        </div>
+        <div className="reserve-modal-bg" aria-hidden="true" />
 
         <div className="reserve-modal-content">
           <button type="button" className="reserve-close" onClick={onClose} aria-label={t.reserve.close}>

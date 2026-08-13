@@ -12,7 +12,7 @@ const Hero = ({ onReserveClick }) => {
   return (
     <>
     <section className="hero">
-      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-riyadh-skyline.jpg)' }} aria-hidden="true" />
+      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.jpg)' }} aria-hidden="true" />
 
       <div className="container">
         <div className="section-heading">

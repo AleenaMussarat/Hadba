@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
 import { fetchCarouselSlides } from '../services/strapi'
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
 
 const STEP_COOLDOWN_MS = 400
 const TOUCH_THRESHOLD = 25
@@ -186,26 +185,6 @@ const HeroCarousel = () => {
   return (
     <div className="dish-carousel" ref={rootRef}>
       <div className="dish-carousel-stage">
-        <button
-          type="button"
-          className="dish-carousel-arrow prev"
-          onClick={() => navigateTo(activeIndex - 1)}
-          disabled={activeIndex === 0}
-          aria-label="Previous dish"
-        >
-          <FaChevronLeft />
-        </button>
-
-        <button
-          type="button"
-          className="dish-carousel-arrow next"
-          onClick={() => navigateTo(activeIndex + 1)}
-          disabled={activeIndex === slides.length - 1}
-          aria-label="Next dish"
-        >
-          <FaChevronRight />
-        </button>
-
         {slides.map((slide, index) => {
           const style = getCardStyle(index)
           const isCenter = Math.abs(index - progress) < 0.4
