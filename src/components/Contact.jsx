@@ -133,13 +133,18 @@ const Contact = () => {
           </div>
         </div>
 
-        <div className="map-card">
-          <iframe
-            title="SAMDAN location"
-            src={MAP_EMBED_SRC}
-            loading="eager"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
+        <div className="map-section">
+          <div className="map-header">
+            <h3>{t.contact.mapTitle || 'Our Location'}</h3>
+          </div>
+          <div className="map-card">
+            <iframe
+              title="SAMDAN location"
+              src={MAP_EMBED_SRC}
+              loading="eager"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
         </div>
       </div>
     </section>

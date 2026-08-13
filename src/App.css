@@ -1100,7 +1100,7 @@ html[dir="rtl"] .mobile-menu.active {
 .dish-carousel-stage {
   position: relative;
   height: 560px;
-  margin-top: 1.2rem;
+  margin-top: 8rem;
   perspective: 1200px;
 }
 
@@ -1239,7 +1239,7 @@ html[dir="rtl"] .mobile-menu.active {
 
 @media (max-width: 768px) {
   .hero {
-    padding: calc(var(--navbar-height) + 2rem) 0 4rem;
+    padding: calc(var(--navbar-height) + 2rem) 0 8rem;
     min-height: auto;
   }
 
@@ -1267,7 +1267,7 @@ html[dir="rtl"] .mobile-menu.active {
    (.is-minimal) already sets background:none below and blends into that
    page's own section instead. */
 .featured-menu-section:not(.is-minimal) {
-  background-image: linear-gradient(rgba(13, 13, 13, 0.72), rgba(13, 13, 13, 0.78)), url('/brand/pattern-brand-red.png');
+  background-image: linear-gradient(rgba(13, 13, 13, 0.5), rgba(13, 13, 13, 0.58)), url('/brand/pattern-brand-red.png');
   background-size: auto, 480px auto;
   background-repeat: repeat, repeat;
 }
@@ -1277,7 +1277,9 @@ html[dir="rtl"] .mobile-menu.active {
    section background, just the gallery blending into the surrounding page. */
 .featured-menu-section.is-minimal {
   background: none;
-  padding: 0 0 3rem;
+  /* padding (not margin) so it can't collapse into .section-heading's own
+     margin-bottom above it and get silently swallowed. */
+  padding: 8rem 0 3rem;
 }
 
 /* Only the Home page's non-minimal instance keeps the dark red-patterned
@@ -1288,7 +1290,7 @@ html[dir="rtl"] .mobile-menu.active {
 }
 
 .featured-menu-section:not(.is-minimal) .section-copy {
-  color: var(--text-on-dark-secondary);
+  color: var(--bg-base);
 }
 
 .menu-curated-section {
@@ -1313,7 +1315,7 @@ html[dir="rtl"] .mobile-menu.active {
   width: 100vw;
   height: 100%;
   transform: translateX(-50%);
-  background-image: linear-gradient(rgba(13, 13, 13, 0.72), rgba(13, 13, 13, 0.78)), url('/brand/pattern-brand-orange.png');
+  background-image: linear-gradient(rgba(13, 13, 13, 0.32), rgba(13, 13, 13, 0.4)), url('/brand/pattern-brand-orange.png');
   background-size: cover, 480px auto;
   background-repeat: no-repeat, repeat;
   z-index: 0;
@@ -1611,7 +1613,7 @@ html[dir="rtl"] .btn-view-menu-arrow {
    contact/reserve forms. */
 .section-about {
   background-image:
-    linear-gradient(rgba(13, 13, 13, 0.72), rgba(13, 13, 13, 0.78)),
+    linear-gradient(rgba(13, 13, 13, 0.32), rgba(13, 13, 13, 0.4)),
     url('/brand/pattern-brand-orange.png');
   background-size: cover, 480px auto;
   background-repeat: no-repeat, repeat;
@@ -1624,7 +1626,7 @@ html[dir="rtl"] .btn-view-menu-arrow {
 }
 
 .section-about .section-copy {
-  color: var(--text-on-dark-secondary);
+  color: var(--bg-base);
 }
 
 @media (max-width: 768px) {
@@ -2579,7 +2581,7 @@ html[dir="rtl"] .menu-page-btn {
    below both instead of being squeezed into either column. */
 .contact-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 3.5rem;
   align-items: center;
 }
@@ -2588,6 +2590,7 @@ html[dir="rtl"] .menu-page-btn {
   position: relative;
   z-index: 1;
   min-width: 0;
+  text-align: center;
 }
 
 .contact-details {
@@ -2600,6 +2603,7 @@ html[dir="rtl"] .menu-page-btn {
 .contact-item {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 1.1rem;
   padding: 0.4rem 0;
   color: var(--text-primary);
@@ -2624,8 +2628,6 @@ html[dir="rtl"] .menu-page-btn {
 .contact-item span:not(.contact-item-icon) {
   font-size: 0.95rem;
   font-weight: 500;
-  flex: 1;
-  min-width: 0;
 }
 
 /* The phone number carries dir="ltr" so its digits/plus-sign don't get
@@ -2644,6 +2646,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 .contact-actions {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 1.5rem;
   margin-top: 1.8rem;
@@ -2676,13 +2679,32 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   transform: translateY(-3px);
 }
 
+.map-section {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  margin-top: 4rem;
+}
+
+.map-header {
+  margin-bottom: 1.5rem;
+  padding-inline-start: 0.5rem;
+}
+
+.map-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
 .map-card {
   position: relative;
   z-index: 1;
   overflow: hidden;
   min-width: 0;
   min-height: 440px;
-  margin-top: 4rem;
   border-radius: var(--radius-btn);
 }
 
@@ -2695,7 +2717,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
      text (all sitting directly on this background, unlike the inputs which
      have their own opaque white fill) switch to the light/on-dark text set
      — shared with .reserve-modal's identical background treatment. */
-  background-image: linear-gradient(rgba(13, 13, 13, 0.72), rgba(13, 13, 13, 0.78)), url('/brand/pattern-brand-orange.png');
+  background-image: linear-gradient(rgba(13, 13, 13, 0.5), rgba(13, 13, 13, 0.58)), url('/brand/pattern-brand-orange.png');
   background-size: cover, 320px auto;
   background-position: center;
   background-repeat: no-repeat, repeat;
@@ -2766,18 +2788,17 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   }
 }
 
-@media (max-width: 768px) {
-  /* The heading's own margin-bottom (4.5rem, from .section-heading) collapses
-     with a top margin here instead of adding to it, so a small addition was
-     silently swallowed — this value has to be bigger than that 4.5rem to
-     have any effect at all, since collapsing takes the max of the two, not
-     the sum. .page-intro-bg is also transform: scale(1.08), which pushes its
-     rendered bottom edge past its own 500px box, so the grid needs real
-     clearance, not just a token gap, to stop the heading and photo band
-     overlapping on narrow screens where the heading text wraps taller. */
-  .contact-grid {
-    margin-top: 8rem;
-  }
+/* The heading's own margin-bottom (4.5rem, from .section-heading) collapses
+   with a top margin here instead of adding to it, so a small addition would
+   be silently swallowed — this value has to be bigger than that 4.5rem to
+   have any effect at all, since collapsing takes the max of the two, not
+   the sum. .page-intro-bg is also transform: scale(1.08), which pushes its
+   rendered bottom edge past its own 500px box, so the grid needs real
+   clearance, not just a token gap, to keep the heading and photo band from
+   crowding each other — worst on narrow screens where the heading text
+   wraps taller, but applied at every width for consistent breathing room. */
+.contact-grid {
+  margin-top: 9rem;
 }
 
 /* ===== BRANCHES ===== */
@@ -2790,13 +2811,17 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 .branches-box {
   position: relative;
   z-index: 1;
+  /* Bigger than .section-heading's own 4.5rem margin-bottom, which this
+     would otherwise collapse into (taking the max, not the sum) and have
+     no visible effect — see the .contact-grid comment above. */
+  margin-top: 10rem;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-btn);
   /* Darkening scrim over the red Sadu-weave brand pattern — the accent-orange
      detail icons and body text sit directly on this (branch cards have no
      background of their own), so the pattern needs to be dimmed enough for
      them to stay legible while still reading clearly as the pattern. */
-  background-image: linear-gradient(rgba(13, 13, 13, 0.72), rgba(13, 13, 13, 0.78)), url('/brand/pattern-brand-red.png');
+  background-image: linear-gradient(rgba(13, 13, 13, 0.32), rgba(13, 13, 13, 0.4)), url('/brand/pattern-brand-red.png');
   background-size: auto, 480px auto;
   background-repeat: repeat, repeat;
   box-shadow: 0 30px 70px var(--shadow-color);
@@ -2842,7 +2867,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 .branch-card-body h3 {
   font-family: 'Playfair Display', serif;
   font-size: 1.3rem;
-  color: var(--text-on-dark-primary);
+  color: var(--bg-base);
   margin-bottom: 1rem;
 }
 
@@ -2850,7 +2875,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  color: var(--text-on-dark-secondary);
+  color: var(--bg-base);
   font-size: 0.9rem;
   margin-bottom: 0.8rem;
 }
@@ -2885,7 +2910,10 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 
 .gallery-masonry-wrap {
   position: relative;
-  margin-top: 3rem;
+  /* Bigger than .section-heading's own 4.5rem margin-bottom, which this
+     would otherwise collapse into (taking the max, not the sum) and have
+     no visible effect — see the .contact-grid comment above. */
+  margin-top: 10rem;
 }
 
 
@@ -3245,7 +3273,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image: linear-gradient(rgba(13, 13, 13, 0.72), rgba(13, 13, 13, 0.78)), url('/brand/pattern-brand-orange.png');
+  background-image: linear-gradient(rgba(13, 13, 13, 0.5), rgba(13, 13, 13, 0.58)), url('/brand/pattern-brand-orange.png');
   background-size: cover, 320px auto;
   background-repeat: no-repeat, repeat;
 }
@@ -3262,8 +3290,8 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   width: 36px;
   height: 36px;
   border-radius: var(--radius-btn);
-  border: 1px solid var(--color-accent);
-  background: transparent;
+  border: 1px solid var(--color-primary-dark);
+  background: var(--color-primary);
   color: var(--text-on-dark-secondary);
   display: flex;
   align-items: center;
@@ -3298,7 +3326,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 }
 
 .reserve-subtitle {
-  color: var(--text-on-dark-secondary);
+  color: var(--bg-base);
   font-size: 0.95rem;
   margin-bottom: 1.8rem;
 }

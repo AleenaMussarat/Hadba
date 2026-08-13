@@ -245,7 +245,8 @@ export const translations = {
       address: 'Khalid bin Al Waleed Street, Qurtubah, Riyadh, Saudi Arabia',
       phone: '+966 55 518 5657',
       email: 'reservations@samdan.sa',
-      hours: 'Daily 12:00 PM – 12:00 AM'
+      hours: 'Daily 12:00 PM – 12:00 AM',
+      mapTitle: 'Find Us on the Map'
     },
     branches: {
       eyebrow: 'Find Us',
@@ -390,7 +391,8 @@ export const translations = {
       address: 'شارع خالد بن الوليد، قرطبة، الرياض، المملكة العربية السعودية',
       phone: '+966 55 518 5657',
       email: 'reservations@samdan.sa',
-      hours: 'يومياً ١٢:٠٠ ظهراً - ١٢:٠٠ منتصف الليل'
+      hours: 'يومياً ١٢:٠٠ ظهراً - ١٢:٠٠ منتصف الليل',
+      mapTitle: 'ابحث عنا على الخريطة'
     },
     branches: {
       eyebrow: 'موقعنا',
