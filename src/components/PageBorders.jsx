@@ -16,7 +16,7 @@ const PAGE_ORDER = ['/', '/about', '/menu', '/branches', '/gallery', '/contact']
 // regardless of content height.
 const PAGE_SPAN = {
   '/': { topPx: 520, end: '.featured-menu-section' },
-  '/menu': { start: '.section-menu .section-heading', end: '.menu-curated-section' }
+  '/menu': { topPx: 520, end: '.menu-curated-section' }
 }
 
 // Pages that get no side pattern at all.

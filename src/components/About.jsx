@@ -74,7 +74,7 @@ const About = () => {
 
         <div ref={visualRef} className={`about-intro-visual fade-in-up ${flanksOpen ? 'is-open' : ''}`} style={{ animationDelay: '0.3s' }}>
           <div className="about-intro-pattern">
-            <div className="about-intro-pattern-inner" style={{ transform: `scale(${patternScale})` }}>
+            <div className="about-intro-pattern-inner" style={{ transform: `scaleX(${patternScale})` }}>
               <img src={patternBg} alt="" />
               <span className="about-intro-pattern-vignette" aria-hidden="true" />
             </div>

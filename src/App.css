@@ -687,7 +687,7 @@ html[dir="rtl"] .mobile-menu.active {
 }
 
 .mobile-menu-header .logo-mark {
-  height: 40px;
+  height: 60px;
 }
 
 .mobile-menu-close {
@@ -1713,7 +1713,7 @@ html[dir="rtl"] .btn-view-menu-arrow {
      bottom edge past its own 500px box — a plain 2.2rem top margin isn't
      enough clearance, so this card's pattern image ends up visually
      overlapping the tail end of the photo band above it. */
-  margin: 5rem 0 2.2rem;
+  margin: 2.8rem 0 0 0;
   display: flex;
   align-items: center;
 }
