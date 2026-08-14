@@ -221,7 +221,7 @@ export const translations = {
     story: {
       eyebrow: 'The Story Behind Samdan',
       title: 'Welcome to SAMDAN',
-      intro: 'Every meaningful brand begins with a place, a purpose, and a story. Inspired by the timeless landscapes and enduring values of Najd, Samdan is more than a name — it is a tribute to Saudi heritage, reimagined for a modern dining experience.',
+      intro: 'Inspired by the timeless landscapes and enduring values of Najd, Samdan is more than a name — it is a tribute to Saudi heritage, reimagined for a modern dining experience.',
       description: 'In the heart of Saudi Arabia, SAMDAN stands as a culinary treasure, celebrated for its exquisite Kabsa, Jarish, Najdi, and Hejazi cuisine. This extraordinary restaurant enchants guests with its mouthwatering dishes and unparalleled hospitality, offering a diverse menu brimming with authentic flavors.',
       chefTitle: 'Our Kitchen',
       chefName: 'Masters of Saudi Cuisine',
@@ -367,7 +367,7 @@ export const translations = {
     story: {
       eyebrow: 'قصة سمدان',
       title: 'مرحباً بكم في سمدان',
-      intro: 'كل علامة ذات معنى تبدأ بمكان وهدف وقصة. مستوحاة من مشهد نجد الخالد وقيمها الراسخة، سمدان أكثر من مجرد اسم — إنها تحية للتراث السعودي، أُعيد تقديمها بروح عصرية.',
+      intro: 'مستوحاة من مشهد نجد الخالد وقيمها الراسخة، سمدان أكثر من مجرد اسم — إنها تحية للتراث السعودي، أُعيد تقديمها بروح عصرية.',
       description: 'في قلب المملكة العربية السعودية، تقف سمدان كنزاً مطبخياً، مشهورة بأطباقها الرائعة من الكبسة والجريش والمطبخ النجدي والحجازي. يسحر هذا المطعم الاستثنائي ضيوفه بأطباقه الشهية وضيافته التي لا مثيل لها، مع قائمة متنوعة تفيض بالنكهات الأصيلة.',
       chefTitle: 'مطبخنا',
       chefName: 'أسياد المطبخ السعودي',

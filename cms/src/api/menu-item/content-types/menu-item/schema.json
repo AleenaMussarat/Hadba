@@ -41,7 +41,6 @@
         "Salads",
         "Drinks",
         "Desserts",
-        "Sweets"
       ],
       "required": true
     },
@@ -61,7 +60,6 @@
         "السلطات",
         "المشروبات",
         "الحلا",
-        "الحلويات"
       ],
       "required": true
     },

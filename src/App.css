@@ -851,7 +851,12 @@ html[dir="rtl"] .mobile-menu.active {
   }
 
   .nav-actions .btn-reserve {
-    padding: 9px 11px;
+    padding: 6px 8px;
+    gap: 0;
+  }
+
+  .nav-actions .btn-reserve .btn-icon {
+    font-size: 0.75rem;
   }
 
   .lang-toggle button {
@@ -1094,6 +1099,13 @@ html[dir="rtl"] .mobile-menu.active {
     text-align: center;
     padding: 1.3rem;
   }
+
+  .hero-card {
+    flex-direction: column;
+    text-align: center;
+    padding-inline-start: 0;
+    gap: 0.6rem;
+  }
 }
 
 .hero-visual {
@@ -1250,7 +1262,7 @@ html[dir="rtl"] .mobile-menu.active {
 
 @media (max-width: 768px) {
   .hero {
-    padding: calc(var(--navbar-height) + 2rem) 0 8rem;
+    padding: calc(var(--navbar-height) + 2rem) 0 4rem;
     min-height: auto;
   }
 
@@ -1702,7 +1714,12 @@ html[dir="rtl"] .btn-view-menu-arrow {
 
 @media (max-width: 768px) {
   .about-story-band {
+    padding-top: 1rem;
     padding-bottom: 12rem;
+  }
+
+  .about-story-band > .section-copy {
+    margin-top: 1.2rem;
   }
 }
 
@@ -1713,7 +1730,7 @@ html[dir="rtl"] .btn-view-menu-arrow {
      bottom edge past its own 500px box — a plain 2.2rem top margin isn't
      enough clearance, so this card's pattern image ends up visually
      overlapping the tail end of the photo band above it. */
-  margin: 2.8rem 0 0 0;
+  margin: 4.7rem 0 0 0;
   display: flex;
   align-items: center;
 }
@@ -1840,9 +1857,11 @@ html[dir="rtl"] .btn-view-menu-arrow {
 }
 
 @media (max-width: 700px) {
+
   .about-intro-visual {
     height: auto;
     min-height: 320px;
+    margin: 2.1rem 0 0 0;
   }
 
   .about-intro-visual-content {
