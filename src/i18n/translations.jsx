@@ -2,11 +2,15 @@ const img = (id, w = 800) => `https://images.unsplash.com/${id}?auto=format&fit=
 
 // The client's own product shots — white background, do not swap these for
 // stock photos. Everything else in MENU_ROWS uses 'logo' (the Samdan mark on
-// white) as a placeholder until real photography exists for that dish.
+// white) as a placeholder until real photography exists for that dish, except
+// where a verified royalty-free white-background stock photo was found (see
+// dishTea below — checked individually, most homestyle Najdi/Hejazi dishes
+// don't have an accurate isolated-background match available).
 const dishKabdaBaladi = '/brand/dish-kabda-baladi.jpg'
 const dishFriedEggs = '/brand/dish-fried-eggs.jpg'
 const dishTuna = '/brand/dish-tuna.jpg'
 const dishSouthernBread = '/brand/dish-southern-bread.png'
+const dishTea = '/brand/dish-tea.jpg'
 const logoPlaceholder = '/brand/logo-red.png'
 
 export const menuImages = {
@@ -26,6 +30,7 @@ export const menuImages = {
   friedEggs: dishFriedEggs,
   tuna: dishTuna,
   southernBread: dishSouthernBread,
+  tea: dishTea,
   logo: logoPlaceholder
 }
 
@@ -51,18 +56,23 @@ const branchMapsLink = `https://maps.google.com/?q=${encodeURIComponent(BRANCH_M
 // Category set + order as specified by the restaurant — Strapi's own
 // categoryEn/categoryAr fields need to be updated to match these exact
 // label strings (see note in Menu.jsx fetch call).
+// Keys/labels mirror the live categoryEn/categoryAr values in the Strapi
+// menu-item enumeration exactly, so the category filter pills query the same
+// strings Strapi filters against — see fetchMenuItems in services/strapi.js.
 export const CAT = {
-  mainDishes: { en: 'Main Dishes', ar: 'الأطباق الرئيسية' },
-  traditionalDishes: { en: 'Traditional Dishes', ar: 'الأكلات الشعبية' },
   breakfast: { en: 'Breakfast', ar: 'الفطور' },
-  camel: { en: 'Camel', ar: 'الجمل' },
-  mandi: { en: 'Mandi', ar: 'المندي' },
+  traditionalDishes: { en: 'Traditional Dishes', ar: 'الأكلات الشعبية' },
+  madhghoot: { en: 'Madhghoot & Kabsa Barriya', ar: 'المضغوط' },
+  goatHaneeth: { en: 'Goat Haneeth', ar: 'الأطباق الرئيسية' },
+  camelHaneeth: { en: 'Camel Haneeth', ar: 'الحاشي' },
   chicken: { en: 'Chicken', ar: 'الدجاج' },
+  wholeLamb: { en: 'Whole Lamb', ar: 'لحم الذبيحة' },
   rice: { en: 'Rice', ar: 'الرز' },
+  appetizers: { en: 'Appetizers', ar: 'المقبلات' },
   sides: { en: 'Sides', ar: 'الإدامات' },
   salads: { en: 'Salads', ar: 'السلطات' },
-  appetizers: { en: 'Appetizers', ar: 'المقبلات' },
-  drinks: { en: 'Drinks', ar: 'المشروبات' }
+  drinks: { en: 'Drinks', ar: 'المشروبات' },
+  desserts: { en: 'Desserts', ar: 'الحلا' }
 }
 
 export const CATEGORY_ORDER = Object.keys(CAT)
@@ -70,17 +80,19 @@ export const CATEGORY_ORDER = Object.keys(CAT)
 // imageKey 'logo' = no real dish photo yet, renders as the Samdan mark on
 // white (see .is-placeholder in App.css) until real photography exists.
 const MENU_ROWS = [
-  // Main Dishes (تيس / goat haneeth, plus raw butchered lamb)
-  ['Goat Haneeth Bashawer', 'نفر تيس حنيذ بشاور', 'Individual slow-roasted goat haneeth with bashawer-style rice', 'حنيذ تيس فردي مطهو ببطء مع أرز على طريقة البشاور', 'mainDishes', '95', 2467, 'logo'],
-  ['Goat Haneeth Shaabi', 'نفر تيس حنيذ شعبي', 'Individual goat haneeth, traditional folk-style rice', 'حنيذ تيس فردي مع أرز على الطريقة الشعبية', 'mainDishes', '95', 2467, 'logo'],
-  ['Goat Haneeth Saleeg', 'نفر تيس حنيذ سليق', 'Individual goat haneeth served with creamy saleeg rice', 'حنيذ تيس فردي يقدم مع أرز السليق الكريمي', 'mainDishes', '95', 2467, 'logo'],
-  ['Goat Haneeth Mathloutha', 'نفر تيس حنيذ مثلوثة', 'Individual slow-roasted goat haneeth over spiced rice', 'حنيذ تيس فردي مطهو ببطء فوق أرز متبل', 'mainDishes', '100', 2467, 'logo', true],
-  ['Quarter Goat Haneeth', 'ربع تيس حنيذ', 'Slow-roasted quarter goat haneeth — serves 2–3', 'ربع تيس حنيذ مطهو ببطء - يكفي ٢-٣ أشخاص', 'mainDishes', '380', 9870, 'logo'],
-  ['Half Goat Haneeth', 'نصف تيس حنيذ', 'Slow-roasted half goat haneeth — serves 4–6', 'نصف تيس حنيذ مطهو ببطء - يكفي ٤-٦ أشخاص', 'mainDishes', '760', 20350, 'logo', true],
-  ['Whole Goat Haneeth', 'تيس كامل حنيذ', 'Slow-roasted whole goat haneeth — serves 8–10', 'تيس كامل حنيذ مطهو ببطء - يكفي ٨-١٠ أشخاص', 'mainDishes', '1520', 40750, 'logo'],
-  ['Quarter Lamb', 'ربع ذبيحة', 'Quarter raw lamb, butchered to order — serves 2–3', 'ربع ذبيحة نيّة حسب الطلب - يكفي ٢-٣ أشخاص', 'mainDishes', '350', null, 'logo'],
-  ['Half Lamb', 'نصف ذبيحة', 'Half raw lamb, butchered to order — serves 4–6', 'نصف ذبيحة نيّة حسب الطلب - يكفي ٤-٦ أشخاص', 'mainDishes', '700', null, 'logo'],
-  ['Whole Lamb', 'ذبيحة كاملة', 'Whole raw lamb, butchered to order — serves 8–10', 'ذبيحة كاملة نيّة حسب الطلب - يكفي ٨-١٠ أشخاص', 'mainDishes', '1400', null, 'logo'],
+  // Goat Haneeth (تيس)
+  ['Goat Haneeth Bashawer', 'نفر تيس حنيذ بشاور', 'Individual slow-roasted goat haneeth with bashawer-style rice', 'حنيذ تيس فردي مطهو ببطء مع أرز على طريقة البشاور', 'goatHaneeth', '95', 2467, 'logo'],
+  ['Goat Haneeth Shaabi', 'نفر تيس حنيذ شعبي', 'Individual goat haneeth, traditional folk-style rice', 'حنيذ تيس فردي مع أرز على الطريقة الشعبية', 'goatHaneeth', '95', 2467, 'logo'],
+  ['Goat Haneeth Saleeg', 'نفر تيس حنيذ سليق', 'Individual goat haneeth served with creamy saleeg rice', 'حنيذ تيس فردي يقدم مع أرز السليق الكريمي', 'goatHaneeth', '95', 2467, 'logo'],
+  ['Goat Haneeth Mathloutha', 'نفر تيس حنيذ مثلوثة', 'Individual slow-roasted goat haneeth over spiced rice', 'حنيذ تيس فردي مطهو ببطء فوق أرز متبل', 'goatHaneeth', '100', 2467, 'logo', true],
+  ['Quarter Goat Haneeth', 'ربع تيس حنيذ', 'Slow-roasted quarter goat haneeth — serves 2–3', 'ربع تيس حنيذ مطهو ببطء - يكفي ٢-٣ أشخاص', 'goatHaneeth', '380', 9870, 'logo'],
+  ['Half Goat Haneeth', 'نصف تيس حنيذ', 'Slow-roasted half goat haneeth — serves 4–6', 'نصف تيس حنيذ مطهو ببطء - يكفي ٤-٦ أشخاص', 'goatHaneeth', '760', 20350, 'logo', true],
+  ['Whole Goat Haneeth', 'تيس كامل حنيذ', 'Slow-roasted whole goat haneeth — serves 8–10', 'تيس كامل حنيذ مطهو ببطء - يكفي ٨-١٠ أشخاص', 'goatHaneeth', '1520', 40750, 'logo'],
+
+  // Whole Lamb (raw butchered lamb)
+  ['Quarter Lamb', 'ربع ذبيحة', 'Quarter raw lamb, butchered to order — serves 2–3', 'ربع ذبيحة نيّة حسب الطلب - يكفي ٢-٣ أشخاص', 'wholeLamb', '350', null, 'logo'],
+  ['Half Lamb', 'نصف ذبيحة', 'Half raw lamb, butchered to order — serves 4–6', 'نصف ذبيحة نيّة حسب الطلب - يكفي ٤-٦ أشخاص', 'wholeLamb', '700', null, 'logo'],
+  ['Whole Lamb', 'ذبيحة كاملة', 'Whole raw lamb, butchered to order — serves 8–10', 'ذبيحة كاملة نيّة حسب الطلب - يكفي ٨-١٠ أشخاص', 'wholeLamb', '1400', null, 'logo'],
 
   // Traditional Dishes
   ['Areeka Janoubia', 'عريكة جنوبية', 'Southern-style bread mash with meat and ghee', 'عريكة على الطريقة الجنوبية مع اللحم والسمن', 'traditionalDishes', '35', 690, 'logo', true],
@@ -91,6 +103,9 @@ const MENU_ROWS = [
   ['Local Ghee', 'سمن بلدي', 'Pure traditional Saudi ghee', 'سمن بلدي أصيل', 'traditionalDishes', '9', 180, 'logo'],
   ['Natural Honey', 'عسل طبيعي', 'Pure natural Saudi honey', 'عسل طبيعي سعودي خالص', 'traditionalDishes', '10', 95, 'logo'],
   ['Radeefa', 'رضيفة', 'Traditional bread side', 'طبق خبز تقليدي', 'traditionalDishes', '6', 320, 'logo'],
+  ['Mabthoutha Janoubia', 'مبثوثة جنوبية', 'Traditional southern-style bread and meat mash', 'طبق تقليدي من الخبز واللحم المهروس على الطريقة الجنوبية', 'traditionalDishes', '30', 580, 'logo'],
+  ['Thareef Dakhn', 'ثريف دخن', 'Traditional millet thareef bread dish', 'طبق ثريد تقليدي من خبز الدخن', 'traditionalDishes', '30', 520, 'logo'],
+  ['Masabib', 'مصابيب', 'Traditional Saudi pancake-style bread', 'طبق مصابيب تقليدي، فطائر سعودية', 'traditionalDishes', '20', 450, 'logo'],
 
   // Breakfast
   ['Kabda Baladi', 'كبدة بلدي', 'Sautéed local liver with onions and warm spices', 'كبدة طازجة سوتيه مع البصل والبهارات الدافئة', 'breakfast', '25', 420, 'kabdaBaladi'],
@@ -105,19 +120,19 @@ const MENU_ROWS = [
   ['Foul', 'فول', 'Slow-cooked fava beans with olive oil and spices', 'فول مدمس مطهو ببطء مع زيت الزيتون والبهارات', 'breakfast', '10', 360, 'logo'],
   ['Qishta & Honey', 'قشطة وعسل', 'Clotted cream drizzled with natural honey', 'قشطة طازجة مغطاة بالعسل الطبيعي', 'breakfast', '20', 420, 'logo'],
 
-  // Camel (حاشي / young camel haneeth)
-  ['Camel Haneeth Bashawer', 'حاشي حنيذ بشاور', 'Individual camel haneeth with bashawer-style rice', 'حنيذ حاشي فردي مع أرز على طريقة البشاور', 'camel', '75', 760, 'logo'],
-  ['Camel Haneeth Shaabi', 'حاشي حنيذ شعبي', 'Individual camel haneeth, traditional folk style', 'حنيذ حاشي فردي على الطريقة الشعبية', 'camel', '75', 650, 'logo'],
-  ['Camel Haneeth Saleeg', 'حاشي حنيذ سليق', 'Individual camel haneeth served with creamy saleeg rice', 'حنيذ حاشي فردي يقدم مع أرز السليق الكريمي', 'camel', '75', 720, 'logo'],
-  ['Camel Haneeth Mathloutha', 'حاشي حنيذ مثلوثة', 'Individual slow-roasted camel haneeth over spiced rice', 'حنيذ حاشي فردي مطهو ببطء فوق أرز متبل', 'camel', '80', 780, 'logo'],
+  // Camel Haneeth (حاشي / young camel haneeth)
+  ['Camel Haneeth Bashawer', 'حاشي حنيذ بشاور', 'Individual camel haneeth with bashawer-style rice', 'حنيذ حاشي فردي مع أرز على طريقة البشاور', 'camelHaneeth', '75', 760, 'logo'],
+  ['Camel Haneeth Shaabi', 'حاشي حنيذ شعبي', 'Individual camel haneeth, traditional folk style', 'حنيذ حاشي فردي على الطريقة الشعبية', 'camelHaneeth', '75', 650, 'logo'],
+  ['Camel Haneeth Saleeg', 'حاشي حنيذ سليق', 'Individual camel haneeth served with creamy saleeg rice', 'حنيذ حاشي فردي يقدم مع أرز السليق الكريمي', 'camelHaneeth', '75', 720, 'logo'],
+  ['Camel Haneeth Mathloutha', 'حاشي حنيذ مثلوثة', 'Individual slow-roasted camel haneeth over spiced rice', 'حنيذ حاشي فردي مطهو ببطء فوق أرز متبل', 'camelHaneeth', '80', 780, 'logo'],
 
-  // Mandi (مضغوط / pressed rice with lamb or camel)
-  ['Lamb Mandi', 'مضغوط غنم', 'Rice slow-pressed with tender mutton and warm spices', 'أرز مضغوط ببطء مع لحم الغنم الطري والبهارات الدافئة', 'mandi', '95', 980, 'logo'],
-  ['Camel Mandi', 'مضغوط حاشي', 'Rice slow-pressed with tender camel meat and warm spices', 'أرز مضغوط ببطء مع لحم الحاشي الطري والبهارات الدافئة', 'mandi', '75', 900, 'logo'],
-  ['Lamb Mandi Arabic', 'مضغوط عربي غنم', 'Arabic-style pressed rice with mutton', 'أرز مضغوط على الطريقة العربية مع لحم الغنم', 'mandi', '95', 1040, 'logo'],
-  ['Camel Mandi Arabic', 'مضغوط عربي حاشي', 'Arabic-style pressed rice with camel meat', 'أرز مضغوط على الطريقة العربية مع لحم الحاشي', 'mandi', '75', 950, 'logo'],
-  ['Lamb Kabsa', 'كبسة بريه غنم', 'Open-fire Bedouin-style kabsa with mutton', 'كبسة بريّة على الفحم مع لحم الغنم', 'mandi', '95', 950, 'logo'],
-  ['Camel Kabsa', 'كبسة بريه حاشي', 'Open-fire Bedouin-style kabsa with camel meat', 'كبسة بريّة على الفحم مع لحم الحاشي', 'mandi', '75', 870, 'logo'],
+  // Madhghoot & Kabsa Barriya (مضغوط / pressed rice with lamb or camel)
+  ['Lamb Mandi', 'مضغوط غنم', 'Rice slow-pressed with tender mutton and warm spices', 'أرز مضغوط ببطء مع لحم الغنم الطري والبهارات الدافئة', 'madhghoot', '95', 980, 'logo'],
+  ['Camel Mandi', 'مضغوط حاشي', 'Rice slow-pressed with tender camel meat and warm spices', 'أرز مضغوط ببطء مع لحم الحاشي الطري والبهارات الدافئة', 'madhghoot', '75', 900, 'logo'],
+  ['Lamb Mandi Arabic', 'مضغوط عربي غنم', 'Arabic-style pressed rice with mutton', 'أرز مضغوط على الطريقة العربية مع لحم الغنم', 'madhghoot', '95', 1040, 'logo'],
+  ['Camel Mandi Arabic', 'مضغوط عربي حاشي', 'Arabic-style pressed rice with camel meat', 'أرز مضغوط على الطريقة العربية مع لحم الحاشي', 'madhghoot', '75', 950, 'logo'],
+  ['Lamb Kabsa', 'كبسة بريه غنم', 'Open-fire Bedouin-style kabsa with mutton', 'كبسة بريّة على الفحم مع لحم الغنم', 'madhghoot', '95', 950, 'logo'],
+  ['Camel Kabsa', 'كبسة بريه حاشي', 'Open-fire Bedouin-style kabsa with camel meat', 'كبسة بريّة على الفحم مع لحم الحاشي', 'madhghoot', '75', 870, 'logo'],
 
   // Chicken
   ['Whole Chicken (Madhbi-Haneeth)', 'حبة دجاج (مضبي - حنيذ)', 'Whole chicken, roasted or Madhbi-style, over spiced rice', 'دجاجة كاملة مشوية أو مضبي فوق أرز متبل', 'chicken', '50', 2625, 'logo'],
@@ -137,8 +152,6 @@ const MENU_ROWS = [
   ['Mulukhiyah', 'ملوخية', 'Traditional jute-leaf stew', 'طبق الملوخية التقليدي', 'sides', '10', 116, 'logo'],
   ['Vegetable Idam', 'ايدام خضار', 'Mixed vegetable stew', 'إيدام خضار مشكل', 'sides', '10', 190, 'logo'],
   ['Southern Bread', 'خبز جنوبي', 'Fresh-baked traditional southern bread', 'خبز جنوبي طازج تقليدي', 'sides', '5', 260, 'southernBread'],
-  ['Kunafa', 'كنافة', 'Crisp shredded pastry with cheese and syrup', 'كنافة مقرمشة بالجبن والقطر', 'sides', '10', 560, 'logo', true],
-  ['Crème Caramel', 'كريم كرميل', 'Silky caramel custard dessert', 'حلا الكريم كرميل الحريري', 'sides', '10', 290, 'logo'],
 
   // Salads
   ['Green Salad', 'سلطة خضراء', 'Crisp seasonal green salad', 'سلطة خضراء طازجة', 'salads', '10', 90, 'logo'],
@@ -157,8 +170,12 @@ const MENU_ROWS = [
   ['Al-Qarya Laban', 'لبن القرية', 'Chilled traditional laban', 'لبن القرية بارد', 'drinks', '4', 175, 'logo'],
   ['Almarai Laban', 'لبن مراعي', 'Chilled Almarai laban', 'لبن مراعي بارد', 'drinks', '2', 120, 'logo'],
   ['Water', 'ماء', 'Bottled water', 'مياه معدنية', 'drinks', '1', 0, 'logo'],
-  ['Tea', 'شاهي تلقية', 'Traditional Saudi tea', 'شاهي سعودي تقليدي', 'drinks', '3', 2, 'logo'],
-  ['Arabic Coffee Pot with Dates', 'دلة مع التمر', 'Traditional dallah of qahwa served with premium dates', 'دلة قهوة عربية تقدم مع أجود أنواع التمر', 'drinks', '20', 220, 'logo']
+  ['Tea', 'شاهي تلقية', 'Traditional Saudi tea', 'شاهي سعودي تقليدي', 'drinks', '3', 2, 'tea'],
+  ['Arabic Coffee Pot with Dates', 'دلة مع التمر', 'Traditional dallah of qahwa served with premium dates', 'دلة قهوة عربية تقدم مع أجود أنواع التمر', 'drinks', '20', 220, 'logo'],
+
+  // Desserts
+  ['Kunafa', 'كنافة', 'Crisp shredded pastry with cheese and syrup', 'كنافة مقرمشة بالجبن والقطر', 'desserts', '10', 560, 'logo', true],
+  ['Crème Caramel', 'كريم كرميل', 'Silky caramel custard dessert', 'حلا الكريم كرميل الحريري', 'desserts', '10', 290, 'logo']
 ]
 
 const buildMenuItems = (lang) =>
@@ -243,10 +260,10 @@ export const translations = {
       title: 'Visit Us',
       description: "We'd love to welcome you to SAMDAN. Reach out to reserve your table or ask about our menu.",
       address: 'Khalid bin Al Waleed Street, Qurtubah, Riyadh, Saudi Arabia',
-      phone: '+966 55 518 5657',
+      phone: '+966 55 518 5657 |  +966 53 334 7721',
       email: 'reservations@samdan.sa',
       hours: 'Daily 12:00 PM – 12:00 AM',
-      // mapTitle: 'Find Us on the Map'
+      mapTitle: 'Our Location'
     },
     branches: {
       eyebrow: 'Find Us',
@@ -314,7 +331,7 @@ export const translations = {
       notesPlaceholder: 'Allergies, occasion, seating preference…',
       submit: 'Send Inquiry',
       submitting: 'Sending…',
-      errorText: "Something went wrong sending your request — please try again, or call us at +966 55 518 5657.",
+      errorText: "Something went wrong sending your request — please try again, or call us at +966 55 518 5657 | +966 53 334 7721.",
       successTitle: "Thank you, {name}!",
       successText: "We've received your request and will be in touch shortly to confirm your table.",
       close: 'Close'
@@ -334,7 +351,7 @@ export const translations = {
       eyebrow: 'أصالة الضيافة السعودية',
       title: '<span>كبسة</span> أصيلة ونكهات نجدية',
       subtitle: 'في قلب المملكة العربية السعودية، تقدّم سمدان أشهى أطباق الكبسة والجريش والمطبخ النجدي والحجازي، في رحلة طعام استثنائية متجذرة في التراث.',
-      tagline: 'تقاليد أصيلة. تجارب راقية.',
+      tagline: 'تقاليد أصيلة.<br />تجارب راقية.',
       ctaPrimary: 'استكشف القائمة',
       ctaSecondary: 'احجز طاولة',
       hours: 'نستقبلكم يومياً',
@@ -389,10 +406,10 @@ export const translations = {
       title: 'زورونا',
       description: 'يسعدنا الترحيب بكم في سمدان. تواصلوا معنا لحجز طاولتكم أو للاستفسار عن قائمتنا.',
       address: 'شارع خالد بن الوليد، قرطبة، الرياض، المملكة العربية السعودية',
-      phone: '+966 55 518 5657',
+      phone: '+966 55 518 5657 |  +966 53 334 7721',
       email: 'reservations@samdan.sa',
       hours: 'يومياً ١٢:٠٠ ظهراً - ١٢:٠٠ منتصف الليل',
-      // mapTitle: 'ابحث عنا على الخريطة'
+      mapTitle: 'موقعنا'
     },
     branches: {
       eyebrow: 'موقعنا',
@@ -460,7 +477,7 @@ export const translations = {
       notesPlaceholder: 'حساسية طعام، مناسبة خاصة، تفضيل مكان الجلوس…',
       submit: 'إرسال الاستفسار',
       submitting: 'جارِ الإرسال…',
-      errorText: 'حدث خطأ أثناء إرسال طلبكم — يرجى المحاولة مرة أخرى، أو الاتصال بنا على +966 55 518 5657.',
+      errorText: 'حدث خطأ أثناء إرسال طلبكم — يرجى المحاولة مرة أخرى، أو الاتصال بنا على +966 55 518 5657 | +966 53 334 7721.',
       successTitle: 'شكراً لك، {name}!',
       successText: 'لقد استلمنا طلبكم وسنتواصل معكم قريباً لتأكيد طاولتكم.',
       close: 'إغلاق'

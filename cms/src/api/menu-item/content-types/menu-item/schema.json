@@ -26,11 +26,43 @@
       "type": "text"
     },
     "categoryEn": {
-      "type": "string",
+      "type": "enumeration",
+      "enum": [
+        "Breakfast",
+        "Traditional Dishes",
+        "Madhghoot & Kabsa Barriya",
+        "Goat Haneeth",
+        "Camel Haneeth",
+        "Chicken",
+        "Whole Lamb",
+        "Rice",
+        "Appetizers",
+        "Sides",
+        "Salads",
+        "Drinks",
+        "Desserts",
+        "Sweets"
+      ],
       "required": true
     },
     "categoryAr": {
-      "type": "string",
+      "type": "enumeration",
+      "enum": [
+        "الفطور",
+        "الأكلات الشعبية",
+        "المضغوط",
+        "الأطباق الرئيسية",
+        "الحاشي",
+        "الدجاج",
+        "لحم الذبيحة",
+        "الرز",
+        "المقبلات",
+        "الإدامات",
+        "السلطات",
+        "المشروبات",
+        "الحلا",
+        "الحلويات"
+      ],
       "required": true
     },
     "price": {

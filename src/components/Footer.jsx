@@ -17,7 +17,7 @@ const Footer = ({ onReserveClick }) => {
         <div className="footer-brand">
           <img className="footer-logo" src="/brand/logo-orange.png" alt="SAMDAN" />
           <span className="footer-divider" />
-          <p className="footer-quote">{t.hero.tagline}</p>
+          <p className="footer-quote" dangerouslySetInnerHTML={{ __html: t.hero.tagline }} />
         </div>
 
         <div className="footer-col">

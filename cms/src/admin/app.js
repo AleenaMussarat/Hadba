@@ -1,7 +1,7 @@
 import logoOrange from './assets/logo-orange.png';
 import logoRed from './assets/logo-red.png';
 // Same icon used as the live website's favicon (index.html), so both match.
-import favicon from './assets/icon-knife-fork.png';
+import favicon from './assets/favicon.png';
 
 const brandPrimary = {
   // Red drives everything by default (forms, focus rings, sidebar nav

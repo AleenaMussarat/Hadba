@@ -17,10 +17,10 @@ const Hero = ({ onReserveClick }) => {
       <div className="container">
         <div className="section-heading">
           <p className="eyebrow eyebrow-icon">
-            <img src="/brand/icon-fork-spoon.png" alt="" />
+            <img src="brand/SingleRedBox.png" alt="" />
             {t.hero.eyebrow}
           </p>
-          <h2 className="section-title">{t.hero.tagline}</h2>
+          <h2 className="section-title" dangerouslySetInnerHTML={{ __html: t.hero.tagline }} />
         </div>
       </div>
 

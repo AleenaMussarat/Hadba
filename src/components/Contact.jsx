@@ -5,6 +5,7 @@ import { useReservationForm } from '../lib/useReservationForm'
 import { FaLocationDot, FaPhone, FaEnvelope, FaClock, FaCircleCheck, FaTriangleExclamation } from 'react-icons/fa6'
 import { socialLinks } from '../data/social'
 import { MAP_QUERY, MAP_EMBED_SRC } from '../lib/mapConfig'
+import mapLocationIcon from '../../assets/images/Icons/Samdan Guidlines ICONS-08.png'
 
 const Contact = () => {
   const { currentLang } = useLanguage()
@@ -134,10 +135,11 @@ const Contact = () => {
         </div>
 
         <div className="map-section">
-          <div className="map-header">
-            <h3>{t.contact.mapTitle || 'Our Location'}</h3>
-          </div>
-          <div className="map-card">
+          <div className="map-embed-frame">
+            <div className="map-embed-header">
+              <img src={mapLocationIcon} alt="" loading="lazy" decoding="async" />
+              <span>{t.contact.mapTitle || 'Our Location'}</span>
+            </div>
             <iframe
               title="SAMDAN location"
               src={MAP_EMBED_SRC}

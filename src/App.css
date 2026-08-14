@@ -199,7 +199,7 @@ html {
 }
 
 .eyebrow-icon img {
-  width: 64px;
+  /* width: 64px; */
   height: 64px;
 }
 
@@ -207,7 +207,7 @@ html {
   font-family: 'Playfair Display', serif;
   font-size: 3.2rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--bg-base);
   margin-bottom: 1rem;
   line-height: 1.2;
 }
@@ -332,6 +332,7 @@ html {
 }
 
 .nav-container {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -377,10 +378,18 @@ html {
 
 /* ===== NAV LINKS ===== */
 .nav-links {
+  /* Centered on the navbar itself rather than via justify-content:
+     space-between, since the logo and nav-actions aren't the same width —
+     space-between would visibly skew the links toward whichever side is
+     narrower instead of centering them on the bar. */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 0.5rem;
   list-style: none;
+  white-space: nowrap;
 }
 
 .nav-links li {
@@ -389,7 +398,7 @@ html {
   align-items: center;
 }
 
-.nav-links li + li::before {
+.nav-links li+li::before {
   content: '';
   width: 4px;
   height: 4px;
@@ -648,7 +657,7 @@ html[dir="rtl"] .btn-reserve {
   z-index: 0;
 }
 
-.mobile-menu > * {
+.mobile-menu>* {
   position: relative;
   z-index: 1;
 }
@@ -1004,7 +1013,9 @@ html[dir="rtl"] .mobile-menu.active {
 }
 
 @keyframes promoGlowPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 14px 34px rgba(188, 52, 51, 0.22);
   }
 
@@ -1265,11 +1276,16 @@ html[dir="rtl"] .mobile-menu.active {
 
 /* Home page only — the Menu page's minimal instance of this same component
    (.is-minimal) already sets background:none below and blends into that
-   page's own section instead. */
+   page's own section instead. Solid brand red at the top, thinning to the
+   bare pattern image by the bottom, with a dark scrim on top throughout so
+   the heading/cards stay legible instead of blending into the pattern. */
 .featured-menu-section:not(.is-minimal) {
-  background-image: linear-gradient(rgba(13, 13, 13, 0.5), rgba(13, 13, 13, 0.58)), url('/brand/pattern-brand-red.png');
-  background-size: auto, 480px auto;
-  background-repeat: repeat, repeat;
+  background-image:
+    linear-gradient(rgba(13, 13, 13, 0.5), rgba(13, 13, 13, 0.58)),
+    linear-gradient(to bottom, rgba(188, 52, 51, 1) 0%, rgba(188, 52, 51, 0) 100%),
+    url('/brand/pattern-brand-red.png');
+  background-size: auto, auto, 480px auto;
+  background-repeat: repeat, repeat, repeat;
 }
 
 /* Used when FeaturedMenu is embedded inside a page that already has its own
@@ -1304,9 +1320,10 @@ html[dir="rtl"] .mobile-menu.active {
 
 /* Full-bleed yellow backdrop for just this block (not the whole
    .section-menu, which also covers the "Our Signature Dishes" intro above
-   it) — same breakout technique used elsewhere for full-bleed sections. Dark
-   gradient baked into the same background-image (not a separate scrim layer)
-   so the yellow doesn't fight the heading/cards on top of it. */
+   it) — same breakout technique used elsewhere for full-bleed sections. Solid
+   brand yellow at the top, thinning to the bare pattern image by the bottom,
+   with a dark scrim on top throughout so the heading/cards stay legible
+   instead of blending into the pattern. */
 .menu-curated-section::before {
   content: '';
   position: absolute;
@@ -1315,9 +1332,12 @@ html[dir="rtl"] .mobile-menu.active {
   width: 100vw;
   height: 100%;
   transform: translateX(-50%);
-  background-image: linear-gradient(rgba(13, 13, 13, 0.32), rgba(13, 13, 13, 0.4)), url('/brand/pattern-brand-orange.png');
-  background-size: cover, 480px auto;
-  background-repeat: no-repeat, repeat;
+  background-image:
+    linear-gradient(rgba(13, 13, 13, 0.32), rgba(13, 13, 13, 0.4)),
+    linear-gradient(to bottom, rgba(246, 157, 28, 1) 0%, rgba(246, 157, 28, 0) 100%),
+    url('/brand/pattern-brand-orange.png');
+  background-size: cover, cover, 480px auto;
+  background-repeat: no-repeat, no-repeat, repeat;
   z-index: 0;
 }
 
@@ -1537,7 +1557,9 @@ html[dir="rtl"] .mobile-menu.active {
 }
 
 @keyframes scrollExploreBounce {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
 
@@ -1551,7 +1573,9 @@ html[dir="rtl"] .mobile-menu.active {
 }
 
 @keyframes viewMenuArrowSlide {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateX(0);
   }
 
@@ -1565,7 +1589,9 @@ html[dir="rtl"] .btn-view-menu-arrow {
 }
 
 @keyframes viewMenuArrowSlideRtl {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateX(0);
   }
 
@@ -1575,6 +1601,7 @@ html[dir="rtl"] .btn-view-menu-arrow {
 }
 
 @media (max-width: 768px) {
+
   /* A fixed total height (the active panel grows, the rest collapse, but
      the sum is constant) is what lets the gallery's own on-screen position
      safely drive the scroll-expand effect — see the comment above the
@@ -1606,36 +1633,15 @@ html[dir="rtl"] .btn-view-menu-arrow {
 }
 
 /* ===== ABOUT / STORY ===== */
-/* Brand pattern tiled across the whole page (not white, not a solid color)
-   — the only other background on this page is the hero photo band above.
-   Dark gradient baked into the same background-image (not a separate scrim
-   layer), same treatment used for the menu-curated section and the
-   contact/reserve forms. */
 .section-about {
-  background-image:
-    linear-gradient(rgba(13, 13, 13, 0.32), rgba(13, 13, 13, 0.4)),
-    url('/brand/pattern-brand-orange.png');
-  background-size: cover, 480px auto;
-  background-repeat: no-repeat, repeat;
   position: relative;
   padding-top: calc(var(--navbar-height) + 3rem);
-}
-
-.section-about .section-title {
-  color: var(--text-on-dark-primary);
-}
-
-.section-about .section-copy {
-  color: var(--bg-base);
-}
-
-@media (max-width: 768px) {
-  /* .section's base 8rem bottom padding reads as too tight after the card
-     stack on a narrow screen — give it more breathing room before the
-     footer starts. */
-  .section-about {
-    padding-bottom: 12rem;
-  }
+  background: var(--bg-base);
+  /* .about-story-band already provides its own trailing space (and
+     background) below the cards — without this override, .section's base
+     8rem bottom padding stacks on top of that as a second, unpatterned
+     blank gap before the footer. */
+  padding-bottom: 0;
 }
 
 .about-intro {
@@ -1651,29 +1657,72 @@ html[dir="rtl"] .btn-view-menu-arrow {
   max-width: 640px;
 }
 
-/* The description paragraph between the visual and the story cards — a
-   direct child of .container, not nested in .about-intro, so it's targeted
-   separately from the intro copy above. */
-.section-about .container > .section-copy {
+/* Full-bleed yellow backdrop starting at the description paragraph (below
+   the pattern visual, which already has its own dedicated image) and
+   running through the story cards — same breakout technique used for the
+   menu-curated section. Solid brand yellow at the top, thinning to the bare
+   pattern image by the bottom, with a dark scrim on top throughout so the
+   copy/cards stay legible instead of blending into the pattern. */
+.about-story-band {
+  position: relative;
+  /* Breathing room above the description paragraph, between it and the
+     pattern-visual card above. */
+  padding-top: 3rem;
+  /* .section's base 8rem bottom padding reads as too tight after the card
+     stack — give it more breathing room before the footer, as part of this
+     element's own box so the background below stretches to cover it too. */
+  padding-bottom: 5rem;
+}
+
+.about-story-band::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100vw;
+  height: 100%;
+  transform: translateX(-50%);
+  background-image:
+    linear-gradient(rgba(13, 13, 13, 0.32), rgba(13, 13, 13, 0.4)),
+    linear-gradient(to bottom, rgba(246, 157, 28, 1) 0%, rgba(246, 157, 28, 0) 100%),
+    url('/brand/pattern-brand-orange.png');
+  background-size: cover, cover, 480px auto;
+  background-repeat: no-repeat, no-repeat, repeat;
+  z-index: 0;
+}
+
+.about-story-band>.section-copy {
+  position: relative;
+  z-index: 1;
+  color: var(--bg-base);
   text-align: center;
   max-width: 640px;
   margin: 2.5rem auto;
 }
 
+@media (max-width: 768px) {
+  .about-story-band {
+    padding-bottom: 12rem;
+  }
+}
+
 .about-intro-visual {
   position: relative;
   height: min(78vh, 640px);
-  margin: 2.2rem 0;
+  /* .page-intro-bg is transform: scale(1.08), which pushes its rendered
+     bottom edge past its own 500px box — a plain 2.2rem top margin isn't
+     enough clearance, so this card's pattern image ends up visually
+     overlapping the tail end of the photo band above it. */
+  margin: 5rem 0 2.2rem;
   display: flex;
   align-items: center;
 }
 
-/* Breaks out of .container to full viewport width regardless of how deeply
-   nested it is — the standard full-bleed trick (center via left:50%, size
-   via 100vw, pull back by half that width). No background of its own (was
-   a solid fill) — .about-intro-pattern-inner scales up from 55% as the
-   section enters view, and .section-about's own pattern background now
-   shows through the margin around the shrunk image instead. */
+/* Full-bleed — breaks out of .container to the full viewport width (same
+   technique as .about-story-band::before below), so the scroll-driven scale
+   on .about-intro-pattern-inner reads as the image expanding out to the
+   edges of the screen by the time progress reaches 1, not just zooming
+   within a box already capped at the container's own width. */
 .about-intro-pattern {
   position: absolute;
   top: 0;
@@ -1703,9 +1752,8 @@ html[dir="rtl"] .btn-view-menu-arrow {
 .about-intro-pattern-vignette {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse 70% 60% at 50% 50%, transparent 25%, rgba(10, 8, 6, 0.6) 100%),
-    linear-gradient(180deg, rgba(10, 8, 6, 0.1) 0%, rgba(10, 8, 6, 0.5) 100%);
+  background: radial-gradient(ellipse at center, rgba(13, 13, 13, 0) 40%, rgba(13, 13, 13, 0.55) 100%);
+  pointer-events: none;
 }
 
 /* Sits above the full-bleed pattern image but stays within the normal
@@ -1837,8 +1885,9 @@ html[dir="rtl"] .btn-view-menu-arrow {
   background-position: center;
   background-attachment: fixed;
   opacity: 1;
-  filter: blur(4px);
+  /* filter: blur(4px); */
   transform: scale(1.08);
+  border-bottom: 1px solid var(--color-accent);
 }
 
 /* Black scrim on top of the (already blurred) photo so the yellow eyebrow
@@ -1958,12 +2007,12 @@ html[dir="rtl"] .btn-view-menu-arrow {
   background-image: linear-gradient(rgba(10, 8, 6, 0.35), rgba(10, 8, 6, 0.6)), var(--card-photo);
   background-size: cover;
   background-position: center;
-  filter: blur(12px);
+  filter: blur(2px);
   transform: scale(1.12);
   z-index: 0;
 }
 
-.story-card-panel > * {
+.story-card-panel>* {
   position: relative;
   z-index: 1;
 }
@@ -2001,6 +2050,7 @@ html[dir="rtl"] .btn-view-menu-arrow {
 }
 
 @media (max-width: 992px) {
+
   .story-scroll-stack .story-card-panel.story-card-chef,
   .story-scroll-stack .story-card-panel.story-card-ambience {
     margin-left: auto;
@@ -2187,7 +2237,7 @@ html[dir="rtl"] .btn-view-menu-arrow {
   position: relative;
 }
 
-.about-visuals > img {
+.about-visuals>img {
   width: 100%;
   aspect-ratio: 4/3;
   object-fit: cover;
@@ -2686,41 +2736,55 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   margin-top: 4rem;
 }
 
-.map-header {
-  margin-bottom: 1.5rem;
-  padding-inline-start: 0.5rem;
-}
-
-.map-header h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0;
-}
-
-.map-card {
+.map-embed-frame {
   position: relative;
   z-index: 1;
   overflow: hidden;
   min-width: 0;
-  min-height: 440px;
   border-radius: var(--radius-btn);
+  background: #FFFFFF;
+  border: 1px solid var(--color-primary);
+  box-shadow: 0 20px 45px var(--shadow-color);
 }
 
+.map-embed-header {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 1rem 1.4rem;
+  background: var(--color-accent);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.map-embed-header img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.map-embed-header span {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-on-dark-primary);
+}
+
+/* Solid brand yellow at the top, thinning to the bare pattern image by the
+   bottom — heading, field labels, and subtitle text (all sitting directly on
+   this background, unlike the inputs which have their own opaque white
+   fill) switch to the light/on-dark text set. */
 .contact-form-block {
   position: relative;
   z-index: 1;
   min-width: 0;
   padding: 2.5rem;
-  /* Dark wash over the brand pattern — heading, field labels, and subtitle
-     text (all sitting directly on this background, unlike the inputs which
-     have their own opaque white fill) switch to the light/on-dark text set
-     — shared with .reserve-modal's identical background treatment. */
-  background-image: linear-gradient(rgba(13, 13, 13, 0.5), rgba(13, 13, 13, 0.58)), url('/brand/pattern-brand-orange.png');
-  background-size: cover, 320px auto;
+  background-image:
+    linear-gradient(rgba(13, 13, 13, 0.5), rgba(13, 13, 13, 0.58)),
+    linear-gradient(to bottom, rgba(246, 157, 28, 1) 0%, rgba(246, 157, 28, 0) 100%),
+    url('/brand/pattern-brand-orange.png');
+  background-size: cover, cover, 320px auto;
   background-position: center;
-  background-repeat: no-repeat, repeat;
+  background-repeat: no-repeat, no-repeat, repeat;
   border: 1px solid var(--color-accent);
   border-radius: var(--radius-btn);
   box-shadow: 0 20px 45px var(--shadow-color);
@@ -2749,7 +2813,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   }
 }
 
-.map-card iframe {
+.map-embed-frame iframe {
   width: 100%;
   height: 100%;
   min-height: 440px;
@@ -2779,11 +2843,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
     justify-content: center;
   }
 
-  .map-card {
-    min-height: 320px;
-  }
-
-  .map-card iframe {
+  .map-embed-frame iframe {
     min-height: 320px;
   }
 }
@@ -2817,13 +2877,17 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   margin-top: 10rem;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-btn);
-  /* Darkening scrim over the red Sadu-weave brand pattern — the accent-orange
-     detail icons and body text sit directly on this (branch cards have no
-     background of their own), so the pattern needs to be dimmed enough for
-     them to stay legible while still reading clearly as the pattern. */
-  background-image: linear-gradient(rgba(13, 13, 13, 0.32), rgba(13, 13, 13, 0.4)), url('/brand/pattern-brand-red.png');
-  background-size: auto, 480px auto;
-  background-repeat: repeat, repeat;
+  /* Bare pattern image at the top, deepening to solid brand red by the
+     bottom — the accent-orange detail icons and body text sit directly on
+     this (branch cards have no background of their own), so a dark scrim on
+     top throughout keeps them legible instead of blending into the pattern,
+     on top of the red needing to be strong enough by the bottom on its own. */
+  background-image:
+    linear-gradient(rgba(13, 13, 13, 0.32), rgba(13, 13, 13, 0.4)),
+    linear-gradient(to bottom, rgba(188, 52, 51, 0) 0%, rgba(188, 52, 51, 1) 100%),
+    url('/brand/pattern-brand-red.png');
+  background-size: auto, auto, 480px auto;
+  background-repeat: repeat, repeat, repeat;
   box-shadow: 0 30px 70px var(--shadow-color);
   padding: 3.5rem 2.5rem;
 }
@@ -2892,6 +2956,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 }
 
 @media (max-width: 768px) {
+
   /* .btn is inline-flex (inline-level), so margin:auto alone can't center
      it — switching to a block-level flex here (still sized to its content
      via width:fit-content) is what lets auto margins actually center it. */
@@ -3273,7 +3338,9 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-image: linear-gradient(rgba(13, 13, 13, 0.5), rgba(13, 13, 13, 0.58)), url('/brand/pattern-brand-orange.png');
+  background-image: linear-gradient(rgba(13, 13, 13, 0.5), rgba(13, 13, 13, 0.58)),
+    linear-gradient(to bottom, rgba(246, 157, 28, 1) 0%, rgba(246, 157, 28, 0) 100%),
+    url('/brand/pattern-brand-orange.png');
   background-size: cover, 320px auto;
   background-repeat: no-repeat, repeat;
 }
@@ -3353,7 +3420,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 .reserve-field span {
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--color-sand);
+  color: var(--bg-base);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }

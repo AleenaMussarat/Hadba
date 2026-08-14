@@ -101,38 +101,40 @@ const About = () => {
           </div>
         </div>
 
-        <p className="section-copy fade-in-up" style={{ animationDelay: '0.4s' }}>{t.story.description}</p>
+        <div className="about-story-band">
+          <p className="section-copy fade-in-up" style={{ animationDelay: '0.4s' }}>{t.story.description}</p>
 
-        <ScrollStack
-          useWindowScroll
-          className="story-scroll-stack"
-          itemDistance={40}
-          stackPosition="12%"
-          scaleEndPosition="45%"
-          blurAmount={1}
-        >
-          <ScrollStackItem itemClassName="story-card-panel story-card-chef">
-            <img className="story-card-icon" src="/brand/icon-knife-fork.png" alt="" />
-            <h3>{t.story.chefTitle}</h3>
-            <p className="info-card-name">
-              {t.story.chefName}
-              <span className="info-card-role">{t.story.chefRole}</span>
-            </p>
-            <p>{t.story.chefBio}</p>
-          </ScrollStackItem>
+          <ScrollStack
+            useWindowScroll
+            className="story-scroll-stack"
+            itemDistance={40}
+            stackPosition="12%"
+            scaleEndPosition="45%"
+            blurAmount={1}
+          >
+            <ScrollStackItem itemClassName="story-card-panel story-card-chef">
+              <img className="story-card-icon" src="/brand/icon-knife-fork.png" alt="" />
+              <h3>{t.story.chefTitle}</h3>
+              <p className="info-card-name">
+                {t.story.chefName}
+                <span className="info-card-role">{t.story.chefRole}</span>
+              </p>
+              <p>{t.story.chefBio}</p>
+            </ScrollStackItem>
 
-          <ScrollStackItem itemClassName="story-card-panel story-card-promise">
-            <img className="story-card-icon" src="/brand/icon-cloche.png" alt="" />
-            <h3>{t.story.qualityTitle}</h3>
-            <p>{t.story.qualityText}</p>
-          </ScrollStackItem>
+            <ScrollStackItem itemClassName="story-card-panel story-card-promise">
+              <img className="story-card-icon" src="/brand/icon-cloche.png" alt="" />
+              <h3>{t.story.qualityTitle}</h3>
+              <p>{t.story.qualityText}</p>
+            </ScrollStackItem>
 
-          <ScrollStackItem itemClassName="story-card-panel story-card-ambience">
-            <img className="story-card-icon" src="/brand/icon-table.png" alt="" />
-            <h3>{t.story.ambienceTitle}</h3>
-            <p>{t.story.ambienceText}</p>
-          </ScrollStackItem>
-        </ScrollStack>
+            <ScrollStackItem itemClassName="story-card-panel story-card-ambience">
+              <img className="story-card-icon" src="/brand/icon-table.png" alt="" />
+              <h3>{t.story.ambienceTitle}</h3>
+              <p>{t.story.ambienceText}</p>
+            </ScrollStackItem>
+          </ScrollStack>
+        </div>
       </div>
 
     </section>
