@@ -5,7 +5,7 @@ import { translations } from '../i18n/translations'
 import { socialLinks } from '../data/social'
 import { FaLocationDot, FaPhone, FaClock } from 'react-icons/fa6'
 
-const FooterLinkIcon = () => <img className="footer-link-icon" src="/brand/icon-chef-hat.png" alt="" />
+const FooterLinkIcon = () => <img className="footer-link-icon" src="/brand/icon-chef-hat.webp" alt="" />
 
 const Footer = ({ onReserveClick }) => {
   const { currentLang } = useLanguage()
@@ -15,7 +15,7 @@ const Footer = ({ onReserveClick }) => {
     <footer className="footer">
       <div className="container footer-shell">
         <div className="footer-brand">
-          <img className="footer-logo" src="/brand/logo-orange.png" alt="SAMDAN" />
+          <img className="footer-logo" src="/brand/logo-orange.webp" alt="SAMDAN" />
           <span className="footer-divider" />
           <p className="footer-quote" dangerouslySetInnerHTML={{ __html: t.hero.tagline }} />
         </div>

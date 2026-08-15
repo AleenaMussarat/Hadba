@@ -64,7 +64,7 @@ const Navbar = ({ onReserveClick }) => {
       <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
         <div className="container nav-container">
           <Link className="logo" to="/">
-            <img className="logo-mark" src="/brand/logo-orange.png" alt="SAMDAN" />
+            <img className="logo-mark" src="/brand/logo-orange.webp" alt="SAMDAN" />
           </Link>
 
           <ul className="nav-links">
@@ -114,7 +114,7 @@ const Navbar = ({ onReserveClick }) => {
       <div ref={mobileMenuRef} className={`mobile-menu ${isMobileMenuOpen ? 'active' : ''}`}>
         <div className="mobile-menu-header">
           <Link className="logo" to="/" onClick={() => setIsMobileMenuOpen(false)}>
-            <img className="logo-mark" src="/brand/logo-orange.png" alt="SAMDAN" />
+            <img className="logo-mark" src="/brand/logo-orange.webp" alt="SAMDAN" />
           </Link>
           <button className="mobile-menu-close" onClick={() => setIsMobileMenuOpen(false)}>
             <FaXmark />

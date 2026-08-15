@@ -50,11 +50,11 @@ const Gallery = () => {
 
   return (
     <section className="section section-gallery">
-      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.jpg)' }} aria-hidden="true" />
+      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.webp)' }} aria-hidden="true" />
       <div className="container">
         <div className="section-heading">
           <p className="eyebrow eyebrow-icon fade-in-up" style={{ animationDelay: '0.05s' }}>
-            <img src="/brand/icon-plate.png" alt="" />
+            <img src="/brand/icon-plate.webp" alt="" />
             {t.gallery.eyebrow}
           </p>
           <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{t.gallery.title}</h2>

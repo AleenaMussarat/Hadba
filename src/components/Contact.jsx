@@ -5,7 +5,7 @@ import { useReservationForm } from '../lib/useReservationForm'
 import { FaLocationDot, FaPhone, FaEnvelope, FaClock, FaCircleCheck, FaTriangleExclamation } from 'react-icons/fa6'
 import { socialLinks } from '../data/social'
 import { MAP_QUERY, MAP_EMBED_SRC } from '../lib/mapConfig'
-import mapLocationIcon from '../../assets/images/Icons/Samdan Guidlines ICONS-08.png'
+import mapLocationIcon from '../../assets/images/Icons/Samdan Guidlines ICONS-08.webp'
 
 const Contact = () => {
   const { currentLang } = useLanguage()
@@ -14,11 +14,11 @@ const Contact = () => {
 
   return (
     <section className="section contact-section">
-      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.jpg)' }} aria-hidden="true" />
+      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.webp)' }} aria-hidden="true" />
       <div className="container">
         <div className="section-heading">
           <p className="eyebrow eyebrow-icon fade-in-up" style={{ animationDelay: '0.05s' }}>
-            <img src="/brand/icon-cloche.png" alt="" />
+            <img src="/brand/icon-cloche.webp" alt="" />
             {t.contact.eyebrow}
           </p>
           <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{t.contact.title}</h2>
@@ -57,7 +57,7 @@ const Contact = () => {
 
           <div className="contact-form-block">
             <div className="reserve-heading">
-              <img className="reserve-icon" src="/brand/icon-table.png" alt="" />
+              <img className="reserve-icon" src="/brand/icon-table.webp" alt="" />
               <h3 className="reserve-title">{t.reserve.title}</h3>
             </div>
             <p className="reserve-subtitle">{t.reserve.subtitle}</p>

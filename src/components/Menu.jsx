@@ -114,11 +114,11 @@ const Menu = () => {
 
   return (
     <section className="section section-menu">
-      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.jpg)' }} aria-hidden="true" />
+      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.webp)' }} aria-hidden="true" />
       <div className="container">
         <div className="section-heading">
           <p className="eyebrow eyebrow-icon fade-in-up" style={{ animationDelay: '0.05s' }}>
-            <img src="/brand/icon-knife-fork.png" alt="" />
+            <img src="/brand/icon-knife-fork.webp" alt="" />
             {t.menu.eyebrow}
           </p>
           <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{t.menu.title}</h2>
@@ -131,7 +131,7 @@ const Menu = () => {
       <div className="container menu-curated-section">
         <div className="menu-curated-content">
           <div id="menu-items-grid" className="menu-separator">
-            <img className="menu-separator-icon" src="/brand/icon-plate.png" alt="" />
+            <img className="menu-separator-icon" src="/brand/icon-plate.webp" alt="" />
             <h3 className="menu-separator-heading">{t.menu.fullMenuHeading}</h3>
             <p className="menu-separator-subtitle">{t.menu.fullMenuSubtitle}</p>
           </div>
@@ -161,7 +161,7 @@ const Menu = () => {
                   <img src={item.image} alt={item.name} loading="lazy" />
                   {item.featured ? (
                     <span className="menu-badge">
-                      <img src="/brand/icon-cloche-steam.png" alt="" />
+                      <img src="/brand/icon-cloche-steam.webp" alt="" />
                       {t.menu.recommended}
                     </span>
                   ) : null}

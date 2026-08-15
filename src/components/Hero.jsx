@@ -12,12 +12,12 @@ const Hero = ({ onReserveClick }) => {
   return (
     <>
     <section className="hero">
-      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.jpg)' }} aria-hidden="true" />
+      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.webp)' }} aria-hidden="true" />
 
       <div className="container">
         <div className="section-heading">
           <p className="eyebrow eyebrow-icon">
-            <img src="brand/SingleRedBox.png" alt="" />
+            <img src="brand/SingleRedBox.webp" alt="" />
             {t.hero.eyebrow}
           </p>
           <h2 className="section-title" dangerouslySetInnerHTML={{ __html: t.hero.tagline }} />
@@ -33,7 +33,7 @@ const Hero = ({ onReserveClick }) => {
           <div className="hero-copy-details">
             <div className="hero-promo-banner">
               <div className="hero-promo-icon">
-                <img src="/brand/icon-cloche-steam-orange.png" alt="" />
+                <img src="/brand/icon-cloche-steam-orange.webp" alt="" />
               </div>
               <div className="hero-promo-copy">
                 <span className="hero-promo-eyebrow">{t.hero.promoTitle}</span>
@@ -43,7 +43,7 @@ const Hero = ({ onReserveClick }) => {
 
             <div className="hero-card">
               <div className="hero-card-icon-badge">
-                <img className="hero-card-icon" src="/brand/icon-table.png" alt="" />
+                <img className="hero-card-icon" src="/brand/icon-table.webp" alt="" />
               </div>
               <div>
                 <strong>{t.hero.hours}</strong>

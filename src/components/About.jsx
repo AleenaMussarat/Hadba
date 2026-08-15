@@ -3,13 +3,13 @@ import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
 import ScrollStack, { ScrollStackItem } from './reactbits/ScrollStack'
 import { getLenis } from '../lib/smoothScroll'
-import patternBg from '../../assets/images/GuidlinePictures/Pattern.jpeg'
+import patternBg from '../../assets/images/GuidlinePictures/Pattern.webp'
 
 const HIGHLIGHT_ICONS = [
-  '/brand/icon-highlight-chefhat.png',
-  '/brand/icon-highlight-table.png',
-  '/brand/icon-highlight-cloche.png',
-  '/brand/icon-highlight-cutlery.png'
+  '/brand/icon-highlight-chefhat.webp',
+  '/brand/icon-highlight-table.webp',
+  '/brand/icon-highlight-cloche.webp',
+  '/brand/icon-highlight-cutlery.webp'
 ]
 
 const CARDS_IN_AT = 0.55
@@ -60,12 +60,12 @@ const About = () => {
 
   return (
     <section className="section section-about">
-      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.jpg)' }} aria-hidden="true" />
+      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.webp)' }} aria-hidden="true" />
 
       <div className="container">
         <div className="about-intro">
           <p className="eyebrow eyebrow-icon fade-in-up" style={{ animationDelay: '0.05s' }}>
-            <img src="/brand/icon-story-eyebrow.png" alt="" />
+            <img src="/brand/icon-story-eyebrow.webp" alt="" />
             {t.story.eyebrow}
           </p>
           <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{t.story.title}</h2>
@@ -113,7 +113,7 @@ const About = () => {
             blurAmount={1}
           >
             <ScrollStackItem itemClassName="story-card-panel story-card-chef">
-              <img className="story-card-icon" src="/brand/icon-knife-fork.png" alt="" />
+              <img className="story-card-icon" src="/brand/icon-knife-fork.webp" alt="" />
               <h3>{t.story.chefTitle}</h3>
               <p className="info-card-name">
                 {t.story.chefName}
@@ -123,13 +123,13 @@ const About = () => {
             </ScrollStackItem>
 
             <ScrollStackItem itemClassName="story-card-panel story-card-promise">
-              <img className="story-card-icon" src="/brand/icon-cloche.png" alt="" />
+              <img className="story-card-icon" src="/brand/icon-cloche.webp" alt="" />
               <h3>{t.story.qualityTitle}</h3>
               <p>{t.story.qualityText}</p>
             </ScrollStackItem>
 
             <ScrollStackItem itemClassName="story-card-panel story-card-ambience">
-              <img className="story-card-icon" src="/brand/icon-table.png" alt="" />
+              <img className="story-card-icon" src="/brand/icon-table.webp" alt="" />
               <h3>{t.story.ambienceTitle}</h3>
               <p>{t.story.ambienceText}</p>
             </ScrollStackItem>

@@ -103,9 +103,9 @@ const LoadingScreen = ({ onFinish, currentLang }) => {
         <div className="loading-glass">
           <div className="logo-container">
             <div className="logo-circle">
-              <img className="logo-circle-icon" src="/brand/icon-knife-fork.png" alt="" />
+              <img className="logo-circle-icon" src="/brand/icon-knife-fork.webp" alt="" />
             </div>
-            <img className="loading-logo-mark" src="/brand/logo-orange.png" alt="SAMDAN" />
+            <img className="loading-logo-mark" src="/brand/logo-orange.webp" alt="SAMDAN" />
             <p className="logo-subtitle">{t.hero.eyebrow}</p>
           </div>
 

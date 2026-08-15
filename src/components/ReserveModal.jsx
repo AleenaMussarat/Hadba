@@ -49,7 +49,7 @@ const ReserveModal = ({ isOpen, onClose }) => {
           ) : (
             <>
               <div className="reserve-heading">
-                <img className="reserve-icon" src="/brand/icon-table.png" alt="" />
+                <img className="reserve-icon" src="/brand/icon-table.webp" alt="" />
                 <h3 className="reserve-title">{t.reserve.title}</h3>
               </div>
               <p className="reserve-subtitle">{t.reserve.subtitle}</p>

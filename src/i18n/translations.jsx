@@ -6,12 +6,12 @@ const img = (id, w = 800) => `https://images.unsplash.com/${id}?auto=format&fit=
 // where a verified royalty-free white-background stock photo was found (see
 // dishTea below — checked individually, most homestyle Najdi/Hejazi dishes
 // don't have an accurate isolated-background match available).
-const dishKabdaBaladi = '/brand/dish-kabda-baladi.jpg'
-const dishFriedEggs = '/brand/dish-fried-eggs.jpg'
-const dishTuna = '/brand/dish-tuna.jpg'
-const dishSouthernBread = '/brand/dish-southern-bread.png'
-const dishTea = '/brand/dish-tea.jpg'
-const logoPlaceholder = '/brand/logo-red.png'
+const dishKabdaBaladi = '/brand/dish-kabda-baladi.webp'
+const dishFriedEggs = '/brand/dish-fried-eggs.webp'
+const dishTuna = '/brand/dish-tuna.webp'
+const dishSouthernBread = '/brand/dish-southern-bread.webp'
+const dishTea = '/brand/dish-tea.webp'
+const logoPlaceholder = '/brand/logo-red.webp'
 
 export const menuImages = {
   lambKabsa: img('photo-1681116997174-76efb15220f4'),
@@ -34,20 +34,20 @@ export const menuImages = {
   logo: logoPlaceholder
 }
 
-const diningRoom = '/brand/photo-riyadh-skyline.jpg'
-const najdiArchitecture = '/brand/photo-najdi-architecture.jpg'
-const najdiBranch = '/brand/photo-najdi-branch.jfif'
-const saduInterior = '/brand/photo-sadu-interior.jpg'
+const diningRoom = '/brand/photo-riyadh-skyline.webp'
+const najdiArchitecture = '/brand/photo-najdi-architecture.webp'
+const najdiBranch = '/brand/photo-najdi-branch.webp'
+const saduInterior = '/brand/photo-sadu-interior.webp'
 
 // Breakfast spread photos (Menu folder, images 1-8)
-const breakfastSpread1 = '/brand/photo-breakfast-spread-1.png'
-const breakfastBread = '/brand/photo-breakfast-bread.png'
-const najdiBreakfastTable = '/brand/photo-najdi-breakfast-table.png'
-const eggsTomatoRelish = '/brand/photo-eggs-tomato-relish.png'
-const tomatoRelish = '/brand/photo-tomato-relish.png'
-const nawashefPhoto = '/brand/photo-nawashef.png'
-const tomatoPepperDip = '/brand/photo-tomato-pepper-dip.png'
-const hummusMeat = '/brand/photo-hummus-meat.png'
+const breakfastSpread1 = '/brand/photo-breakfast-spread-1.webp'
+const breakfastBread = '/brand/photo-breakfast-bread.webp'
+const najdiBreakfastTable = '/brand/photo-najdi-breakfast-table.webp'
+const eggsTomatoRelish = '/brand/photo-eggs-tomato-relish.webp'
+const tomatoRelish = '/brand/photo-tomato-relish.webp'
+const nawashefPhoto = '/brand/photo-nawashef.webp'
+const tomatoPepperDip = '/brand/photo-tomato-pepper-dip.webp'
+const hummusMeat = '/brand/photo-hummus-meat.webp'
 const BRANCH_MAP_QUERY = 'Khalid bin Al Waleed Street, Qurtubah, Riyadh, Saudi Arabia'
 const branchMapsLink = `https://maps.google.com/?q=${encodeURIComponent(BRANCH_MAP_QUERY)}`
 

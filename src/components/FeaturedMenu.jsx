@@ -200,7 +200,7 @@ const FeaturedMenu = ({ scrollTargetId, minimal = false }) => {
         {!minimal ? (
           <div className="section-heading">
             <p className="eyebrow eyebrow-icon">
-              <img src="/brand/icon-fork-spoon.png" alt="" />
+              <img src="/brand/icon-fork-spoon.webp" alt="" />
               {t.featuredMenu.eyebrow}
             </p>
             <h2 className="section-title">{t.featuredMenu.title}</h2>

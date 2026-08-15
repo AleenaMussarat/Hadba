@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
-const RED_PATTERN = '/brand/pattern-side-red.png'
-const ORANGE_PATTERN = '/brand/pattern-side-orange.png'
+const RED_PATTERN = '/brand/pattern-side-red.webp'
+const ORANGE_PATTERN = '/brand/pattern-side-orange.webp'
 
 // Alternates the border color by page order rather than tying it to any
 // per-page theme, so navigating through the site visibly alternates red/orange.
