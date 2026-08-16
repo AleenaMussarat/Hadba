@@ -1731,7 +1731,7 @@ html[dir="rtl"] .btn-view-menu-arrow {
      bottom edge past its own 500px box — a plain 2.2rem top margin isn't
      enough clearance, so this card's pattern image ends up visually
      overlapping the tail end of the photo band above it. */
-  margin: 4.7rem 0 0 0;
+  margin: 6.7rem 0 0 0;
   display: flex;
   align-items: center;
 }
@@ -1862,7 +1862,7 @@ html[dir="rtl"] .btn-view-menu-arrow {
   .about-intro-visual {
     height: auto;
     min-height: 320px;
-    margin: 2.1rem 0 0 0;
+    margin: 3.3rem 0 0 0;
   }
 
   .about-intro-visual-content {
