@@ -4,8 +4,8 @@
   "info": {
     "singularName": "inquiry",
     "pluralName": "inquiries",
-    "displayName": "Inquiry",
-    "description": "A reservation inquiry submitted from the website's Inquiries form"
+    "displayName": "Inquiry / استفسار",
+    "description": "A reservation inquiry submitted from the website's Inquiries form / استفسار حجز تم إرساله عبر نموذج الاستفسارات في الموقع"
   },
   "options": {
     "draftAndPublish": false
@@ -13,26 +13,32 @@
   "attributes": {
     "name": {
       "type": "string",
-      "required": true
+      "required": true,
+      "displayName": "Name / الاسم"
     },
     "phone": {
       "type": "string",
-      "required": true
+      "required": true,
+      "displayName": "Phone / الهاتف"
     },
     "guests": {
       "type": "integer",
-      "required": true
+      "required": true,
+      "displayName": "Guests / الضيوف"
     },
     "date": {
       "type": "date",
-      "required": true
+      "required": true,
+      "displayName": "Date / التاريخ"
     },
     "time": {
       "type": "time",
-      "required": true
+      "required": true,
+      "displayName": "Time / الوقت"
     },
     "notes": {
-      "type": "text"
+      "type": "text",
+      "displayName": "Notes / الملاحظات"
     },
     "stage": {
       "type": "enumeration",
@@ -42,7 +48,8 @@
         "Confirmed",
         "Cancelled"
       ],
-      "default": "New"
+      "default": "New",
+      "displayName": "Stage / الحالة"
     }
   }
 }

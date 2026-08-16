@@ -4,8 +4,8 @@
   "info": {
     "singularName": "staff-account",
     "pluralName": "staff-accounts",
-    "displayName": "Staff Account",
-    "description": "Create a new admin login here — saving creates the real account immediately with the password you set, no email required"
+    "displayName": "Staff Account / حساب الموظف",
+    "description": "Create a new admin login here — saving creates the real account immediately with the password you set, no email required / أنشئ تسجيل دخول جديد للإدارة هنا — عند الحفظ يتم إنشاء الحساب الحقيقي فورًا باستخدام كلمة المرور التي تحددها، بدون بريد إلكتروني"
   },
   "options": {
     "draftAndPublish": false
@@ -13,20 +13,24 @@
   "attributes": {
     "firstName": {
       "type": "string",
-      "required": true
+      "required": true,
+      "displayName": "First Name / الاسم الأول"
     },
     "lastName": {
       "type": "string",
-      "required": true
+      "required": true,
+      "displayName": "Last Name / الاسم الأخير"
     },
     "email": {
       "type": "email",
-      "required": true
+      "required": true,
+      "displayName": "Email / البريد الإلكتروني"
     },
     "temporaryPassword": {
       "type": "string",
       "required": true,
-      "minLength": 8
+      "minLength": 8,
+      "displayName": "Temporary Password / كلمة المرور المؤقتة"
     },
     "role": {
       "type": "enumeration",
@@ -34,7 +38,8 @@
         "Super Admin",
         "Editor"
       ],
-      "required": true
+      "required": true,
+      "displayName": "Role / الدور"
     }
   }
 }

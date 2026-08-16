@@ -4,32 +4,38 @@
   "info": {
     "singularName": "carousel-slide",
     "pluralName": "carousel-slides",
-    "displayName": "Carousel Slide",
-    "description": "A hero carousel slide on the homepage, English and Arabic together on one entry (max 5 active)"
+    "displayName": "Carousel Slide / شريحة الكاروسيل",
+    "description": "A hero carousel slide on the homepage, English and Arabic together on one entry (max 5 active) / شريحة الكاروسيل الرئيسية في الصفحة الرئيسية، الإنجليزية والعربية معًا في إدخال واحد (حتى 5 نشطة)"
   },
   "options": {
     "draftAndPublish": false
   },
   "attributes": {
     "badgeEn": {
-      "type": "string"
+      "type": "string",
+      "displayName": "Badge (EN) / الشارة (EN)"
     },
     "badgeAr": {
-      "type": "string"
+      "type": "string",
+      "displayName": "Badge (AR) / الشارة (AR)"
     },
     "titleEn": {
       "type": "string",
-      "required": true
+      "required": true,
+      "displayName": "Title (EN) / العنوان (EN)"
     },
     "titleAr": {
       "type": "string",
-      "required": true
+      "required": true,
+      "displayName": "Title (AR) / العنوان (AR)"
     },
     "subtitleEn": {
-      "type": "text"
+      "type": "text",
+      "displayName": "Subtitle (EN) / العنوان الفرعي (EN)"
     },
     "subtitleAr": {
-      "type": "text"
+      "type": "text",
+      "displayName": "Subtitle (AR) / العنوان الفرعي (AR)"
     },
     "image": {
       "type": "media",
@@ -38,15 +44,18 @@
       "allowedTypes": [
         "images",
         "videos"
-      ]
+      ],
+      "displayName": "Image / الصورة"
     },
     "order": {
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "displayName": "Order / الترتيب"
     },
     "isActive": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "displayName": "Active / نشط"
     }
   }
 }

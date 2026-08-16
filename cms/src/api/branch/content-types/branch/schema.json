@@ -4,8 +4,8 @@
   "info": {
     "singularName": "branch",
     "pluralName": "branches",
-    "displayName": "Branch",
-    "description": "A restaurant location, English and Arabic together on one entry"
+    "displayName": "Branch / الفرع",
+    "description": "A restaurant location, English and Arabic together on one entry / موقع مطعم، الإنجليزية والعربية معًا في إدخال واحد"
   },
   "options": {
     "draftAndPublish": false
@@ -13,27 +13,33 @@
   "attributes": {
     "nameEn": {
       "type": "string",
-      "required": true
+      "required": true,
+      "displayName": "Name (EN) / الاسم (EN)"
     },
     "nameAr": {
       "type": "string",
-      "required": true
+      "required": true,
+      "displayName": "Name (AR) / الاسم (AR)"
     },
     "locationEn": {
       "type": "text",
-      "required": true
+      "required": true,
+      "displayName": "Location (EN) / الموقع (EN)"
     },
     "locationAr": {
       "type": "text",
-      "required": true
+      "required": true,
+      "displayName": "Location (AR) / الموقع (AR)"
     },
     "hoursEn": {
       "type": "string",
-      "required": true
+      "required": true,
+      "displayName": "Hours (EN) / الساعات (EN)"
     },
     "hoursAr": {
       "type": "string",
-      "required": true
+      "required": true,
+      "displayName": "Hours (AR) / الساعات (AR)"
     },
     "image": {
       "type": "media",
@@ -41,15 +47,18 @@
       "required": false,
       "allowedTypes": [
         "images"
-      ]
+      ],
+      "displayName": "Image / الصورة"
     },
     "mapsLink": {
       "type": "string",
-      "required": true
+      "required": true,
+      "displayName": "Map Link / رابط الخريطة"
     },
     "order": {
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "displayName": "Order / الترتيب"
     }
   }
 }

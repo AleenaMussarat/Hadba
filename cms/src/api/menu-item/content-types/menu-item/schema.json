@@ -4,8 +4,8 @@
   "info": {
     "singularName": "menu-item",
     "pluralName": "menu-items",
-    "displayName": "Menu Item",
-    "description": "A single dish on the menu, English and Arabic together on one entry"
+    "displayName": "Menu Item / عنصر القائمة",
+    "description": "A single dish on the menu, English and Arabic together on one entry / طبق واحد في القائمة، الإنجليزية والعربية معًا في إدخال واحد"
   },
   "options": {
     "draftAndPublish": false
@@ -13,17 +13,41 @@
   "attributes": {
     "nameEn": {
       "type": "string",
-      "required": true
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "displayName": "Name (EN) / الاسم (EN)"
     },
     "nameAr": {
       "type": "string",
-      "required": true
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "displayName": "Name (AR) / الاسم (AR)"
     },
     "descriptionEn": {
-      "type": "text"
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "displayName": "Description (EN) / الوصف (EN)"
     },
     "descriptionAr": {
-      "type": "text"
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "displayName": "Description (AR) / الوصف (AR)"
     },
     "categoryEn": {
       "type": "enumeration",
@@ -42,7 +66,8 @@
         "Drinks",
         "Desserts"
       ],
-      "required": true
+      "required": true,
+      "displayName": "Category (EN) / الفئة (EN)"
     },
     "categoryAr": {
       "type": "enumeration",
@@ -61,11 +86,13 @@
         "المشروبات",
         "الحلا"
       ],
-      "required": true
+      "required": true,
+      "displayName": "Category (AR) / الفئة (AR)"
     },
     "price": {
       "type": "decimal",
-      "required": true
+      "required": true,
+      "displayName": "Price / السعر"
     },
     "image": {
       "type": "media",
@@ -73,18 +100,22 @@
       "required": false,
       "allowedTypes": [
         "images"
-      ]
+      ],
+      "displayName": "Image / الصورة"
     },
     "featured": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "displayName": "Featured / مميز"
     },
     "order": {
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "displayName": "Order / الترتيب"
     },
     "calories": {
-      "type": "integer"
+      "type": "integer",
+      "displayName": "Calories / السعرات"
     }
   }
 }
