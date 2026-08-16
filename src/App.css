@@ -2787,8 +2787,9 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 
 .map-embed-header span {
   font-family: 'Playfair Display', serif;
-  font-size: 1.15rem;
-  font-weight: 600;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
   color: var(--text-on-dark-primary);
 }
 
