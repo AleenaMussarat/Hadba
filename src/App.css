@@ -78,7 +78,8 @@ html[dir="rtl"] .footer-quote,
 html[dir="rtl"] .reserve-title,
 html[dir="rtl"] .reserve-success h3,
 html[dir="rtl"] .logo-subtitle,
-html[dir="rtl"] .mobile-nav-link {
+html[dir="rtl"] .mobile-nav-link,
+html[dir="rtl"] .map-embed-header span {
   font-family: 'Noto Kufi Arabic', sans-serif;
 }
 
