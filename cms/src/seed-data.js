@@ -33,7 +33,7 @@ const CAT = {
   wholeLamb: { en: 'Whole Lamb', ar: 'لحم الذبيحة' },
   riceSides: { en: 'Rice', ar: 'الرز' },
   soupsPastries: { en: 'Soups & Pastries', ar: 'القدرات' },
-  sides: { en: 'Sides', ar: 'الإدامات' },
+  sides: { en: 'Sides', ar: 'الإيدامات' },
   salads: { en: 'Salads', ar: 'السلطات' },
   drinks: { en: 'Drinks', ar: 'المشروبات' },
   desserts: { en: 'Desserts', ar: 'الحلا' }
@@ -116,11 +116,11 @@ const MENU_ROWS = [
   ['Al-Qarya Laban', 'لبن القرية', 'Chilled traditional laban', 'لبن القرية بارد', 'drinks', '4', 175, 'coffeeDates'],
   ['Almarai Laban', 'لبن مراعي', 'Chilled Almarai laban', 'لبن مراعي بارد', 'drinks', '2', 120, 'coffeeDates'],
   ['Water', 'ماء', 'Bottled water', 'مياه معدنية', 'drinks', '1', 0, 'coffeeDates'],
-  ['Tea', 'شاهي تلقية', 'Traditional Saudi tea', 'شاهي سعودي تقليدي', 'drinks', '3', 2, 'coffeeDates'],
+  ['Tea', 'شاهي تلقيمة', 'Traditional Saudi tea', 'شاهي سعودي تقليدي', 'drinks', '3', 2, 'coffeeDates'],
   ['Arabic Coffee Pot with Dates', 'دلة مع التمر', 'Traditional dallah of qahwa served with premium dates', 'دلة قهوة عربية تقدم مع أجود أنواع التمر', 'drinks', '20', 220, 'coffeeDates'],
 
   ['Kunafa', 'كنافة', 'Crisp shredded pastry with cheese and syrup', 'كنافة مقرمشة بالجبن والقطر', 'desserts', '10', 560, 'luqaimat', true],
-  ['Crème Caramel', 'كريم كرميل', 'Silky caramel custard dessert', 'حلا الكريم كرميل الحريري', 'desserts', '10', 290, 'luqaimat']
+  ['Crème Caramel', 'كريم كراميل', 'Silky caramel custard dessert', 'حلا كريم كراميل الحريري', 'desserts', '10', 290, 'luqaimat']
 ];
 
 const items = MENU_ROWS.map(([enName, arName, enDesc, arDesc, catKey, price, calories, imageKey, featured], index) => ({

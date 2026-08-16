@@ -69,7 +69,7 @@ export const CAT = {
   wholeLamb: { en: 'Whole Lamb', ar: 'لحم الذبيحة' },
   rice: { en: 'Rice', ar: 'الرز' },
   appetizers: { en: 'Appetizers', ar: 'المقبلات' },
-  sides: { en: 'Sides', ar: 'الإدامات' },
+  sides: { en: 'Sides', ar: 'الإيدامات' },
   salads: { en: 'Salads', ar: 'السلطات' },
   drinks: { en: 'Drinks', ar: 'المشروبات' },
   desserts: { en: 'Desserts', ar: 'الحلا' }
@@ -170,12 +170,12 @@ const MENU_ROWS = [
   ['Al-Qarya Laban', 'لبن القرية', 'Chilled traditional laban', 'لبن القرية بارد', 'drinks', '4', 175, 'logo'],
   ['Almarai Laban', 'لبن مراعي', 'Chilled Almarai laban', 'لبن مراعي بارد', 'drinks', '2', 120, 'logo'],
   ['Water', 'ماء', 'Bottled water', 'مياه معدنية', 'drinks', '1', 0, 'logo'],
-  ['Tea', 'شاهي تلقية', 'Traditional Saudi tea', 'شاهي سعودي تقليدي', 'drinks', '3', 2, 'tea'],
+  ['Tea', 'شاهي تلقيمة', 'Traditional Saudi tea', 'شاهي سعودي تقليدي', 'drinks', '3', 2, 'tea'],
   ['Arabic Coffee Pot with Dates', 'دلة مع التمر', 'Traditional dallah of qahwa served with premium dates', 'دلة قهوة عربية تقدم مع أجود أنواع التمر', 'drinks', '20', 220, 'logo'],
 
   // Desserts
   ['Kunafa', 'كنافة', 'Crisp shredded pastry with cheese and syrup', 'كنافة مقرمشة بالجبن والقطر', 'desserts', '10', 560, 'logo', true],
-  ['Crème Caramel', 'كريم كرميل', 'Silky caramel custard dessert', 'حلا الكريم كرميل الحريري', 'desserts', '10', 290, 'logo']
+  ['Crème Caramel', 'كريم كراميل', 'Silky caramel custard dessert', 'حلا كريم كراميل الحريري', 'desserts', '10', 290, 'logo']
 ]
 
 const buildMenuItems = (lang) =>

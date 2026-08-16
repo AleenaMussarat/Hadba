@@ -2457,6 +2457,10 @@ html[dir="rtl"] .menu-page-btn {
   box-shadow: 0 22px 45px var(--shadow-color);
 }
 
+.menu-item:hover .menu-item-category {
+  color: var(--color-primary);
+}
+
 .menu-item:hover .menu-item-top h4 {
   color: #1A1108;
 }

@@ -6,7 +6,7 @@ import RiyalSymbol from './RiyalSymbol'
 import FeaturedMenu from './FeaturedMenu'
 import { getLenis } from '../lib/smoothScroll'
 
-const PAGE_SIZE = 20
+const PAGE_SIZE = 8
 const MOBILE_QUERY = '(max-width: 768px)'
 
 // Client-side filter + slice used whenever Strapi is unavailable — mirrors
