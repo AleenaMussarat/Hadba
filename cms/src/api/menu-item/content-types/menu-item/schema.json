@@ -10,48 +10,92 @@
   "options": {
     "draftAndPublish": false
   },
-  "pluginOptions": {},
   "attributes": {
     "nameEn": {
       "type": "string",
-      "required": true
+      "required": true,
+      "displayName": "Name (EN) / الاسم (EN)"
     },
     "nameAr": {
       "type": "string",
-      "required": true
+      "required": true,
+      "displayName": "Name (AR) / الاسم (AR)"
     },
     "descriptionEn": {
-      "type": "text"
+      "type": "text",
+      "displayName": "Description (EN) / الوصف (EN)"
     },
     "descriptionAr": {
-      "type": "text"
+      "type": "text",
+      "displayName": "Description (AR) / الوصف (AR)"
     },
     "price": {
       "type": "decimal",
-      "required": true
+      "required": true,
+      "displayName": "Price / السعر"
     },
     "calories": {
-      "type": "integer"
+      "type": "integer",
+      "displayName": "Calories / السعرات"
     },
     "featured": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "displayName": "Featured / مميز"
     },
     "order": {
       "type": "integer",
-      "default": 0
+      "default": 0,
+      "displayName": "Order / الترتيب"
     },
     "image": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ],
+      "displayName": "Image / الصورة"
     },
-    "menuCategory": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::menu-category.menu-category",
-      "inversedBy": "menuItems"
+    "categoryEn": {
+      "type": "enumeration",
+      "enum": [
+        "Breakfast",
+        "Traditional Dishes",
+        "Madhghoot & Kabsa Barriya",
+        "Goat Haneeth",
+        "Camel Haneeth",
+        "Chicken",
+        "Whole Lamb",
+        "Rice",
+        "Appetizers",
+        "Sides",
+        "Salads",
+        "Drinks",
+        "Desserts"
+      ],
+      "required": true,
+      "displayName": "Category (EN) / الفئة (EN)"
+    },
+    "categoryAr": {
+      "type": "enumeration",
+      "enum": [
+        "الفطور",
+        "الأكلات الشعبية",
+        "المضغوط",
+        "الأطباق الرئيسية",
+        "الحاشي",
+        "الدجاج",
+        "لحم الذبيحة",
+        "الرز",
+        "المقبلات",
+        "الإيدامات",
+        "السلطات",
+        "المشروبات",
+        "الحلا"
+      ],
+      "required": true,
+      "displayName": "Category (AR) / الفئة (AR)"
     }
   }
 }

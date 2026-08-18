@@ -54,6 +54,8 @@ async function setPublicPermissions(strapi) {
   const actions = [
     'api::menu-item.menu-item.find',
     'api::menu-item.menu-item.findOne',
+    'api::menu-category.menu-category.find',
+    'api::menu-category.menu-category.findOne',
     'api::carousel-slide.carousel-slide.find',
     'api::carousel-slide.carousel-slide.findOne',
     'api::branch.branch.find',
