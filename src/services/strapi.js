@@ -66,7 +66,7 @@ export async function fetchMenuItems(locale, { categoryId, featured, page = 1, p
   }
 
   if (featured) params.set('filters[featured][$eq]', 'true')
-  
+
   // Filter by category ID if provided
   if (categoryId) {
     params.set('filters[menuCategory][id][$eq]', categoryId)
@@ -106,9 +106,14 @@ export async function submitInquiry({ name, phone, guests, date, time, notes }) 
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
   try {
+    // First check if reservations are enabled (optional, but good for UX)
     const enabled = await checkReservationsEnabled()
     if (!enabled) {
-      return { success: false, error: RESERVATION_CLOSED_MESSAGE }
+      return {
+        success: false,
+        error: RESERVATION_CLOSED_MESSAGE,
+        isClosed: true
+      }
     }
 
     const res = await fetch(`${STRAPI_URL}/api/inquiries`, {
@@ -127,16 +132,34 @@ export async function submitInquiry({ name, phone, guests, date, time, notes }) 
       })
     })
 
+    // Handle 403 Forbidden - reservations disabled
+    if (res.status === 403) {
+      const errorData = await res.json()
+      return {
+        success: false,
+        error: errorData?.error?.message || RESERVATION_CLOSED_MESSAGE,
+        isClosed: true
+      }
+    }
+
     if (!res.ok) {
       const errorData = await res.json()
       console.error('Submission error:', errorData)
-      return { success: false, error: errorData?.error?.message || 'Failed to submit inquiry' }
+      return {
+        success: false,
+        error: errorData?.error?.message || 'Failed to submit inquiry',
+        isClosed: false
+      }
     }
 
     return { success: true }
   } catch (e) {
     console.error('Submission failed:', e)
-    return { success: false, error: e.message || 'Network error' }
+    return {
+      success: false,
+      error: e.message || 'Network error',
+      isClosed: false
+    }
   } finally {
     clearTimeout(timeout)
   }
