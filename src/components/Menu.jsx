@@ -87,15 +87,19 @@ const Menu = () => {
 
   useEffect(() => {
     let active = true
-    const categoryName = activeCategory
-      ? categories.find((category) => category.key === activeCategory)?.name || CAT[activeCategory]?.[currentLang]
+    const activeDynamicCategory = activeCategory != null
+      ? categories.find((category) => category.id === activeCategory)
       : undefined
+    const categoryId = activeDynamicCategory?.id
+    const categoryName = activeDynamicCategory
+      ? activeDynamicCategory.name
+      : (activeCategory ? CAT[activeCategory]?.[currentLang] : undefined)
 
     const fallback = paginateStatic(t.menu.items, categoryName, page)
     setItems(fallback.items)
     setPageCount(fallback.pageCount)
 
-    fetchMenuItems(currentLang, { category: categoryName, page, pageSize: PAGE_SIZE })
+    fetchMenuItems(currentLang, { categoryId, page, pageSize: PAGE_SIZE })
       .then((data) => {
         if (!active) return
         setItems(data.items)
@@ -113,7 +117,7 @@ const Menu = () => {
 
   const filters = useMemo(
     () => {
-      const dynamicFilters = categories.map((category) => ({ key: category.key, label: category.name }))
+      const dynamicFilters = categories.map((category) => ({ key: category.id, label: category.name }))
       const staticFilters = CATEGORY_ORDER.map((key) => ({ key, label: CAT[key][currentLang] }))
       const merged = [...staticFilters, ...dynamicFilters]
       const unique = []

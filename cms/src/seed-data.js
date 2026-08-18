@@ -23,20 +23,41 @@ const IMAGES = {
   fattoush: img('photo-1540420773420-3366772f4999')
 };
 
-const CAT = {
-  breakfast: { en: 'Breakfast', ar: 'الفطور' },
-  traditional: { en: 'Traditional Dishes', ar: 'الأكلات الشعبية' },
-  madhghoot: { en: 'Madhghoot & Kabsa Barriya', ar: 'المضغوط' },
-  goatHaneeth: { en: 'Goat Haneeth', ar: 'الأطباق الرئيسية' },
-  lambHaneeth: { en: 'Lamb Haneeth', ar: 'الحاشي' },
-  chicken: { en: 'Chicken', ar: 'الدجاج' },
-  wholeLamb: { en: 'Whole Lamb', ar: 'لحم الذبيحة' },
-  riceSides: { en: 'Rice', ar: 'الرز' },
-  soupsPastries: { en: 'Soups & Pastries', ar: 'القدرات' },
-  sides: { en: 'Sides', ar: 'الإيدامات' },
-  salads: { en: 'Salads', ar: 'السلطات' },
-  drinks: { en: 'Drinks', ar: 'المشروبات' },
-  desserts: { en: 'Desserts', ar: 'الحلا' }
+// Canonical menu categories — kept in sync with src/i18n/translations.jsx (CAT/CATEGORY_ORDER)
+// on the frontend. seed.js creates these as real menu-category records (idempotent, by
+// nameEn), then each seeded item below is linked to one via the real relation. Any category
+// added later through the Strapi admin just becomes another row in the same collection.
+const CATEGORIES = [
+  { nameEn: 'Breakfast', nameAr: 'الفطور', order: 1 },
+  { nameEn: 'Traditional Dishes', nameAr: 'الأكلات الشعبية', order: 2 },
+  { nameEn: 'Madhghoot & Kabsa Barriya', nameAr: 'المضغوط', order: 3 },
+  { nameEn: 'Goat Haneeth', nameAr: 'الأطباق الرئيسية', order: 4 },
+  { nameEn: 'Camel Haneeth', nameAr: 'الحاشي', order: 5 },
+  { nameEn: 'Chicken', nameAr: 'الدجاج', order: 6 },
+  { nameEn: 'Whole Lamb', nameAr: 'لحم الذبيحة', order: 7 },
+  { nameEn: 'Rice', nameAr: 'الرز', order: 8 },
+  { nameEn: 'Appetizers', nameAr: 'المقبلات', order: 9 },
+  { nameEn: 'Sides', nameAr: 'الإيدامات', order: 10 },
+  { nameEn: 'Salads', nameAr: 'السلطات', order: 11 },
+  { nameEn: 'Drinks', nameAr: 'المشروبات', order: 12 },
+  { nameEn: 'Desserts', nameAr: 'الحلا', order: 13 }
+];
+
+// Maps each MENU_ROWS category key below to its canonical category name above.
+const CATEGORY_NAME_BY_KEY = {
+  breakfast: 'Breakfast',
+  traditional: 'Traditional Dishes',
+  madhghoot: 'Madhghoot & Kabsa Barriya',
+  goatHaneeth: 'Goat Haneeth',
+  lambHaneeth: 'Camel Haneeth',
+  chicken: 'Chicken',
+  wholeLamb: 'Whole Lamb',
+  riceSides: 'Rice',
+  soupsPastries: 'Appetizers',
+  sides: 'Sides',
+  salads: 'Salads',
+  drinks: 'Drinks',
+  desserts: 'Desserts'
 };
 
 // [en name, ar name, en desc, ar desc, category key, price, calories|null, imageKey, featured?]
@@ -133,8 +154,7 @@ const items = MENU_ROWS.map(([enName, arName, enDesc, arDesc, catKey, price, cal
   nameAr: arName,
   descriptionEn: enDesc,
   descriptionAr: arDesc,
-  categoryEn: CAT[catKey].en,
-  categoryAr: CAT[catKey].ar
+  categoryName: CATEGORY_NAME_BY_KEY[catKey]
 }));
 
 const carouselSlides = [
@@ -201,4 +221,4 @@ const galleryImages = [
   { order: 9, image: IMAGES.luqaimat, captionEn: 'Luqaimat', captionAr: 'لقيمات' }
 ];
 
-module.exports = { items, carouselSlides, branches, galleryImages };
+module.exports = { items, categories: CATEGORIES, carouselSlides, branches, galleryImages };

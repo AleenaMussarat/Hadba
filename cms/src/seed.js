@@ -4,7 +4,7 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { items, carouselSlides, branches, galleryImages } = require('./seed-data');
+const { items, categories, carouselSlides, branches, galleryImages } = require('./seed-data');
 
 async function downloadToTemp(url) {
   const res = await fetch(url);
@@ -80,9 +80,31 @@ async function setPublicPermissions(strapi) {
   }
 }
 
+// Idempotent per category (matched by nameEn) so it also backfills any category
+// missing from an already-seeded instance, not just a completely empty one.
+async function seedMenuCategories(strapi) {
+  const categoryMap = {};
+
+  for (const category of categories) {
+    let record = await strapi.db.query('api::menu-category.menu-category').findOne({
+      where: { nameEn: category.nameEn }
+    });
+
+    if (!record) {
+      record = await strapi.db.query('api::menu-category.menu-category').create({ data: category });
+      strapi.log.info(`[seed] Created menu category: ${category.nameEn}`);
+    }
+
+    categoryMap[category.nameEn] = record.id;
+  }
+
+  return categoryMap;
+}
+
 module.exports = async function seed({ strapi }) {
   await setPublicPermissions(strapi);
   await ensureArabicLocale(strapi);
+  const categoryMap = await seedMenuCategories(strapi);
 
   const existingItems = await strapi.documents('api::menu-item.menu-item').findMany();
   if (existingItems.length > 0) {
@@ -98,12 +120,11 @@ module.exports = async function seed({ strapi }) {
           nameAr: item.nameAr,
           descriptionEn: item.descriptionEn,
           descriptionAr: item.descriptionAr,
-          categoryEn: item.categoryEn,
-          categoryAr: item.categoryAr,
           price: item.price,
           calories: item.calories,
           featured: item.featured,
-          image: media.id
+          image: media.id,
+          menuCategory: categoryMap[item.categoryName]
         }
       });
     }
