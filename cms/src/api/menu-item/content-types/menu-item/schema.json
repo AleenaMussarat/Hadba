@@ -49,6 +49,13 @@
       },
       "displayName": "Description (AR) / الوصف (AR)"
     },
+    "menuCategory": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::menu-category.menu-category",
+      "inversedBy": "menuItems",
+      "displayName": "Menu Category / فئة القائمة"
+    },
     "categoryEn": {
       "type": "enumeration",
       "enum": [
@@ -66,7 +73,7 @@
         "Drinks",
         "Desserts"
       ],
-      "required": true,
+      "required": false,
       "displayName": "Category (EN) / الفئة (EN)"
     },
     "categoryAr": {
@@ -86,7 +93,7 @@
         "المشروبات",
         "الحلا"
       ],
-      "required": true,
+      "required": false,
       "displayName": "Category (AR) / الفئة (AR)"
     },
     "price": {

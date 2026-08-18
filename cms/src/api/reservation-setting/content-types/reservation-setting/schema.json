@@ -1,0 +1,21 @@
+{
+  "kind": "singleType",
+  "collectionName": "reservation_settings",
+  "info": {
+    "singularName": "reservation-setting",
+    "pluralName": "reservation-settings",
+    "displayName": "Reservation Settings / إعدادات الحجوزات",
+    "description": "Controls whether reservations are open or closed on the website / تتحكم في فتح أو إغلاق الحجوزات على الموقع"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "acceptingReservations": {
+      "type": "boolean",
+      "required": true,
+      "default": true,
+      "displayName": "Accepting Reservations / قبول الحجوزات"
+    }
+  }
+}

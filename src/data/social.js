@@ -7,5 +7,5 @@ export const socialLinks = [
   { key: 'tiktok', label: 'TikTok', url: 'https://www.tiktok.com/@smdn.ksa', Icon: FaTiktok },
   { key: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/profile.php?id=61592403342115', Icon: FaFacebookF },
   { key: 'whatsapp', label: 'WhatsApp', url: 'https://wa.me/966555185657', Icon: FaWhatsapp },
-  { key: 'email', label: 'Email', url: 'mailto:reservations@samdan.sa', Icon: FaEnvelope }
+  { key: 'email', label: 'Email', url: 'mailto:smdn.ksa@gmail.com', Icon: FaEnvelope }
 ]

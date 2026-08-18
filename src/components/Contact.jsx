@@ -10,7 +10,7 @@ import mapLocationIcon from '../../assets/images/Icons/Samdan Guidlines ICONS-08
 const Contact = () => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
-  const { form, submitted, isSubmitting, submitError, handleChange, handleSubmit, reset } = useReservationForm()
+  const { form, submitted, isSubmitting, submitError, isReservationsClosed, closedMessage, handleChange, handleSubmit, reset } = useReservationForm()
 
   return (
     <section className="section contact-section">
@@ -36,7 +36,7 @@ const Contact = () => {
                 <span className="contact-item-icon"><FaPhone /></span>
                 <span dir="ltr">{t.contact.phone}</span>
               </a>
-              <a className="contact-item" href="mailto:reservations@samdan.sa">
+              <a className="contact-item" href="mailto:smdn.ksa@gmail.com">
                 <span className="contact-item-icon"><FaEnvelope /></span>
                 <span>{t.contact.email}</span>
               </a>
@@ -69,6 +69,10 @@ const Contact = () => {
                 <p>{t.reserve.successText}</p>
                 <button type="button" className="btn btn-primary" onClick={reset}>{t.reserve.submit}</button>
               </div>
+            ) : isReservationsClosed ? (
+              <div className="reserve-error reserve-warning">
+                <FaTriangleExclamation /> {closedMessage}
+              </div>
             ) : (
               <form className="reserve-form" onSubmit={handleSubmit}>
                 <label className="reserve-field">
@@ -80,10 +84,9 @@ const Contact = () => {
                   <span>{t.reserve.phone}</span>
                   <input
                     type="tel"
-                    required
                     value={form.phone}
                     onChange={handleChange('phone')}
-                    placeholder="05XXXXXXXX"
+                    placeholder="05XXXXXXXX (optional)"
                     pattern="^(\+?966|0)?5[0-9]{8}$"
                     title={t.reserve.phoneHint}
                   />
@@ -94,19 +97,20 @@ const Contact = () => {
                     <span>{t.reserve.date}</span>
                     <input
                       type="text"
-                      required
-                      inputMode="numeric"
+                      readOnly
                       placeholder="DD/MM/YYYY"
-                      pattern="\d{2}/\d{2}/\d{4}"
-                      title="DD/MM/YYYY"
                       value={form.date}
-                      onChange={handleChange('date')}
                     />
                   </label>
 
                   <label className="reserve-field">
                     <span>{t.reserve.time}</span>
-                    <input type="time" required value={form.time} onChange={handleChange('time')} />
+                    <select required value={form.time} onChange={handleChange('time')}>
+                      <option value="">Select Time</option>
+                      {['12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'].map(time => (
+                        <option key={time} value={time}>{time}</option>
+                      ))}
+                    </select>
                   </label>
 
                   <label className="reserve-field reserve-field-guests">
@@ -126,7 +130,7 @@ const Contact = () => {
                   </p>
                 ) : null}
 
-                <button type="submit" className="btn btn-primary reserve-submit" disabled={isSubmitting}>
+                <button type="submit" className="btn btn-primary reserve-submit" disabled={isSubmitting || isReservationsClosed}>
                   {isSubmitting ? t.reserve.submitting : t.reserve.submit}
                 </button>
               </form>

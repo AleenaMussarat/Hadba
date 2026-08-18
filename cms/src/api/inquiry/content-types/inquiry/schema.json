@@ -18,7 +18,7 @@
     },
     "phone": {
       "type": "string",
-      "required": true,
+      "required": false,
       "displayName": "Phone / الهاتف"
     },
     "guests": {

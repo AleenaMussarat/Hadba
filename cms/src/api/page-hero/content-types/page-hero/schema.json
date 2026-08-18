@@ -1,0 +1,128 @@
+{
+  "kind": "collectionType",
+  "collectionName": "page_heros",
+  "info": {
+    "singularName": "page-hero",
+    "pluralName": "page-heros",
+    "displayName": "Page Hero / هيدر الصفحة",
+    "description": "Editable hero content and media for each page / محتوى الهيدر والوسائط القابلة للتعديل لكل صفحة"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "pageKey": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "displayName": "Page Key / مفتاح الصفحة"
+    },
+    "eyebrowEn": {
+      "type": "string",
+      "displayName": "Eyebrow (EN) / عنوان صغير (EN)"
+    },
+    "eyebrowAr": {
+      "type": "string",
+      "displayName": "Eyebrow (AR) / عنوان صغير (AR)"
+    },
+    "taglineEn": {
+      "type": "string",
+      "displayName": "Tagline (EN) / الشعار (EN)"
+    },
+    "taglineAr": {
+      "type": "string",
+      "displayName": "Tagline (AR) / الشعار (AR)"
+    },
+    "titleEn": {
+      "type": "string",
+      "displayName": "Title (EN) / العنوان (EN)"
+    },
+    "titleAr": {
+      "type": "string",
+      "displayName": "Title (AR) / العنوان (AR)"
+    },
+    "subtitleEn": {
+      "type": "text",
+      "displayName": "Subtitle (EN) / العنوان الفرعي (EN)"
+    },
+    "subtitleAr": {
+      "type": "text",
+      "displayName": "Subtitle (AR) / العنوان الفرعي (AR)"
+    },
+    "promoTitleEn": {
+      "type": "string",
+      "displayName": "Promo Title (EN) / عنوان العرض (EN)"
+    },
+    "promoTitleAr": {
+      "type": "string",
+      "displayName": "عنوان العرض (AR) / Promo Title (AR)"
+    },
+    "promoTextEn": {
+      "type": "text",
+      "displayName": "Promo Text (EN) / نص العرض (EN)"
+    },
+    "promoTextAr": {
+      "type": "text",
+      "displayName": "Promo Text (AR) / نص العرض (AR)"
+    },
+    "hoursEn": {
+      "type": "string",
+      "displayName": "Hours Label (EN) / تسمية الساعات (EN)"
+    },
+    "hoursAr": {
+      "type": "string",
+      "displayName": "Hours Label (AR) / تسمية الساعات (AR)"
+    },
+    "hoursValueEn": {
+      "type": "string",
+      "displayName": "Hours Value (EN) / قيمة الساعات (EN)"
+    },
+    "hoursValueAr": {
+      "type": "string",
+      "displayName": "Hours Value (AR) / قيمة الساعات (AR)"
+    },
+    "ctaPrimaryEn": {
+      "type": "string",
+      "displayName": "Primary CTA (EN) / زر رئيسي (EN)"
+    },
+    "ctaPrimaryAr": {
+      "type": "string",
+      "displayName": "Primary CTA (AR) / زر رئيسي (AR)"
+    },
+    "ctaSecondaryEn": {
+      "type": "string",
+      "displayName": "Secondary CTA (EN) / زر ثانوي (EN)"
+    },
+    "ctaSecondaryAr": {
+      "type": "string",
+      "displayName": "Secondary CTA (AR) / زر ثانوي (AR)"
+    },
+    "backgroundImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "displayName": "Background Image / صورة الخلفية"
+    },
+    "eyebrowIcon": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "displayName": "Eyebrow Icon / أيقونة العنوان الصغير"
+    },
+    "cardIcon": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ],
+      "displayName": "Card Icon / أيقونة البطاقة"
+    }
+  }
+}

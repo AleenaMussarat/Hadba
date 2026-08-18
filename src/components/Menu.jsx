@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useLanguage } from '../i18n'
 import { translations, CAT, CATEGORY_ORDER } from '../i18n/translations'
-import { fetchMenuItems } from '../services/strapi'
+import { fetchMenuCategories, fetchMenuItems } from '../services/strapi'
 import RiyalSymbol from './RiyalSymbol'
 import FeaturedMenu from './FeaturedMenu'
 import { getLenis } from '../lib/smoothScroll'
@@ -42,6 +42,7 @@ const Menu = () => {
   const [activeCategory, setActiveCategory] = useState(null)
   const [page, setPage] = useState(1)
   const [items, setItems] = useState([])
+  const [categories, setCategories] = useState([])
   const [pageCount, setPageCount] = useState(1)
   const [isMobile, setIsMobile] = useState(
     () => typeof window !== 'undefined' && window.matchMedia(MOBILE_QUERY).matches
@@ -79,8 +80,16 @@ const Menu = () => {
   }, [isMobile, items])
 
   useEffect(() => {
+    fetchMenuCategories(currentLang)
+      .then((data) => setCategories(data))
+      .catch(() => setCategories([]))
+  }, [currentLang])
+
+  useEffect(() => {
     let active = true
-    const categoryName = activeCategory ? CAT[activeCategory][currentLang] : undefined
+    const categoryName = activeCategory
+      ? categories.find((category) => category.key === activeCategory)?.name || CAT[activeCategory]?.[currentLang]
+      : undefined
 
     const fallback = paginateStatic(t.menu.items, categoryName, page)
     setItems(fallback.items)
@@ -100,14 +109,27 @@ const Menu = () => {
       active = false
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentLang, activeCategory, page])
+  }, [currentLang, activeCategory, page, categories])
 
   const filters = useMemo(
-    () => [
-      { key: null, label: t.menu.filterAll },
-      ...CATEGORY_ORDER.map((key) => ({ key, label: CAT[key][currentLang] }))
-    ],
-    [currentLang, t.menu.filterAll]
+    () => {
+      const dynamicFilters = categories.map((category) => ({ key: category.key, label: category.name }))
+      const staticFilters = CATEGORY_ORDER.map((key) => ({ key, label: CAT[key][currentLang] }))
+      const merged = [...staticFilters, ...dynamicFilters]
+      const unique = []
+      const seen = new Set()
+
+      merged.forEach((filter) => {
+        const lookup = `${filter.key ?? 'all'}:${filter.label}`
+        if (!seen.has(lookup)) {
+          seen.add(lookup)
+          unique.push(filter)
+        }
+      })
+
+      return [{ key: null, label: t.menu.filterAll }, ...unique]
+    },
+    [categories, currentLang, t.menu.filterAll]
   )
 
   const pageLabel = t.menu.pageOf.replace('{page}', page).replace('{count}', pageCount)

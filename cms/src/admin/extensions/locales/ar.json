@@ -1,0 +1,262 @@
+{
+  "app": {
+    "components": {
+      "BlocksEditor": {
+        "sigma_cms": "Strapi CMS"
+      },
+      "LeftMenu": {
+        "navbrand": {
+          "workspace": "مساحة العمل"
+        }
+      },
+      "PluginLeftMenu": {
+        "plugins": "الإضافات"
+      }
+    },
+    "pages": {
+      "Admin": {
+        "HeaderNav": {
+          "logOut": "تسجيل الخروج",
+          "user-profile": "ملف المستخدم"
+        },
+        "Onboarding": {
+          "label": "الإعدادات الأولية",
+          "create": "إنشاء",
+          "apiTokens": "رموز API",
+          "setups": "الإعدادات",
+          "config": "إعدادات"
+        }
+      },
+      "NotFound": {
+        "back": "العودة للصفحة السابقة"
+      }
+    }
+  },
+  "Auth": {
+    "form": {
+      "email": "البريد الإلكتروني",
+      "rememberMe": "تذكر هذا الحاسوب",
+      "password": "كلمة المرور",
+      "login": "دخول",
+      "register": "تسجيل",
+      "remindPassword": "إعادة تعيين كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور"
+    },
+    "error": {
+      "auth": "خطأ في المصادقة",
+      "query": "خطأ في الاستعلام"
+    }
+  },
+  "HomePage": {
+    "roadmap": "الخريطة الطريقة",
+    "community": "المجتمع",
+    "version": "الإصدار"
+  },
+  "LanguagePicker": {
+    "languages": {
+      "en": "English",
+      "ar": "العربية",
+      "fr": "Français",
+      "de": "Deutsch",
+      "es": "Español",
+      "it": "Italiano",
+      "pt": "Português",
+      "ru": "Русский",
+      "zh": "简体中文",
+      "ja": "日本語",
+      "ko": "한국어"
+    }
+  },
+  "GlobalSearch": {
+    "placeholder": "ابحث في الموارد والصفحات..."
+  },
+  "SettingsPage": {
+    "left": {
+      "link": {
+        "global": "العام",
+        "role": "الأدوار",
+        "users": "المستخدمون",
+        "apiTokens": "رموز API",
+        "webhooks": "الويب هوكس",
+        "strapi": "Strapi",
+        "documentation": "الوثائق",
+        "changelog": "سجل التغييرات",
+        "sitemap": "خريطة الموقع"
+      }
+    }
+  },
+  "List": {
+    "sort": {
+      "sortBy": "ترتيب حسب"
+    }
+  },
+  "Content Manager": {
+    "header": {
+      "content": "محتوى"
+    },
+    "navigation": {
+      "showDrafts": "عرض المسودات"
+    }
+  },
+  "Upload": {
+    "modal-body": {
+      "hint": "اسحب ملفاتك هنا أو انقر للاختيار",
+      "or": "أو"
+    }
+  },
+  "NotificationCenter": {
+    "title": "الإشعارات"
+  },
+  "components": {
+    "BlocksEditor": {
+      "beta": "بيتا",
+      "fieldTitle": "كتل المحرر",
+      "label": "كتل"
+    },
+    "CKEditor": {
+      "mediaLibButton": "مكتبة الوسائط"
+    }
+  },
+  "plugin": {
+    "description": "وصف الإضافة"
+  },
+  "Plugins": {
+    "header": {
+      "awesome": "الإضافات الرائعة",
+      "customization": "التخصيص",
+      "management": "الإدارة",
+      "monitoring": "المراقبة"
+    }
+  },
+  "PopUpWarning": {
+    "warning": "تحذير"
+  },
+  "Search": {
+    "save": "حفظ",
+    "reset": "إعادة تعيين",
+    "loading": "جاري التحميل...",
+    "searching": "جاري البحث...",
+    "delete": "حذف"
+  },
+  "content": {
+    "deleteError": "حدث خطأ أثناء الحذف",
+    "deleteSuccess": "تم الحذف بنجاح",
+    "create": "إنشاء",
+    "update": "تحديث",
+    "delete": "حذف",
+    "save": "حفظ"
+  },
+  "modal": {
+    "cancel": "إلغاء",
+    "submit": "تأكيد",
+    "delete": {
+      "confirm": "هل أنت متأكد من الحذف؟"
+    }
+  },
+  "form": {
+    "empty": "لا توجد بيانات",
+    "error": "حدث خطأ",
+    "inputError": "خطأ الإدخال",
+    "toggleAllOn": "تحديد الكل",
+    "toggleAllOff": "إلغاء تحديد الكل"
+  },
+  "table": {
+    "headers": {
+      "name": "الاسم",
+      "type": "النوع",
+      "description": "الوصف",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "تاريخ التحديث",
+      "category": "الفئة",
+      "price": "السعر",
+      "featured": "مميز",
+      "image": "الصورة",
+      "slug": "الرابط",
+      "order": "الترتيب"
+    }
+  },
+  "fields": {
+    "nameEn": "الاسم (EN)",
+    "nameAr": "الاسم (AR)",
+    "descriptionEn": "الوصف (EN)",
+    "descriptionAr": "الوصف (AR)",
+    "categoryEn": "الفئة (EN)",
+    "categoryAr": "الفئة (AR)",
+    "locationEn": "الموقع (EN)",
+    "locationAr": "الموقع (AR)",
+    "hoursEn": "الساعات (EN)",
+    "hoursAr": "الساعات (AR)",
+    "image": "الصورة",
+    "mapsLink": "رابط الخرائط",
+    "price": "السعر",
+    "calories": "السعرات الحرارية",
+    "featured": "مميز",
+    "badgeEn": "الشارة (EN)",
+    "badgeAr": "الشارة (AR)",
+    "titleEn": "العنوان (EN)",
+    "titleAr": "العنوان (AR)",
+    "subtitleEn": "العنوان الفرعي (EN)",
+    "subtitleAr": "العنوان الفرعي (AR)",
+    "order": "الترتيب",
+    "isActive": "مفعل"
+  },
+  "navigation": {
+    "home": "الرئيسية",
+    "content-manager": "إدارة المحتوى",
+    "media-library": "مكتبة الوسائط",
+    "settings": "الإعدادات",
+    "plugins": "الإضافات",
+    "admin": "الإدارة",
+    "documentation": "الوثائق",
+    "marketplace": "سوق التطبيقات",
+    "logout": "تسجيل الخروج"
+  },
+  "buttons": {
+    "create": "إنشاء",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "submit": "إرسال",
+    "publish": "نشر",
+    "unpublish": "إلغاء النشر",
+    "draft": "مسودة",
+    "back": "عودة",
+    "add": "إضافة",
+    "remove": "إزالة",
+    "search": "بحث",
+    "filter": "تصفية",
+    "sort": "ترتيب",
+    "download": "تحميل"
+  },
+  "labels": {
+    "collection-type": "نوع المجموعة",
+    "single-type": "النوع الفردي",
+    "content-type": "نوع المحتوى",
+    "create-content-type": "إنشاء نوع محتوى جديد",
+    "edit-content-type": "تعديل نوع المحتوى",
+    "delete-content-type": "حذف نوع المحتوى",
+    "content-type-builder": "منشئ أنواع المحتوى",
+    "published": "منشور",
+    "unpublished": "غير منشور",
+    "draft": "مسودة"
+  },
+  "messages": {
+    "editItem": "تعديل هذا العنصر",
+    "cloneItem": "استنساخ هذا العنصر",
+    "deleteItem": "حذف هذا العنصر",
+    "deleteItemConfirm": "هل أنت متأكد من رغبتك في حذف هذا العنصر؟",
+    "noEntries": "لا توجد بيانات",
+    "loading": "جاري التحميل...",
+    "success": "تم بنجاح",
+    "error": "حدث خطأ",
+    "saved": "تم الحفظ بنجاح"
+  },
+  "permissions": {
+    "create": "إنشاء",
+    "read": "قراءة",
+    "update": "تحديث",
+    "delete": "حذف",
+    "publish": "نشر"
+  }
+}

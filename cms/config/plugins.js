@@ -20,7 +20,7 @@ const deniedExecutableTypes = [
   'application/x-mach-binary',
 ];
 
-module.exports = () => ({
+module.exports = ({ env }) => ({
   'users-permissions': {
     config: {
       jwtManagement: 'refresh',
@@ -31,9 +31,28 @@ module.exports = () => ({
   },
   upload: {
     config: {
+      sizeLimit: env.int('UPLOAD_SIZE_LIMIT_MB', 10) * 1024 * 1024,
       security: {
         allowedTypes: allowedMediaTypes,
         deniedTypes: deniedExecutableTypes,
+      },
+    },
+  },
+  email: {
+    config: {
+      provider: 'nodemailer',
+      providerOptions: {
+        host: env('SMTP_HOST', 'smtp.gmail.com'),
+        port: env.int('SMTP_PORT', 587),
+        secure: env.bool('SMTP_SECURE', false),
+        auth: {
+          user: env('SMTP_USERNAME', 'aleenamussarat@gmail.com'),
+          pass: env('SMTP_PASSWORD', ''),
+        },
+      },
+      settings: {
+        defaultFrom: env('SMTP_FROM', 'aleenamussarat@gmail.com'),
+        defaultReplyTo: env('SMTP_FROM', 'aleenamussarat@gmail.com'),
       },
     },
   },

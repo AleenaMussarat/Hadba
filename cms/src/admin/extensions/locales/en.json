@@ -1,0 +1,101 @@
+{
+  "navigation": {
+    "home": "Home",
+    "content-manager": "Content Manager",
+    "media-library": "Media Library",
+    "settings": "Settings",
+    "plugins": "Plugins",
+    "admin": "Admin",
+    "documentation": "Documentation",
+    "marketplace": "Marketplace",
+    "logout": "Logout"
+  },
+  "buttons": {
+    "create": "Create",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "draft": "Draft",
+    "back": "Back",
+    "add": "Add",
+    "remove": "Remove",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "download": "Download"
+  },
+  "labels": {
+    "collection-type": "Collection Type",
+    "single-type": "Single Type",
+    "content-type": "Content Type",
+    "create-content-type": "Create new Content Type",
+    "edit-content-type": "Edit Content Type",
+    "delete-content-type": "Delete Content Type",
+    "content-type-builder": "Content-Type Builder",
+    "published": "Published",
+    "unpublished": "Unpublished",
+    "draft": "Draft"
+  },
+  "table": {
+    "headers": {
+      "name": "Name",
+      "type": "Type",
+      "description": "Description",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "category": "Category",
+      "price": "Price",
+      "featured": "Featured",
+      "image": "Image",
+      "slug": "Slug",
+      "order": "Order"
+    }
+  },
+  "fields": {
+    "nameEn": "Name (EN)",
+    "nameAr": "Name (AR)",
+    "descriptionEn": "Description (EN)",
+    "descriptionAr": "Description (AR)",
+    "categoryEn": "Category (EN)",
+    "categoryAr": "Category (AR)",
+    "locationEn": "Location (EN)",
+    "locationAr": "Location (AR)",
+    "hoursEn": "Hours (EN)",
+    "hoursAr": "Hours (AR)",
+    "image": "Image",
+    "mapsLink": "Maps Link",
+    "price": "Price",
+    "calories": "Calories",
+    "featured": "Featured",
+    "badgeEn": "Badge (EN)",
+    "badgeAr": "Badge (AR)",
+    "titleEn": "Title (EN)",
+    "titleAr": "Title (AR)",
+    "subtitleEn": "Subtitle (EN)",
+    "subtitleAr": "Subtitle (AR)",
+    "order": "Order",
+    "isActive": "Active"
+  },
+  "messages": {
+    "editItem": "Edit this item",
+    "cloneItem": "Clone this item",
+    "deleteItem": "Delete this item",
+    "deleteItemConfirm": "Are you sure you want to delete this item?",
+    "noEntries": "No entries found",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "An error occurred",
+    "saved": "Saved successfully"
+  },
+  "permissions": {
+    "create": "Create",
+    "read": "Read",
+    "update": "Update",
+    "delete": "Delete",
+    "publish": "Publish"
+  }
+}

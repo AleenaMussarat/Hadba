@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "menu_categories",
+  "info": {
+    "singularName": "menu-category",
+    "pluralName": "menu-categories",
+    "displayName": "Menu Category / فئة القائمة",
+    "description": "Reusable menu categories for all menu items / فئات قائمة قابلة لإعادة الاستخدام لجميع عناصر القائمة"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "nameEn": {
+      "type": "string",
+      "required": true,
+      "displayName": "Name (EN) / الاسم (EN)"
+    },
+    "nameAr": {
+      "type": "string",
+      "required": true,
+      "displayName": "Name (AR) / الاسم (AR)"
+    },
+    "slug": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "displayName": "Slug / الرابط"
+    },
+    "order": {
+      "type": "integer",
+      "default": 0,
+      "displayName": "Order / الترتيب"
+    },
+    "menuItems": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::menu-item.menu-item",
+      "mappedBy": "menuCategory",
+      "displayName": "Menu Items / عناصر القائمة"
+    }
+  }
+}
