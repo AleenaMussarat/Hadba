@@ -203,13 +203,13 @@ export const translations = {
     },
     hero: {
       eyebrow: 'Saudi Heritage Dining',
-      title: 'Authentic <span>Kabsa</span> & Najdi Flavors',
+      title: 'Authentic Experience... with a Modern Spirit',
       subtitle: 'In the heart of Saudi Arabia, SAMDAN serves exquisite Kabsa, Jarish, Najdi, and Hejazi cuisine — a remarkable dining adventure rooted in tradition.',
-      tagline: 'Authentic Traditions. Refined Experiences.',
+      tagline: 'Authentic Experience... with a Modern Spirit',
       ctaPrimary: 'View Menu',
       ctaSecondary: 'Reserve a Table',
       hours: 'Open Daily',
-      hoursValue: '12:00 PM – 12:00 AM',
+      hoursValue: '24 Hours Daily',
       promoTitle: 'Grand Opening',
       promoText: 'Now open in Riyadh — visit us today and taste authentic Najdi hospitality',
       carousel: [
@@ -222,7 +222,7 @@ export const translations = {
       eyebrow: 'The Story Behind Samdan',
       title: 'Welcome to SAMDAN',
       intro: 'Inspired by the timeless landscapes and enduring values of Najd, Samdan is more than a name — it is a tribute to Saudi heritage, reimagined for a modern dining experience.',
-      description: 'In the heart of Saudi Arabia, SAMDAN stands as a culinary treasure, celebrated for its exquisite Kabsa, Jarish, Najdi, and Hejazi cuisine. This extraordinary restaurant enchants guests with its mouthwatering dishes and unparalleled hospitality, offering a diverse menu brimming with authentic flavors.',
+      description: 'Authentic Experience... with a Modern Spirit\n\nIn the heart of Riyadh, SAMDAN offers a specialized experience in Haneeth, inspired by the authenticity and rich heritage of southern cuisine.\nWe select the finest ingredients and care for preparation and presentation to deliver Haneeth with authentic taste and an experience worthy of our guests.',
       chefTitle: 'Our Kitchen',
       chefName: 'Masters of Saudi Cuisine',
       chefRole: 'Culinary Heritage Team',
@@ -259,10 +259,10 @@ export const translations = {
       eyebrow: 'Get In Touch',
       title: 'Visit Us',
       description: "We'd love to welcome you to SAMDAN. Reach out to reserve your table or ask about our menu.",
-      address: 'Khalid bin Al Waleed Street, Qurtubah, Riyadh, Saudi Arabia',
+      address: 'Saeed bin Zaid Street, Qurtubah, Riyadh, Saudi Arabia',
       phone: '+966 55 518 5657 |  +966 53 334 7721',
-      email: 'reservations@samdan.sa',
-      hours: 'Daily 12:00 PM – 12:00 AM',
+      email: 'smdn.ksa@gmail.com',
+      hours: '24 Hours Daily',
       mapTitle: 'Our Location'
     },
     branches: {
@@ -273,8 +273,8 @@ export const translations = {
       items: [
         {
           name: 'SAMDAN — Qurtubah',
-          location: 'Khalid bin Al Waleed Street, Qurtubah, Riyadh, Saudi Arabia',
-          hours: 'Daily 12:00 PM – 12:00 AM',
+          location: 'Saeed bin Zaid Street, Qurtubah, Riyadh, Saudi Arabia',
+          hours: '24 Hours Daily',
           mapsLink: branchMapsLink,
           image: najdiBranch
         }
@@ -331,6 +331,7 @@ export const translations = {
       notesPlaceholder: 'Allergies, occasion, seating preference…',
       submit: 'Send Inquiry',
       submitting: 'Sending…',
+      closedMessage: 'sorry, bookings are full try another day',
       errorText: "Something went wrong sending your request — please try again, or call us at +966 55 518 5657 | +966 53 334 7721.",
       successTitle: "Thank you, {name}!",
       successText: "We've received your request and will be in touch shortly to confirm your table.",
@@ -349,13 +350,13 @@ export const translations = {
     },
     hero: {
       eyebrow: 'أصالة الضيافة السعودية',
-      title: '<span>كبسة</span> أصيلة ونكهات نجدية',
-      subtitle: 'في قلب المملكة العربية السعودية، تقدّم سمدان أشهى أطباق الكبسة والجريش والمطبخ النجدي والحجازي، في رحلة طعام استثنائية متجذرة في التراث.',
-      tagline: 'تقاليد أصيلة.<br />تجارب راقية.',
+      title: 'تجربة أصيلة… بروح معاصرة',
+      subtitle: 'في سَمْدَان، نعيد تقديم المذاق الجنوبي الأصيل بروح عصرية، من الحنيذ إلى أطباق المائدة الشعبية، بتفاصيل تحكي أصالة الموروث السعودي',
+      tagline: 'تجربة أصيلة…<br /> بروح معاصرة',
       ctaPrimary: 'استكشف القائمة',
       ctaSecondary: 'احجز طاولة',
       hours: 'نستقبلكم يومياً',
-      hoursValue: '١٢:٠٠ ظهراً - ١٢:٠٠ منتصف الليل',
+      hoursValue: 'مفتوح ٢٤ ساعة يومياً',
       promoTitle: 'الافتتاح الكبير',
       promoText: 'افتتحنا الآن في الرياض — زورونا اليوم وتذوقوا الضيافة النجدية الأصيلة',
       carousel: [
@@ -367,8 +368,8 @@ export const translations = {
     story: {
       eyebrow: 'قصة سمدان',
       title: 'مرحباً بكم في سمدان',
-      intro: 'مستوحاة من مشهد نجد الخالد وقيمها الراسخة، سمدان أكثر من مجرد اسم — إنها تحية للتراث السعودي، أُعيد تقديمها بروح عصرية.',
-      description: 'في قلب المملكة العربية السعودية، تقف سمدان كنزاً مطبخياً، مشهورة بأطباقها الرائعة من الكبسة والجريش والمطبخ النجدي والحجازي. يسحر هذا المطعم الاستثنائي ضيوفه بأطباقه الشهية وضيافته التي لا مثيل لها، مع قائمة متنوعة تفيض بالنكهات الأصيلة.',
+      intro: 'مستوحاة من مشهد جنوب الخالد وقيمها الراسخة، سمدان أكثر من مجرد اسم — إنها تحية للتراث السعودي، أُعيد تقديمها بروح عصرية.',
+      description: 'تجربة أصيلة… بروح معاصرة\n\nفي قلب الرياض، يقدّم سمدان تجربة متخصصة في الحنيذ، مستوحاة من أصالة المطبخ الجنوبي وتراثه العريق.\nنختار أجود المكونات، ونعتني بطريقة التحضير والتقديم، لنقدّم حنيذًا بطعم أصيل وتجربة تليق بضيوفنا',
       chefTitle: 'مطبخنا',
       chefName: 'أسياد المطبخ السعودي',
       chefRole: 'فريق التراث الطهوي',
@@ -405,10 +406,10 @@ export const translations = {
       eyebrow: 'تواصل معنا',
       title: 'زورونا',
       description: 'يسعدنا الترحيب بكم في سمدان. تواصلوا معنا لحجز طاولتكم أو للاستفسار عن قائمتنا.',
-      address: 'شارع خالد بن الوليد، قرطبة، الرياض، المملكة العربية السعودية',
+      address: 'طريق سعيد بن زيد، قرطبة، الرياض، المملكة العربية السعودية',
       phone: '+966 55 518 5657 |  +966 53 334 7721',
-      email: 'reservations@samdan.sa',
-      hours: 'يومياً ١٢:٠٠ ظهراً - ١٢:٠٠ منتصف الليل',
+      email: 'smdn.ksa@gmail.com',
+      hours: 'مفتوح 24 ساعة يومياً',
       mapTitle: 'موقعنا'
     },
     branches: {
@@ -419,8 +420,8 @@ export const translations = {
       items: [
         {
           name: 'سمدان - قرطبة',
-          location: 'شارع خالد بن الوليد، قرطبة، الرياض، المملكة العربية السعودية',
-          hours: 'يومياً ١٢:٠٠ ظهراً - ١٢:٠٠ منتصف الليل',
+          location: 'طريق سعيد بن زيد، قرطبة، الرياض، المملكة العربية السعودية',
+          hours: 'مفتوح 24 ساعة يومياً',
           mapsLink: branchMapsLink,
           image: najdiBranch
         }
@@ -456,7 +457,7 @@ export const translations = {
       backHome: 'العودة للرئيسية'
     },
     footer: {
-      rights: '© ٢٠٢٦ مطعم سمدان. جميع الحقوق محفوظة.',
+      rights: '© 2026 مطعم سمدان. جميع الحقوق محفوظة.',
       follow: 'تابعونا',
       cta: 'احجز طاولة',
       addressTitle: 'زورونا',
@@ -477,6 +478,7 @@ export const translations = {
       notesPlaceholder: 'حساسية طعام، مناسبة خاصة، تفضيل مكان الجلوس…',
       submit: 'إرسال الاستفسار',
       submitting: 'جارِ الإرسال…',
+      closedMessage: 'sorry, bookings are full try another day',
       errorText: 'حدث خطأ أثناء إرسال طلبكم — يرجى المحاولة مرة أخرى، أو الاتصال بنا على +966 55 518 5657 | +966 53 334 7721.',
       successTitle: 'شكراً لك، {name}!',
       successText: 'لقد استلمنا طلبكم وسنتواصل معكم قريباً لتأكيد طاولتكم.',
