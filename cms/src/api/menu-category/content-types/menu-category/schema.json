@@ -10,34 +10,25 @@
   "options": {
     "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "nameEn": {
       "type": "string",
-      "required": true,
-      "displayName": "Name (EN) / الاسم (EN)"
+      "required": true
     },
     "nameAr": {
       "type": "string",
-      "required": true,
-      "displayName": "Name (AR) / الاسم (AR)"
-    },
-    "slug": {
-      "type": "string",
-      "required": true,
-      "unique": true,
-      "displayName": "Slug / الرابط"
+      "required": true
     },
     "order": {
       "type": "integer",
-      "default": 0,
-      "displayName": "Order / الترتيب"
+      "default": 0
     },
     "menuItems": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::menu-item.menu-item",
-      "mappedBy": "menuCategory",
-      "displayName": "Menu Items / عناصر القائمة"
+      "mappedBy": "menuCategory"
     }
   }
 }

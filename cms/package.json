@@ -12,7 +12,9 @@
     "start": "node -e \"require('fs').mkdirSync('public/uploads',{recursive:true})\" && strapi start",
     "strapi": "strapi",
     "upgrade": "npx @strapi/upgrade latest",
-    "upgrade:dry": "npx @strapi/upgrade latest --dry"
+    "upgrade:dry": "npx @strapi/upgrade latest --dry",
+    "migrate:categories": "node scripts/migrate-categories.js",
+    "seed:categories": "node scripts/seed-categories.js"
   },
   "dependencies": {
     "@strapi/database": "5.51.1",

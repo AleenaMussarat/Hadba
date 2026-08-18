@@ -29,8 +29,9 @@ export async function checkReservationsEnabled() {
       const res = await fetch(`${STRAPI_URL}/api/${endpoint}`)
       if (!res.ok) continue
       const json = await res.json()
+      // Strapi v5: data is direct, no attributes wrapper
       const record = Array.isArray(json?.data) ? json.data[0] : json?.data
-      const value = record?.attributes?.acceptingReservations
+      const value = record?.acceptingReservations
       if (typeof value === 'boolean') return value
     } catch (error) {
       console.warn(`Unable to fetch reservation settings from ${endpoint}:`, error)
@@ -40,36 +41,36 @@ export async function checkReservationsEnabled() {
   return true
 }
 
-// Throws on any failure (network, timeout, empty data) — callers are expected
-// to fall back to the static content in i18n/translations.jsx.
-// Paginated + optionally filtered by category so the menu page never has to
-// pull the entire catalog over the wire at once. Each entry holds both
-// languages at once (nameEn/nameAr, etc.) — the caller's locale picks which
-// side is projected into the flat `name`/`description`/`category` shape.
+// FETCH CATEGORIES - Updated for Strapi v5 (no attributes wrapper)
 export async function fetchMenuCategories(locale) {
   const json = await strapiFetch('menu-categories?sort=order:asc')
   const data = json.data || []
 
   return data.map((category) => ({
     id: category.id,
-    key: category.slug || category.nameEn?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || `category-${category.id}`,
-    name: locale === 'ar' ? category.nameAr : category.nameEn,
-    slug: category.slug || category.nameEn?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || `category-${category.id}`
+    // Strapi v5: direct access, no .attributes
+    name: locale === 'ar' ? category.nameAr : category.nameEn
   }))
 }
 
-export async function fetchMenuItems(locale, { category, featured, page = 1, pageSize = 10 } = {}) {
+// FETCH MENU ITEMS - Updated for Strapi v5
+export async function fetchMenuItems(locale, { categoryId, featured, page = 1, pageSize = 10 } = {}) {
   const params = new URLSearchParams({
     populate: 'image,menuCategory',
     sort: 'order:asc'
   })
 
-  if (!category) {
+  if (!categoryId) {
     params.set('pagination[page]', String(page))
     params.set('pagination[pageSize]', String(pageSize))
   }
 
   if (featured) params.set('filters[featured][$eq]', 'true')
+  
+  // Filter by category ID if provided
+  if (categoryId) {
+    params.set('filters[menuCategory][id][$eq]', categoryId)
+  }
 
   const json = await strapiFetch(`menu-items?${params.toString()}`)
   const data = json.data || []
@@ -78,24 +79,25 @@ export async function fetchMenuItems(locale, { category, featured, page = 1, pag
     id: item.id,
     name: locale === 'ar' ? item.nameAr : item.nameEn,
     description: locale === 'ar' ? item.descriptionAr : item.descriptionEn,
-    category: locale === 'ar' ? item.menuCategory?.nameAr || item.categoryAr : item.menuCategory?.nameEn || item.categoryEn,
-    categoryKey: item.menuCategory?.slug || item.categoryEn?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'uncategorized',
+    // Strapi v5: direct access to relation, no .attributes
+    category: locale === 'ar' ? item.menuCategory?.nameAr : item.menuCategory?.nameEn,
+    categoryId: item.menuCategory?.id || null,
     calories: item.calories,
     price: String(item.price),
     image: mediaUrl(item.image),
     featured: !!item.featured
   }))
 
-  const filtered = category
-    ? mapped.filter((item) => item.category === category || item.categoryKey === category)
+  const filtered = categoryId
+    ? mapped.filter((item) => item.categoryId === categoryId)
     : mapped
 
   const pageCount = Math.max(Math.ceil(filtered.length / pageSize), 1)
   const start = (page - 1) * pageSize
 
   return {
-    items: category ? filtered.slice(start, start + pageSize) : filtered.slice(start, start + pageSize),
-    pageCount: category ? pageCount : json.meta?.pagination?.pageCount || pageCount,
+    items: categoryId ? filtered.slice(start, start + pageSize) : filtered.slice(start, start + pageSize),
+    pageCount: categoryId ? pageCount : json.meta?.pagination?.pageCount || pageCount,
     total: filtered.length
   }
 }
@@ -170,7 +172,7 @@ export async function fetchBranches(locale) {
 
 export async function fetchPageHero(pageKey, locale) {
   const json = await strapiFetch(`page-heros?filters[pageKey][$eq]=${pageKey}&populate=backgroundImage,eyebrowIcon,cardIcon`)
-  const entry = json.data?.[0]?.attributes
+  const entry = json.data?.[0]
   if (!entry) return null
 
   return {
