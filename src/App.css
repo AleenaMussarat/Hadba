@@ -3545,6 +3545,41 @@ html[dir="rtl"] .reserve-field-row .reserve-field:first-child {
   margin-bottom: 1.8rem;
 }
 
+.reserve-closed {
+  text-align: center;
+  padding: 1.5rem 0 0.5rem;
+}
+
+.reserve-closed-icon {
+  font-size: 3rem;
+  color: var(--color-accent);
+  margin-bottom: 1.2rem;
+}
+
+.reserve-closed h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  color: var(--text-on-dark-primary);
+  margin-bottom: 0.7rem;
+}
+
+.reserve-closed p {
+  color: var(--text-on-dark-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.reserve-closed-phone {
+  margin: 1rem 0 1.8rem;
+  font-size: 0.9rem;
+}
+
+.reserve-closed-phone strong {
+  color: var(--text-on-dark-primary);
+  display: inline-block;
+  margin-top: 0.3rem;
+}
+
 @media (max-width: 480px) {
   .reserve-modal {
     padding: 1.8rem;

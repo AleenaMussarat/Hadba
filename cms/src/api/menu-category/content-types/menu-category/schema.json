@@ -20,6 +20,9 @@
       "type": "string",
       "required": true
     },
+    "displayLabel": {
+      "type": "string"
+    },
     "order": {
       "type": "integer",
       "default": 0

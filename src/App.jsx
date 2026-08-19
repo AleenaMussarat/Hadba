@@ -17,6 +17,7 @@ import ScrollToTop from './components/ScrollToTop'
 import BackToTop from './components/BackToTop'
 import MapPreload from './components/MapPreload'
 import { startSmoothScroll, stopSmoothScroll } from './lib/smoothScroll'
+import { checkReservationsEnabled } from './services/strapi'
 import './App.css'
 
 const LANG_STORAGE_KEY = 'samdan-lang'
@@ -43,6 +44,14 @@ function App() {
   useEffect(() => {
     startSmoothScroll()
     return () => stopSmoothScroll()
+  }, [])
+
+    // Proactively surface the closed-reservations popup on load, instead of
+  // only showing it after a visitor clicks "Reserve a Table" themselves.
+  useEffect(() => {
+    checkReservationsEnabled().then((enabled) => {
+      if (!enabled) setIsReserveOpen(true)
+    })
   }, [])
 
   const toggleLanguage = (lang) => {

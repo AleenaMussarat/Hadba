@@ -7,8 +7,7 @@ import { FaXmark, FaCircleCheck, FaTriangleExclamation } from 'react-icons/fa6'
 const ReserveModal = ({ isOpen, onClose }) => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
-  const { form, submitted, isSubmitting, submitError, isReservationsClosed, closedMessage, handleChange, handleSubmit, reset } = useReservationForm()
-
+  const { form, submitted, isSubmitting, submitError, isReservationsClosed, handleChange, handleSubmit, reset } = useReservationForm()
   useEffect(() => {
     if (isOpen) reset()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,8 +46,16 @@ const ReserveModal = ({ isOpen, onClose }) => {
               <button type="button" className="btn btn-primary" onClick={onClose}>{t.reserve.close}</button>
             </div>
           ) : isReservationsClosed ? (
-            <div className="reserve-error reserve-warning">
-              <FaTriangleExclamation /> {closedMessage}
+            <div className="reserve-closed">
+              <FaTriangleExclamation className="reserve-closed-icon" />
+              <h3>{t.reserve.closedTitle}</h3>
+              <p>{t.reserve.closedMessage}</p>
+              <p className="reserve-closed-phone">
+                {t.reserve.callPhone}
+                <br />
+                <strong dir="ltr">+966 55 518 5657 | +966 53 334 7721</strong>
+              </p>
+              <button type="button" className="btn btn-primary" onClick={onClose}>{t.reserve.close}</button>
             </div>
           ) : (
             <>
