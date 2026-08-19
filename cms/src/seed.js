@@ -98,6 +98,19 @@ async function seedMenuCategories(strapi) {
     categoryMap[category.nameEn] = record.id;
   }
 
+  // Backfill displayLabel for every category (canonical + any added manually in the
+  // admin), since records created before the lifecycle hook existed won't have it set.
+  const allCategories = await strapi.db.query('api::menu-category.menu-category').findMany();
+  for (const record of allCategories) {
+    const displayLabel = [record.nameEn, record.nameAr].filter(Boolean).join(' / ');
+    if (record.displayLabel !== displayLabel) {
+      await strapi.db.query('api::menu-category.menu-category').update({
+        where: { id: record.id },
+        data: { displayLabel }
+      });
+    }
+  }
+
   return categoryMap;
 }
 

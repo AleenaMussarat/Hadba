@@ -1,106 +1,37 @@
 {
   "kind": "collectionType",
-  "collectionName": "menu_items",
+  "collectionName": "menu_categories",
   "info": {
-    "singularName": "menu-item",
-    "pluralName": "menu-items",
-    "displayName": "Menu Item / عنصر القائمة",
-    "description": "A single dish on the menu, English and Arabic together on one entry / طبق واحد في القائمة، الإنجليزية والعربية معًا في إدخال واحد"
+    "singularName": "menu-category",
+    "pluralName": "menu-categories",
+    "displayName": "Menu Category / فئة القائمة",
+    "description": "Reusable menu categories for all menu items / فئات قائمة قابلة لإعادة الاستخدام لجميع عناصر القائمة"
   },
   "options": {
     "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
     "nameEn": {
       "type": "string",
-      "required": true,
-      "displayName": "Name (EN) / الاسم (EN)"
+      "required": true
     },
     "nameAr": {
       "type": "string",
-      "required": true,
-      "displayName": "Name (AR) / الاسم (AR)"
+      "required": true
     },
-    "descriptionEn": {
-      "type": "text",
-      "displayName": "Description (EN) / الوصف (EN)"
-    },
-    "descriptionAr": {
-      "type": "text",
-      "displayName": "Description (AR) / الوصف (AR)"
-    },
-    "price": {
-      "type": "decimal",
-      "required": true,
-      "displayName": "Price / السعر"
-    },
-    "calories": {
-      "type": "integer",
-      "displayName": "Calories / السعرات"
-    },
-    "featured": {
-      "type": "boolean",
-      "default": false,
-      "displayName": "Featured / مميز"
+    "displayLabel": {
+      "type": "string"
     },
     "order": {
       "type": "integer",
-      "default": 0,
-      "displayName": "Order / الترتيب"
+      "default": 0
     },
-    "image": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": [
-        "images"
-      ],
-      "displayName": "Image / الصورة"
-    },
-    "categoryEn": {
-      "type": "enumeration",
-      "enum": [
-        "Breakfast",
-        "Traditional Dishes",
-        "Madhghoot & Kabsa Barriya",
-        "Goat Haneeth",
-        "Camel Haneeth",
-        "Chicken",
-        "Whole Lamb",
-        "Rice",
-        "Appetizers",
-        "Sides",
-        "Salads",
-        "Drinks",
-        "Desserts"
-      ],
-      "displayName": "Category (EN) / الفئة (EN) — legacy, unused"
-    },
-    "categoryAr": {
-      "type": "enumeration",
-      "enum": [
-        "الفطور",
-        "الأكلات الشعبية",
-        "المضغوط",
-        "الأطباق الرئيسية",
-        "الحاشي",
-        "الدجاج",
-        "لحم الذبيحة",
-        "الرز",
-        "المقبلات",
-        "الإيدامات",
-        "السلطات",
-        "المشروبات",
-        "الحلا"
-      ],
-      "displayName": "Category (AR) / الفئة (AR) — legacy, unused"
-    },
-    "menuCategory": {
+    "menuItems": {
       "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::menu-category.menu-category",
-      "inversedBy": "menuItems",
-      "displayName": "Menu Category / فئة القائمة"
+      "relation": "oneToMany",
+      "target": "api::menu-item.menu-item",
+      "mappedBy": "menuCategory"
     }
   }
 }
