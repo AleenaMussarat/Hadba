@@ -77,7 +77,7 @@ const ReserveModal = ({ isOpen, onClose }) => {
                     type="tel"
                     value={form.phone}
                     onChange={handleChange('phone')}
-                    placeholder="05XXXXXXXX (optional)"
+                    placeholder="05XXXXXXXX"
                     pattern="^(\+?966|0)?5[0-9]{8}$"
                     title={t.reserve.phoneHint}
                   />
@@ -97,7 +97,7 @@ const ReserveModal = ({ isOpen, onClose }) => {
                   <label className="reserve-field">
                     <span>{t.reserve.time}</span>
                     <select required value={form.time} onChange={handleChange('time')}>
-                      <option value="">Select Time</option>
+                      <option value="">{t.reserve.selectTime}</option>
                       {['12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'].map(time => (
                         <option key={time} value={time}>{time}</option>
                       ))}
