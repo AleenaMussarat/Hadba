@@ -65,8 +65,8 @@ const CATEGORY_NAME_BY_KEY = {
 // works via its own richer fallback in Hero.jsx and isn't seeded here.
 const pageHeroes = [
   {
-        pageKey: 'home',
-    titleEn: 'Authentic Experience... with a Modern Spirit',
+    pageKey: 'home',
+    titleEn: 'Authentic Experience... With A Modern Spirit',
     titleAr: 'تجربة أصيلة… بروح معاصرة',
     subtitleEn: 'In the heart of Saudi Arabia, SAMDAN serves exquisite Kabsa, Jarish, Najdi, and Hejazi cuisine — a remarkable dining adventure rooted in tradition.',
     subtitleAr: 'في سَمْدَان، نعيد تقديم المذاق الجنوبي الأصيل بروح عصرية، من الحنيذ إلى أطباق المائدة الشعبية، بتفاصيل تحكي أصالة الموروث السعودي',
