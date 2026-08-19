@@ -74,8 +74,7 @@
         "Drinks",
         "Desserts"
       ],
-      "required": true,
-      "displayName": "Category (EN) / الفئة (EN)"
+      "displayName": "Category (EN) / الفئة (EN) — legacy, unused"
     },
     "categoryAr": {
       "type": "enumeration",
@@ -94,8 +93,14 @@
         "المشروبات",
         "الحلا"
       ],
-      "required": true,
-      "displayName": "Category (AR) / الفئة (AR)"
+      "displayName": "Category (AR) / الفئة (AR) — legacy, unused"
+    },
+    "menuCategory": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::menu-category.menu-category",
+      "inversedBy": "menuItems",
+      "displayName": "Menu Category / فئة القائمة"
     }
   }
 }
