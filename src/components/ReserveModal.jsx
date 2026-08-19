@@ -77,7 +77,7 @@ const ReserveModal = ({ isOpen, onClose }) => {
                     type="tel"
                     value={form.phone}
                     onChange={handleChange('phone')}
-                    placeholder="05XXXXXXXX"
+                    // placeholder="05XXXXXXXX"
                     pattern="^(\+?966|0)?5[0-9]{8}$"
                     title={t.reserve.phoneHint}
                   />
