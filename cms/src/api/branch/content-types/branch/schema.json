@@ -48,7 +48,7 @@
       "allowedTypes": [
         "images"
       ],
-      "displayName": "Image / الصورة"
+      "description": "Recommended 1200×900px (4:3) landscape photo, JPG/WebP. Keep image size under 3MB."
     },
     "mapsLink": {
       "type": "string",

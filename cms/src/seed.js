@@ -4,7 +4,7 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { items, categories, carouselSlides, branches, galleryImages } = require('./seed-data');
+const { items, categories, pageHeroes, carouselSlides, branches, galleryImages } = require('./seed-data');
 
 async function downloadToTemp(url) {
   const res = await fetch(url);
@@ -56,6 +56,8 @@ async function setPublicPermissions(strapi) {
     'api::menu-item.menu-item.findOne',
     'api::menu-category.menu-category.find',
     'api::menu-category.menu-category.findOne',
+    'api::page-hero.page-hero.find',
+    'api::page-hero.page-hero.findOne',
     'api::carousel-slide.carousel-slide.find',
     'api::carousel-slide.carousel-slide.findOne',
     'api::branch.branch.find',
@@ -114,10 +116,35 @@ async function seedMenuCategories(strapi) {
   return categoryMap;
 }
 
+async function seedPageHeroes(strapi) {
+  for (const hero of pageHeroes) {
+    const existing = await strapi.db.query('api::page-hero.page-hero').findOne({
+      where: { pageKey: hero.pageKey }
+    });
+
+    if (existing) continue;
+
+    const media = await uploadImage(strapi, hero.image, `page-hero-${hero.pageKey}.jpg`);
+
+    await strapi.documents('api::page-hero.page-hero').create({
+      data: {
+        pageKey: hero.pageKey,
+        titleEn: hero.titleEn,
+        titleAr: hero.titleAr,
+        subtitleEn: hero.subtitleEn,
+        subtitleAr: hero.subtitleAr,
+        backgroundImage: media.id
+      }
+    });
+    strapi.log.info(`[seed] Created page hero: ${hero.pageKey}`);
+  }
+}
+
 module.exports = async function seed({ strapi }) {
   await setPublicPermissions(strapi);
   await ensureArabicLocale(strapi);
   const categoryMap = await seedMenuCategories(strapi);
+  await seedPageHeroes(strapi);
 
   const existingItems = await strapi.documents('api::menu-item.menu-item').findMany();
   if (existingItems.length > 0) {

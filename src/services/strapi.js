@@ -194,24 +194,14 @@ export async function fetchBranches(locale) {
 }
 
 export async function fetchPageHero(pageKey, locale) {
-  const json = await strapiFetch(`page-heros?filters[pageKey][$eq]=${pageKey}&populate=backgroundImage,eyebrowIcon,cardIcon`)
+  const json = await strapiFetch(`page-heros?filters[pageKey][$eq]=${pageKey}&populate=backgroundImage`)
   const entry = json.data?.[0]
   if (!entry) return null
 
   return {
-    eyebrow: locale === 'ar' ? entry.eyebrowAr : entry.eyebrowEn,
     title: locale === 'ar' ? entry.titleAr : entry.titleEn,
     subtitle: locale === 'ar' ? entry.subtitleAr : entry.subtitleEn,
-    tagline: locale === 'ar' ? entry.taglineAr : entry.taglineEn,
-    promoTitle: locale === 'ar' ? entry.promoTitleAr : entry.promoTitleEn,
-    promoText: locale === 'ar' ? entry.promoTextAr : entry.promoTextEn,
-    hours: locale === 'ar' ? entry.hoursAr : entry.hoursEn,
-    hoursValue: locale === 'ar' ? entry.hoursValueAr : entry.hoursValueEn,
-    ctaPrimary: locale === 'ar' ? entry.ctaPrimaryAr : entry.ctaPrimaryEn,
-    ctaSecondary: locale === 'ar' ? entry.ctaSecondaryAr : entry.ctaSecondaryEn,
-    backgroundImage: mediaUrl(entry.backgroundImage),
-    eyebrowIcon: mediaUrl(entry.eyebrowIcon),
-    cardIcon: mediaUrl(entry.cardIcon)
+    backgroundImage: mediaUrl(entry.backgroundImage)
   }
 }
 

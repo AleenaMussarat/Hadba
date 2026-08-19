@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
-import { fetchBranches } from '../services/strapi'
+import { fetchBranches, fetchPageHero } from '../services/strapi'
 import { FaLocationDot, FaClock, FaDiamondTurnRight } from 'react-icons/fa6'
 import ParallaxImage from './ParallaxImage'
 
@@ -9,6 +9,14 @@ const Branches = () => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
   const [branches, setBranches] = useState(t.branches.items)
+
+  const [heroData, setHeroData] = useState(null)
+
+  useEffect(() => {
+    fetchPageHero('branches', currentLang)
+      .then((data) => setHeroData(data))
+      .catch(() => setHeroData(null))
+  }, [currentLang])
 
   useEffect(() => {
     let active = true
@@ -28,17 +36,23 @@ const Branches = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLang])
 
+  const hero = heroData || {
+    title: t.branches.title,
+    subtitle: t.branches.subtitle,
+    backgroundImage: '/brand/photo-sadu-interior.webp'
+  }
+
   return (
     <section className="section section-branches">
-      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.webp)' }} aria-hidden="true" />
+      <div className="page-intro-bg" style={{ backgroundImage: `url(${hero.backgroundImage})` }} aria-hidden="true" />
       <div className="container">
         <div className="section-heading">
           <p className="eyebrow eyebrow-icon fade-in-up" style={{ animationDelay: '0.05s' }}>
             <img src="/brand/icon-table.webp" alt="" />
             {t.branches.eyebrow}
           </p>
-          <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{t.branches.title}</h2>
-          <p className="section-copy fade-in-up" style={{ animationDelay: '0.25s' }}>{t.branches.subtitle}</p>
+          <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{hero.title}</h2>
+          <p className="section-copy fade-in-up" style={{ animationDelay: '0.25s' }}>{hero.subtitle}</p>
         </div>
 
         <div className="branches-box">

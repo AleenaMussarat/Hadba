@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useLanguage } from '../i18n'
 import { translations, CAT, CATEGORY_ORDER } from '../i18n/translations'
-import { fetchMenuCategories, fetchMenuItems } from '../services/strapi'
 import RiyalSymbol from './RiyalSymbol'
 import FeaturedMenu from './FeaturedMenu'
 import { getLenis } from '../lib/smoothScroll'
+import { fetchMenuCategories, fetchMenuItems, fetchPageHero } from '../services/strapi'
 
 const PAGE_SIZE = 8
 const MOBILE_QUERY = '(max-width: 768px)'
@@ -48,6 +48,7 @@ const Menu = () => {
     () => typeof window !== 'undefined' && window.matchMedia(MOBILE_QUERY).matches
   )
   const itemRefs = useRef([])
+  const [heroData, setHeroData] = useState(null)
 
   useEffect(() => {
     setPage(1)
@@ -83,6 +84,12 @@ const Menu = () => {
     fetchMenuCategories(currentLang)
       .then((data) => setCategories(data))
       .catch(() => setCategories([]))
+  }, [currentLang])
+
+  useEffect(() => {
+    fetchPageHero('menu', currentLang)
+      .then((data) => setHeroData(data))
+      .catch(() => setHeroData(null))
   }, [currentLang])
 
   useEffect(() => {
@@ -131,17 +138,23 @@ const Menu = () => {
 
   const pageLabel = t.menu.pageOf.replace('{page}', page).replace('{count}', pageCount)
 
+  const hero = heroData || {
+    title: t.menu.title,
+    subtitle: t.menu.subtitle,
+    backgroundImage: '/brand/photo-sadu-interior.webp'
+  }
+
   return (
     <section className="section section-menu">
-      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.webp)' }} aria-hidden="true" />
+      <div className="page-intro-bg" style={{ backgroundImage: `url(${hero.backgroundImage})` }} aria-hidden="true" />
       <div className="container">
         <div className="section-heading">
           <p className="eyebrow eyebrow-icon fade-in-up" style={{ animationDelay: '0.05s' }}>
             <img src="/brand/icon-knife-fork.webp" alt="" />
             {t.menu.eyebrow}
           </p>
-          <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{t.menu.title}</h2>
-          <p className="section-copy fade-in-up" style={{ animationDelay: '0.25s' }}>{t.menu.subtitle}</p>
+          <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{hero.title}</h2>
+          <p className="section-copy fade-in-up" style={{ animationDelay: '0.25s' }}>{hero.subtitle}</p>
         </div>
       </div>
 

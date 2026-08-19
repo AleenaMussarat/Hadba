@@ -60,6 +60,52 @@ const CATEGORY_NAME_BY_KEY = {
   desserts: 'Desserts'
 };
 
+// Default hero content for each secondary page — seeded once as real menu-category-
+// style records, then editable in Strapi like everything else. Home's hero already
+// works via its own richer fallback in Hero.jsx and isn't seeded here.
+const pageHeroes = [
+  {
+    pageKey: 'about',
+    titleEn: 'Welcome to SAMDAN',
+    titleAr: 'مرحباً بكم في سمدان',
+    subtitleEn: 'Inspired by the timeless landscapes and enduring values of Najd, Samdan is more than a name — it is a tribute to Saudi heritage, reimagined for a modern dining experience.',
+    subtitleAr: 'مستوحاة من مشهد جنوب الخالد وقيمها الراسخة، سمدان أكثر من مجرد اسم — إنها تحية للتراث السعودي، أُعيد تقديمها بروح عصرية.',
+    image: localAsset('photo-sadu-interior.jpg')
+  },
+  {
+    pageKey: 'menu',
+    titleEn: 'Our Signature Dishes',
+    titleAr: 'أطباقنا المميزة',
+    subtitleEn: 'Prepared with love and tradition, each dish tells a story',
+    subtitleAr: 'محضرة بحب وتقاليد، كل طبق يحكي قصة',
+    image: localAsset('photo-sadu-interior.jpg')
+  },
+  {
+    pageKey: 'branches',
+    titleEn: 'Our Branches',
+    titleAr: 'فروعنا',
+    subtitleEn: 'Visit us at our Riyadh location, with more branches opening soon.',
+    subtitleAr: 'زورونا في فرعنا بالرياض، مع افتتاح فروع جديدة قريباً.',
+    image: localAsset('photo-sadu-interior.jpg')
+  },
+  {
+    pageKey: 'gallery',
+    titleEn: 'Gallery',
+    titleAr: 'معرض الصور',
+    subtitleEn: "A visual journey through SAMDAN's ambiance and signature dishes.",
+    subtitleAr: 'جولة بصرية عبر أجواء سمدان وأطباقها المميزة.',
+    image: localAsset('photo-sadu-interior.jpg')
+  },
+  {
+    pageKey: 'contact',
+    titleEn: 'Visit Us',
+    titleAr: 'زورونا',
+    subtitleEn: "We'd love to welcome you to SAMDAN. Reach out to reserve your table or ask about our menu.",
+    subtitleAr: 'يسعدنا الترحيب بكم في سمدان. تواصلوا معنا لحجز طاولتكم أو للاستفسار عن قائمتنا.',
+    image: localAsset('photo-sadu-interior.jpg')
+  }
+];
+
 // [en name, ar name, en desc, ar desc, category key, price, calories|null, imageKey, featured?]
 const MENU_ROWS = [
   ['Kabda Baladi', 'كبدة بلدي', 'Sautéed local liver with onions and warm spices', 'كبدة طازجة سوتيه مع البصل والبهارات الدافئة', 'breakfast', '25', 420, 'margoog'],
@@ -221,4 +267,4 @@ const galleryImages = [
   { order: 9, image: IMAGES.luqaimat, captionEn: 'Luqaimat', captionAr: 'لقيمات' }
 ];
 
-module.exports = { items, categories: CATEGORIES, carouselSlides, branches, galleryImages };
+module.exports = { items, categories: CATEGORIES, pageHeroes, carouselSlides, branches, galleryImages };

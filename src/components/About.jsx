@@ -4,6 +4,7 @@ import { translations } from '../i18n/translations'
 import ScrollStack, { ScrollStackItem } from './reactbits/ScrollStack'
 import { getLenis } from '../lib/smoothScroll'
 import patternBg from '../../assets/images/GuidlinePictures/Pattern.webp'
+import { fetchPageHero } from '../services/strapi'
 
 const HIGHLIGHT_ICONS = [
   '/brand/icon-highlight-chefhat.webp',
@@ -19,6 +20,14 @@ const About = () => {
   const t = translations[currentLang] || translations.en
   const visualRef = useRef(null)
   const [progress, setProgress] = useState(0)
+
+  const [heroData, setHeroData] = useState(null)
+
+  useEffect(() => {
+    fetchPageHero('about', currentLang)
+      .then((data) => setHeroData(data))
+      .catch(() => setHeroData(null))
+  }, [currentLang])
 
   // Continuous scroll progress (not a boolean) so the pattern image can
   // expand smoothly as this section scrolls into view, rather than
@@ -58,9 +67,15 @@ const About = () => {
   const patternScale = 0.55 + progress * 0.45
   const flanksOpen = progress > CARDS_IN_AT
 
+  const hero = heroData || {
+    title: t.story.title,
+    subtitle: t.story.intro,
+    backgroundImage: '/brand/photo-sadu-interior.webp'
+  }
+
   return (
     <section className="section section-about">
-      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.webp)' }} aria-hidden="true" />
+      <div className="page-intro-bg" style={{ backgroundImage: `url(${hero.backgroundImage})` }} aria-hidden="true" />
 
       <div className="container">
         <div className="about-intro">
@@ -68,8 +83,8 @@ const About = () => {
             <img src="/brand/icon-story-eyebrow.webp" alt="" />
             {t.story.eyebrow}
           </p>
-          <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{t.story.title}</h2>
-          <p className="section-copy section-intro fade-in-up" style={{ animationDelay: '0.25s' }}>{t.story.intro}</p>
+          <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{hero.title}</h2>
+          <p className="section-copy section-intro fade-in-up" style={{ animationDelay: '0.25s' }}>{hero.subtitle}</p>
         </div>
 
         <div ref={visualRef} className={`about-intro-visual fade-in-up ${flanksOpen ? 'is-open' : ''}`} style={{ animationDelay: '0.3s' }}>

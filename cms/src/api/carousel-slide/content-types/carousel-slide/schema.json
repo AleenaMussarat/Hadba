@@ -45,7 +45,8 @@
         "images",
         "videos"
       ],
-      "displayName": "Image / الصورة"
+      "displayName": "Image / الصورة",
+      "description": "Recommended 1920×1080px (16:9). Images or a short MP4 video both work. Keep under 5MB for images / 20MB for video."
     },
     "order": {
       "type": "integer",

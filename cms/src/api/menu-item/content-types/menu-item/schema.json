@@ -55,7 +55,8 @@
       "allowedTypes": [
         "images"
       ],
-      "displayName": "Image / الصورة"
+      "displayName": "Image / الصورة",
+      "description": "Recommended 800×800px (square) or 800×600px (4:3), JPG/PNG/WebP. Keep image size under 2MB for fast loading."
     },
     "categoryEn": {
       "type": "enumeration",

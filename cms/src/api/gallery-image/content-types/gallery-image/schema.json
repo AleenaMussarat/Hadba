@@ -18,7 +18,8 @@
       "allowedTypes": [
         "images"
       ],
-      "displayName": "Image / الصورة"
+      "displayName": "Image / الصورة",
+      "description": "Keep image size under 3MB."
     },
     "captionEn": {
       "type": "string",

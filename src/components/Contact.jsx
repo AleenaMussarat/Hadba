@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
 import { useReservationForm } from '../lib/useReservationForm'
@@ -6,22 +6,36 @@ import { FaLocationDot, FaPhone, FaEnvelope, FaClock, FaCircleCheck, FaTriangleE
 import { socialLinks } from '../data/social'
 import { MAP_QUERY, MAP_EMBED_SRC } from '../lib/mapConfig'
 import mapLocationIcon from '../../assets/images/Icons/Samdan Guidlines ICONS-08.webp'
+import { fetchPageHero } from '../services/strapi'
 
 const Contact = () => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
   const { form, submitted, isSubmitting, submitError, isReservationsClosed, handleChange, handleSubmit, reset } = useReservationForm()
+    const [heroData, setHeroData] = useState(null)
+
+  useEffect(() => {
+    fetchPageHero('contact', currentLang)
+      .then((data) => setHeroData(data))
+      .catch(() => setHeroData(null))
+  }, [currentLang])
+
+  const hero = heroData || {
+    title: t.contact.title,
+    subtitle: t.contact.description,
+    backgroundImage: '/brand/photo-sadu-interior.webp'
+  }
   return (
     <section className="section contact-section">
-      <div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.webp)' }} aria-hidden="true" />
+<div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.webp)' }} aria-hidden="true" />
       <div className="container">
         <div className="section-heading">
           <p className="eyebrow eyebrow-icon fade-in-up" style={{ animationDelay: '0.05s' }}>
             <img src="/brand/icon-cloche.webp" alt="" />
             {t.contact.eyebrow}
           </p>
-          <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{t.contact.title}</h2>
-          <p className="section-copy fade-in-up" style={{ animationDelay: '0.25s' }}>{t.contact.description}</p>
+          <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{hero.title}</h2>
+          <p className="section-copy fade-in-up" style={{ animationDelay: '0.25s' }}>{hero.description}</p>
         </div>
 
         <div className="contact-grid">
