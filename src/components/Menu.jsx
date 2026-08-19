@@ -117,21 +117,14 @@ const Menu = () => {
 
   const filters = useMemo(
     () => {
-      const dynamicFilters = categories.map((category) => ({ key: category.id, label: category.name }))
-      const staticFilters = CATEGORY_ORDER.map((key) => ({ key, label: CAT[key][currentLang] }))
-      const merged = [...staticFilters, ...dynamicFilters]
-      const unique = []
-      const seen = new Set()
+      // Strapi categories are the source of truth once loaded — the static list is only
+      // a fallback while Strapi is unreachable, never merged alongside real categories
+      // (merging both showed duplicate pills for any name that exists in each list).
+      const source = categories.length > 0
+        ? categories.map((category) => ({ key: category.id, label: category.name }))
+        : CATEGORY_ORDER.map((key) => ({ key, label: CAT[key][currentLang] }))
 
-      merged.forEach((filter) => {
-        const lookup = `${filter.key ?? 'all'}:${filter.label}`
-        if (!seen.has(lookup)) {
-          seen.add(lookup)
-          unique.push(filter)
-        }
-      })
-
-      return [{ key: null, label: t.menu.filterAll }, ...unique]
+      return [{ key: null, label: t.menu.filterAll }, ...source]
     },
     [categories, currentLang, t.menu.filterAll]
   )
