@@ -56,7 +56,7 @@ const config = {
   },
   // Enables Strapi's own admin interface (menus, buttons, labels) in Arabic —
   // separate from content i18n. Admins can switch it from their profile menu.
-  locales: ['ar'],
+  locales: ['en', 'ar'],
 
   // Branding — SAMDAN logo on the login screen and the main nav, and the
   // restaurant's icon as the browser tab favicon for the admin panel.
