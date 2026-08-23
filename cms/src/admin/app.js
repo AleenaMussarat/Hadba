@@ -927,6 +927,30 @@ const findFlexAncestor = (el) => {
   return null;
 };
 
+// "Collection Types" and "Single Types" don't sit at the same DOM depth in
+// Strapi's markup (the second one has no expand/collapse affordance), so a
+// fixed "go up two levels" missed the real heading+badge row for one of
+// them and grabbed a much bigger ancestor instead — which is why the count
+// badge ended up stacked under the heading rather than beside it. This
+// climbs from the heading a level at a time and, at each level, checks
+// whether the CURRENT node has a sibling whose entire text content is just
+// digits (the count badge) and which has no element children of its own
+// (so it can't accidentally match a big nested list that happens to
+// contain a number somewhere inside it). The first level where that's true
+// is the real row.
+const findHeadingBadgeRow = (headingEl) => {
+  let candidate = headingEl;
+  for (let depth = 0; depth < 6 && candidate && candidate.parentElement && candidate.parentElement !== document.body; depth++) {
+    const row = candidate.parentElement;
+    const badgeSibling = Array.from(row.children).find(
+      (el) => el !== candidate && el.children.length === 0 && /^\d+$/.test((el.textContent || '').trim())
+    );
+    if (badgeSibling) return row;
+    candidate = row;
+  }
+  return headingEl.parentElement;
+};
+
 const fixSidebarSectionHeaderLayout = (root) => {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   let node = walker.nextNode();
@@ -936,7 +960,7 @@ const fixSidebarSectionHeaderLayout = (root) => {
     const isEnglishHeading = SECTION_HEADINGS_EN.includes(text);
     if (isArabicHeading || isEnglishHeading) {
       const headingEl = node.parentElement;
-      const row = headingEl && headingEl.parentElement;
+      const row = headingEl && findHeadingBadgeRow(headingEl);
       if (row) {
         row.style.display = 'flex';
         row.style.flexDirection = 'row';
@@ -1074,8 +1098,12 @@ const fixArabicContentInputDirection = (root) => {
 // <a> styled as a button sitting inside an <aside>-tagged panel, so the
 // broad `aside a { text-align: right }` rule above (meant for real sidebar
 // nav links) caught it too — a button's own label should stay centered,
-// not pushed to one edge. This forces it back to center regardless of what
-// caught it, taking priority since inline styles beat the stylesheet rule.
+// not pushed to one edge. `text-align` only has an effect on the element
+// that owns the line box, though — setting it on the inline <span> that
+// directly wraps the text (the previous attempt) does nothing, because
+// that span isn't block-level. This walks up from the text node to the
+// actual <a>/<button> the CSS rule targeted (setting text-align along the
+// way in case of wrapper spans/divs in between too) and stops there.
 const CENTER_ALIGN_TEXT = ['إعداد المعاينة', 'Set up preview', 'Set up the preview'];
 
 const fixPreviewButtonAlignment = (root) => {
@@ -1084,8 +1112,12 @@ const fixPreviewButtonAlignment = (root) => {
   while (node) {
     const text = (node.nodeValue || '').trim();
     if (CENTER_ALIGN_TEXT.includes(text)) {
-      const el = node.parentElement;
-      if (el) el.style.textAlign = 'center';
+      let el = node.parentElement;
+      while (el && el !== root) {
+        el.style.textAlign = 'center';
+        if (el.tagName === 'A' || el.tagName === 'BUTTON') break;
+        el = el.parentElement;
+      }
     }
     node = walker.nextNode();
   }
