@@ -660,6 +660,10 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   'Accepting Reservations*': 'قبول الحجوزات *',
 
   // Site Settings singleType (Contact information group).
+
+  'Tagline (En)': 'الشعار (EN)',
+  'Tagline (Ar)': 'الشعار (AR)',
+
   'Address (En)': 'العنوان (EN)',
   'Address (Ar)': 'العنوان (AR)',
   'Instagram URL': 'رابط إنستغرام',
@@ -668,6 +672,20 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   'Tiktok URL': 'رابط تيك توك',
   'Facebook URL': 'رابط فيسبوك',
   'Whatsapp URL': 'رابط واتساب',
+
+  // Entry edit-view side panel headings.
+  'Entry': 'الإدخال',
+  'Preview': 'المعاينة',
+
+  // Settings sidebar — entries Strapi's own bundle leaves in English.
+  'Content History': 'سجل المحتوى',
+  'Releases': 'الإصدارات',
+  'Internationalization': 'التدويل',
+  'Review Workflows': 'سير العمل للمراجعة',
+  'Admin Tokens': 'رموز المسؤول',
+  'Email plugin': 'إضافة البريد الإلكتروني',
+  'Configuration': 'الإعدادات',
+  'Users & Permissions plugin': 'إضافة المستخدمين والصلاحيات',
 };
 
 // "Hello Admin" / "Hello Jane" etc. — the greeting is a fixed template with
@@ -750,8 +768,41 @@ const installRtlTableAlignmentFix = () => {
     html[dir="rtl"] table td {
       text-align: right;
     }
+    html[dir="rtl"] label {
+      text-align: right;
+    }
   `;
   document.head.appendChild(style);
+};
+
+// Strapi's Date/Time picker inputs show their digits inside the page's RTL
+// context, which lets the browser's bidi algorithm insert invisible RTL
+// marks around the "/" separators and reorder the whole value — turning
+// "22/08/2026" into "22‏/08‏/2026" (with a right-to-left mark before each
+// slash). Forcing just these inputs to explicit LTR direction stops the
+// browser from touching them, regardless of the page's own RTL layout.
+const DATE_VALUE_RE = /^\d{1,4}[/-]\d{1,2}[/-]\d{1,4}$/;
+const TIME_VALUE_RE = /^\d{1,2}:\d{2}(\s?[AP]M)?$/i;
+
+const fixDateTimeInputDirection = (root) => {
+  const inputs = root.querySelectorAll ? root.querySelectorAll('input') : [];
+  inputs.forEach((input) => {
+    const value = (input.value || '').trim();
+    if (DATE_VALUE_RE.test(value) || TIME_VALUE_RE.test(value)) {
+      if (input.dir !== 'ltr') input.dir = 'ltr';
+      if (input.style.textAlign !== 'left') input.style.textAlign = 'left';
+    }
+  });
+};
+
+const installLtrDateTimeFix = () => {
+  if (typeof document === 'undefined' || window.__samdanLtrDateTimeFixInstalled) return;
+  window.__samdanLtrDateTimeFixInstalled = true;
+  fixDateTimeInputDirection(document.body);
+  new MutationObserver(() => fixDateTimeInputDirection(document.body)).observe(document.body, {
+    childList: true,
+    subtree: true
+  });
 };
 
 const bootstrap = () => {
@@ -760,6 +811,7 @@ const bootstrap = () => {
   installDateFormatRewrite();
   installDirectionEnforcement();
   installRtlTableAlignmentFix();
+  installLtrDateTimeFix();
   installDigitNormalizer();
   installBilingualLabelRewrite();
   installFixedPhraseRewrite();
