@@ -933,17 +933,23 @@ const findFlexAncestor = (el) => {
 // them and grabbed a much bigger ancestor instead — which is why the count
 // badge ended up stacked under the heading rather than beside it. This
 // climbs from the heading a level at a time and, at each level, checks
-// whether the CURRENT node has a sibling whose entire text content is just
-// digits (the count badge) and which has no element children of its own
-// (so it can't accidentally match a big nested list that happens to
-// contain a number somewhere inside it). The first level where that's true
-// is the real row.
+// whether the CURRENT node has a sibling whose entire (aggregated)
+// text content is just digits (the count badge) — the real row is the
+// first level where that's true. An earlier version of this also required
+// that sibling to have zero element children, meant to rule out
+// accidentally matching a big nested list that happens to contain a number
+// somewhere inside it — but Strapi's own Badge component wraps its digit
+// in a nested <span> for styling, so that check rejected the real badge
+// every time and the whole reorder silently never ran (the count stayed in
+// its default position no matter what). Since a large nested list's
+// aggregated text is never PURELY digits with nothing else, matching on
+// content alone is already specific enough without that extra check.
 const findHeadingBadgeRow = (headingEl) => {
   let candidate = headingEl;
   for (let depth = 0; depth < 6 && candidate && candidate.parentElement && candidate.parentElement !== document.body; depth++) {
     const row = candidate.parentElement;
     const badgeChild = Array.from(row.children).find(
-      (el) => el !== candidate && el.children.length === 0 && /^\d+$/.test((el.textContent || '').trim())
+      (el) => el !== candidate && /^\d+$/.test((el.textContent || '').trim())
     );
     if (badgeChild) return { row, headingChild: candidate, badgeChild };
     candidate = row;
@@ -981,6 +987,7 @@ const fixSidebarSectionHeaderLayout = (root) => {
     node = walker.nextNode();
   }
 };
+
 const installSidebarSectionHeaderFix = () => {
   if (typeof document === 'undefined' || window.__samdanSidebarHeaderFixInstalled) return;
   window.__samdanSidebarHeaderFixInstalled = true;
