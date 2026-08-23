@@ -585,6 +585,89 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   'Created': 'تم الإنشاء',
   'Document ID': 'معرف المستند',
   'Copy Document ID': 'نسخ معرف المستند',
+
+  // Avatar dropdown menu + profile page.
+  'Profile': 'الملف الشخصي',
+  'Profile settings': 'إعدادات الملف الشخصي',
+  'Active devices': 'الأجهزة النشطة',
+
+  // "Displayed fields" column picker — labels here come from Strapi's own
+  // auto-generated field names, not our schema's displayName, so they use a
+  // different casing ("Hours (Ar)") than the bilingual rewriter's pattern
+  // ("Hours (AR) / الساعات (AR)") and need their own exact-match entries.
+  'Displayed fields': 'الحقول المعروضة',
+  'Created By': 'أنشأ بواسطة',
+  'Updated By': 'تم التحديث بواسطة',
+  'documentId': 'معرف المستند',
+  'ID': 'المعرف',
+  'Maps Link': 'رابط الخرائط',
+  'Hours (Ar)': 'الساعات (AR)',
+  'Hours (En)': 'الساعات (EN)',
+  'Location (Ar)': 'الموقع (AR)',
+  'Location (En)': 'الموقع (EN)',
+  'Name (Ar)': 'الاسم (AR)',
+  'Name (En)': 'الاسم (EN)',
+
+  // Carousel slide fields.
+  'Badge (Ar)': 'الشارة (AR)',
+  'Badge (En)': 'الشارة (EN)',
+  'isActive': 'نشط',
+  'Subtitle (Ar)': 'العنوان الفرعي (AR)',
+  'Subtitle (En)': 'العنوان الفرعي (EN)',
+  'Title (Ar)': 'العنوان (AR)',
+  'Title (En)': 'العنوان (EN)',
+
+  // Gallery image fields.
+  'Caption (Ar)': 'التعليق (AR)',
+  'Caption (En)': 'التعليق (EN)',
+
+  // Menu Category's "Displayed fields" picker renders raw camelCase field
+  // keys instead of formatted labels (unlike other content types), so these
+  // need exact lowercase/no-space matches distinct from the Title Case ones
+  // above (e.g. "name(Ar)" here vs "Name (Ar)" elsewhere).
+  'createdAt': 'تاريخ الإنشاء',
+  'createdBy': 'أنشأ بواسطة',
+  'displayLabel': 'التسمية المعروضة',
+  'id': 'المعرف',
+  'menuItems': 'عناصر القائمة',
+  'name(Ar)': 'الاسم (AR)',
+  'name(En)': 'الاسم (EN)',
+  'order': 'الترتيب',
+  'updatedAt': 'تاريخ التحديث',
+  'updatedBy': 'تم التحديث بواسطة',
+
+  // Menu Item fields (legacy category enum + relation + description).
+  'categoryAr': 'الفئة (AR)',
+  'categoryEn': 'الفئة (EN)',
+  'Description (Ar)': 'الوصف (AR)',
+  'Description (En)': 'الوصف (EN)',
+  'menuCategory': 'فئة القائمة',
+
+  // Page Hero fields.
+  'backgroundImage': 'صورة الخلفية',
+  'Page Name': 'اسم الصفحة',
+  'subtitleAr': 'العنوان الفرعي (AR)',
+  'subtitleEn': 'العنوان الفرعي (EN)',
+
+  // Admin Users list.
+  'Email': 'البريد الإلكتروني',
+  'First Name': 'الاسم الأول',
+  'Last Name': 'اسم العائلة',
+  'Role': 'الدور',
+  'Temporary Password': 'كلمة مرور مؤقتة',
+
+  // Reservation Settings singleType.
+  'Accepting Reservations*': 'قبول الحجوزات *',
+
+  // Site Settings singleType (Contact information group).
+  'Address (En)': 'العنوان (EN)',
+  'Address (Ar)': 'العنوان (AR)',
+  'Instagram URL': 'رابط إنستغرام',
+  'X URL': 'رابط X',
+  'Snapchat URL': 'رابط سناب شات',
+  'Tiktok URL': 'رابط تيك توك',
+  'Facebook URL': 'رابط فيسبوك',
+  'Whatsapp URL': 'رابط واتساب',
 };
 
 // "Hello Admin" / "Hello Jane" etc. — the greeting is a fixed template with
