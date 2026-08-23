@@ -942,13 +942,13 @@ const findHeadingBadgeRow = (headingEl) => {
   let candidate = headingEl;
   for (let depth = 0; depth < 6 && candidate && candidate.parentElement && candidate.parentElement !== document.body; depth++) {
     const row = candidate.parentElement;
-    const badgeSibling = Array.from(row.children).find(
+    const badgeChild = Array.from(row.children).find(
       (el) => el !== candidate && el.children.length === 0 && /^\d+$/.test((el.textContent || '').trim())
     );
-    if (badgeSibling) return row;
+    if (badgeChild) return { row, headingChild: candidate, badgeChild };
     candidate = row;
   }
-  return headingEl.parentElement;
+  return { row: headingEl.parentElement, headingChild: headingEl, badgeChild: null };
 };
 
 const fixSidebarSectionHeaderLayout = (root) => {
@@ -960,20 +960,27 @@ const fixSidebarSectionHeaderLayout = (root) => {
     const isEnglishHeading = SECTION_HEADINGS_EN.includes(text);
     if (isArabicHeading || isEnglishHeading) {
       const headingEl = node.parentElement;
-      const row = headingEl && findHeadingBadgeRow(headingEl);
+      const { row, headingChild, badgeChild } = headingEl ? findHeadingBadgeRow(headingEl) : {};
       if (row) {
         row.style.display = 'flex';
         row.style.flexDirection = 'row';
         row.style.justifyContent = 'space-between';
         row.style.alignItems = 'center';
         row.style.width = '100%';
-        row.style.direction = isArabicHeading ? 'rtl' : 'ltr';
+        row.style.direction = 'ltr';
+        // Arabic: badge left (order 1), heading right (order 2), heading
+        // text itself right-aligned within its own box. English: reset to
+        // Strapi's own default ordering (heading left, badge right).
+        if (headingChild) {
+          headingChild.style.order = isArabicHeading ? '2' : '';
+          headingChild.style.textAlign = isArabicHeading ? 'right' : '';
+        }
+        if (badgeChild) badgeChild.style.order = isArabicHeading ? '1' : '';
       }
     }
     node = walker.nextNode();
   }
 };
-
 const installSidebarSectionHeaderFix = () => {
   if (typeof document === 'undefined' || window.__samdanSidebarHeaderFixInstalled) return;
   window.__samdanSidebarHeaderFixInstalled = true;
@@ -1115,6 +1122,10 @@ const fixPreviewButtonAlignment = (root) => {
       let el = node.parentElement;
       while (el && el !== root) {
         el.style.textAlign = 'center';
+        const display = window.getComputedStyle(el).display;
+        if (display === 'flex' || display === 'inline-flex') {
+          el.style.justifyContent = 'center';
+        }
         if (el.tagName === 'A' || el.tagName === 'BUTTON') break;
         el = el.parentElement;
       }
