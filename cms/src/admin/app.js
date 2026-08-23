@@ -743,9 +743,13 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   // for the "Displayed fields" picker above.
   'Background Image': 'صورة الخلفية',
 
-  // Site Settings singleType — new social platforms.
+  // Site Settings singleType — new social platforms. Strapi auto-titlecases
+  // the field key ("youtubeUrl") by just capitalizing the first letter of
+  // each word — it doesn't know "YouTube" has an internal capital, so the
+  // rendered label is actually "Youtube URL", not "YouTube URL".
   'Telegram URL': 'رابط تيليجرام',
   'YouTube URL': 'رابط يوتيوب',
+  'Youtube URL': 'رابط يوتيوب',
 };
 
 // "Hello Admin" / "Hello Jane" etc. — the greeting is a fixed template with
@@ -898,14 +902,18 @@ const installLtrDateTimeFix = () => {
 };
 
 // The sidebar's "Collection Types" / "Single Types" section headers show
-// their entry-count badge (8, 2) as a flex sibling of the heading text.
-// Under RTL the whole page mirrors, but this specific flex row keeps its
-// original LTR child order (heading first/left, count second/right)
-// instead of following the page direction. Rather than guess Strapi's
-// class names, this finds the actual text node for each heading, walks up
-// to whichever ancestor is really laid out as a flex container, and
-// reverses its child order only while that heading reads in Arabic —
-// re-evaluated on every pass so switching back to English un-reverses it.
+// their entry-count badge (8, 2) as a sibling of the heading text inside a
+// shared row wrapper. The first attempt at this walked up to the nearest
+// ancestor with display:flex and reversed ITS flex-direction — too broad a
+// target: on this page that ancestor turned out to be a much larger layout
+// container (not the small heading+badge row), so reversing it scrambled
+// that container's own children instead (the heading and count stacking
+// instead of sitting side by side). This version only ever touches the
+// heading's own direct parent-of-parent — the tight row that actually
+// holds just the heading and the badge — and drives left/right purely via
+// that row's `direction` (rtl puts the DOM-first child, the heading, on
+// the right and the DOM-second child, the badge, on the left; ltr does the
+// reverse), never by reordering children.
 const SECTION_HEADINGS_AR = ['أنواع المجموعات', 'أنواع مفردة'];
 const SECTION_HEADINGS_EN = ['Collection Types', 'Single Types'];
 
@@ -927,8 +935,16 @@ const fixSidebarSectionHeaderLayout = (root) => {
     const isArabicHeading = SECTION_HEADINGS_AR.includes(text);
     const isEnglishHeading = SECTION_HEADINGS_EN.includes(text);
     if (isArabicHeading || isEnglishHeading) {
-      const flexAncestor = findFlexAncestor(node.parentElement);
-      if (flexAncestor) flexAncestor.style.flexDirection = isArabicHeading ? 'row-reverse' : '';
+      const headingEl = node.parentElement;
+      const row = headingEl && headingEl.parentElement;
+      if (row) {
+        row.style.display = 'flex';
+        row.style.flexDirection = 'row';
+        row.style.justifyContent = 'space-between';
+        row.style.alignItems = 'center';
+        row.style.width = '100%';
+        row.style.direction = isArabicHeading ? 'rtl' : 'ltr';
+      }
     }
     node = walker.nextNode();
   }
