@@ -28,6 +28,16 @@
     "snapchatUrl": { "type": "string", "displayName": "Snapchat URL" },
     "tiktokUrl": { "type": "string", "displayName": "TikTok URL" },
     "facebookUrl": { "type": "string", "displayName": "Facebook URL" },
-    "whatsappUrl": { "type": "string", "displayName": "WhatsApp URL" }
+    "whatsappUrl": { "type": "string", "displayName": "WhatsApp URL" },
+    "telegramUrl": {
+      "type": "string",
+      "displayName": "Telegram URL",
+      "description": "Leave empty to hide the Telegram icon on the site. Fill it in to make it appear."
+    },
+    "youtubeUrl": {
+      "type": "string",
+      "displayName": "YouTube URL",
+      "description": "Leave empty to hide the YouTube icon on the site. Fill it in to make it appear."
+    }
   }
 }

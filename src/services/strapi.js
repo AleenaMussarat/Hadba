@@ -238,7 +238,9 @@ export async function fetchSiteSettings(locale) {
         snapchatUrl: record.snapchatUrl,
         tiktokUrl: record.tiktokUrl,
         facebookUrl: record.facebookUrl,
-        whatsappUrl: record.whatsappUrl
+        whatsappUrl: record.whatsappUrl,
+        telegramUrl: record.telegramUrl,
+        youtubeUrl: record.youtubeUrl
       }
     } catch (error) {
       console.warn(`Unable to fetch site settings from ${endpoint}:`, error)

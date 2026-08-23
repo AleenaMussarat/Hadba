@@ -689,6 +689,15 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   'Email plugin': 'إضافة البريد الإلكتروني',
   'Configuration': 'الإعدادات',
   'Users & Permissions plugin': 'إضافة المستخدمين والصلاحيات',
+
+  // List row "..." context menu.
+  'Edit': 'تعديل',
+  'Open in new tab': 'فتح في علامة تبويب جديدة',
+  'Duplicate': 'تكرار',
+
+  // Search input placeholder (handled separately below since placeholder
+  // text lives in an attribute, not a text node the rewriter can walk).
+  'Search': 'بحث',
 };
 
 // "Hello Admin" / "Hello Jane" etc. — the greeting is a fixed template with
@@ -740,11 +749,26 @@ const rewriteFixedPhraseNodesIn = (root) => {
   });
 };
 
+// Placeholder text (e.g. the sidebar Search box) lives in an attribute, not
+// a text node, so the dictionary rewriter above can't reach it — this walks
+// every input/textarea separately and translates its placeholder the same
+// way, reusing the same dictionary.
+const rewritePlaceholdersIn = (root) => {
+  const fields = root.querySelectorAll ? root.querySelectorAll('input[placeholder], textarea[placeholder]') : [];
+  fields.forEach((field) => {
+    const picked = pickFixedPhraseTranslation(field.placeholder);
+    if (picked && picked !== field.placeholder) field.placeholder = picked;
+  });
+};
+
 const installFixedPhraseRewrite = () => {
   if (typeof document === 'undefined' || window.__samdanFixedPhraseRewriteInstalled) return;
   window.__samdanFixedPhraseRewriteInstalled = true;
 
-  const rerun = () => rewriteFixedPhraseNodesIn(document.body);
+  const rerun = () => {
+    rewriteFixedPhraseNodesIn(document.body);
+    rewritePlaceholdersIn(document.body);
+  };
   rerun();
 
   new MutationObserver(rerun).observe(document.body, { childList: true, subtree: true, characterData: true });
@@ -810,6 +834,173 @@ const installLtrDateTimeFix = () => {
   });
 };
 
+// The sidebar's "Collection Types" / "Single Types" section headers show
+// their entry-count badge (8, 2) as a flex sibling of the heading text.
+// Under RTL the whole page mirrors, but this specific flex row keeps its
+// original LTR child order (heading first/left, count second/right)
+// instead of following the page direction. Rather than guess Strapi's
+// class names, this finds the actual text node for each heading, walks up
+// to whichever ancestor is really laid out as a flex container, and
+// reverses its child order only while that heading reads in Arabic —
+// re-evaluated on every pass so switching back to English un-reverses it.
+const SECTION_HEADINGS_AR = ['أنواع المجموعات', 'أنواع مفردة'];
+const SECTION_HEADINGS_EN = ['Collection Types', 'Single Types'];
+
+const findFlexAncestor = (el) => {
+  let node = el;
+  while (node && node !== document.body) {
+    const display = window.getComputedStyle(node).display;
+    if (display === 'flex' || display === 'inline-flex') return node;
+    node = node.parentElement;
+  }
+  return null;
+};
+
+const fixSidebarSectionHeaderLayout = (root) => {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let node = walker.nextNode();
+  while (node) {
+    const text = (node.nodeValue || '').trim();
+    const isArabicHeading = SECTION_HEADINGS_AR.includes(text);
+    const isEnglishHeading = SECTION_HEADINGS_EN.includes(text);
+    if (isArabicHeading || isEnglishHeading) {
+      const flexAncestor = findFlexAncestor(node.parentElement);
+      if (flexAncestor) flexAncestor.style.flexDirection = isArabicHeading ? 'row-reverse' : '';
+    }
+    node = walker.nextNode();
+  }
+};
+
+const installSidebarSectionHeaderFix = () => {
+  if (typeof document === 'undefined' || window.__samdanSidebarHeaderFixInstalled) return;
+  window.__samdanSidebarHeaderFixInstalled = true;
+  fixSidebarSectionHeaderLayout(document.body);
+  new MutationObserver(() => fixSidebarSectionHeaderLayout(document.body)).observe(document.body, {
+    childList: true,
+    subtree: true,
+    characterData: true
+  });
+};
+
+// The "← Back" link's arrow icon (an SVG, not a font glyph) doesn't flip
+// direction on its own under RTL — in Arabic it should point right instead
+// of left, matching the flipped reading direction. This finds the "Back"
+// text node (Strapi's own bundle already translates it to "الى الوراء"),
+// walks up to the nearest wrapper that actually contains an <svg>, and
+// mirrors that icon horizontally.
+const BACK_LINK_TEXT_AR = ['الى الوراء', 'إلى الوراء'];
+
+const flipBackArrowIcon = (root) => {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let node = walker.nextNode();
+  while (node) {
+    const text = (node.nodeValue || '').trim();
+    if (BACK_LINK_TEXT_AR.includes(text)) {
+      let container = node.parentElement;
+      for (let i = 0; i < 4 && container; i++) {
+        const svg = container.querySelector ? container.querySelector('svg') : null;
+        if (svg) {
+          svg.style.transform = 'scaleX(-1)';
+          break;
+        }
+        container = container.parentElement;
+      }
+    }
+    node = walker.nextNode();
+  }
+};
+
+const installBackArrowFlip = () => {
+  if (typeof document === 'undefined' || window.__samdanBackArrowFlipInstalled) return;
+  window.__samdanBackArrowFlipInstalled = true;
+  flipBackArrowIcon(document.body);
+  new MutationObserver(() => flipBackArrowIcon(document.body)).observe(document.body, {
+    childList: true,
+    subtree: true,
+    characterData: true
+  });
+};
+
+// A handful of specific Arabic labels/headings don't get properly right-
+// aligned by the generic `label` CSS rule above — either because Strapi
+// renders them through a non-<label> element for this particular field
+// type (the Accepting Reservations toggle), or because they're simple
+// headings rather than form field labels (the "Entry"/"Preview" panel
+// titles on every edit view). This matches them directly by their known
+// Arabic text and right-aligns whichever element actually wraps them.
+const RIGHT_ALIGN_TEXT_AR = ['قبول الحجوزات', 'الإدخال', 'المعاينة'];
+
+const fixKnownLabelAlignment = (root) => {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let node = walker.nextNode();
+  while (node) {
+    const text = (node.nodeValue || '').trim();
+    if (RIGHT_ALIGN_TEXT_AR.includes(text)) {
+      const el = node.parentElement;
+      if (el) {
+        el.style.textAlign = 'right';
+        if (window.getComputedStyle(el).display === 'inline') el.style.display = 'block';
+      }
+    }
+    node = walker.nextNode();
+  }
+};
+
+// Strapi's boolean fields that render as two separate "False"/"True"
+// buttons (rather than a switch) — like Accepting Reservations — keep that
+// pair left-aligned as a group under RTL. This finds the pair by their
+// (already Arabic-translated) text and pushes the whole group to the right
+// edge of its row instead, re-evaluated each pass so switching back to
+// English restores the normal left alignment.
+const BOOLEAN_TOGGLE_TEXT_AR = ['خطأ', 'حقيقي'];
+const BOOLEAN_TOGGLE_TEXT_EN = ['False', 'True'];
+
+const fixBooleanToggleAlignment = (root) => {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let node = walker.nextNode();
+  while (node) {
+    const text = (node.nodeValue || '').trim();
+    const isArabicToggle = BOOLEAN_TOGGLE_TEXT_AR.includes(text);
+    const isEnglishToggle = BOOLEAN_TOGGLE_TEXT_EN.includes(text);
+    if (isArabicToggle || isEnglishToggle) {
+      const flexAncestor = findFlexAncestor(node.parentElement);
+      if (flexAncestor) flexAncestor.style.justifyContent = isArabicToggle ? 'flex-end' : '';
+    }
+    node = walker.nextNode();
+  }
+};
+
+// Text/textarea fields that already hold Arabic content should read right-
+// to-left within their own box, matching the language actually typed in —
+// independent of whether a given field is "meant" to be Arabic (nameAr vs
+// nameEn, etc.), since that isn't reliably detectable from the DOM alone.
+// Fields with Latin/English content (or still empty) are left untouched.
+const fixArabicContentInputDirection = (root) => {
+  const fields = root.querySelectorAll ? root.querySelectorAll('input[type="text"], textarea') : [];
+  fields.forEach((field) => {
+    const value = field.value || '';
+    if (ARABIC_CHAR_RE.test(value)) {
+      if (field.dir !== 'rtl') field.dir = 'rtl';
+      if (field.style.textAlign !== 'right') field.style.textAlign = 'right';
+    }
+  });
+};
+
+const installRecordFormAlignmentFixes = () => {
+  if (typeof document === 'undefined' || window.__samdanRecordFormAlignFixInstalled) return;
+  window.__samdanRecordFormAlignFixInstalled = true;
+
+  const rerun = () => {
+    fixKnownLabelAlignment(document.body);
+    fixBooleanToggleAlignment(document.body);
+    fixArabicContentInputDirection(document.body);
+  };
+  rerun();
+
+  new MutationObserver(rerun).observe(document.body, { childList: true, subtree: true, characterData: true });
+  new MutationObserver(rerun).observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'dir'] });
+};
+
 const bootstrap = () => {
   installSharedFetchPatch();
   installTitleRewrite();
@@ -820,6 +1011,9 @@ const bootstrap = () => {
   installDigitNormalizer();
   installBilingualLabelRewrite();
   installFixedPhraseRewrite();
+  installSidebarSectionHeaderFix();
+  installBackArrowFlip();
+  installRecordFormAlignmentFixes();
   // Both disabled — wasn't working reliably (the media-picker jump kept
   // re-triggering and discarding real file selections; the CSV export had
   // auth issues). Code left in place in case it's worth revisiting later.

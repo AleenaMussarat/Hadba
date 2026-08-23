@@ -1,4 +1,4 @@
-import { FaInstagram, FaXTwitter, FaSnapchat, FaTiktok, FaFacebookF, FaWhatsapp, FaEnvelope } from 'react-icons/fa6'
+import { FaInstagram, FaXTwitter, FaSnapchat, FaTiktok, FaFacebookF, FaWhatsapp, FaEnvelope, FaTelegram, FaYoutube } from 'react-icons/fa6'
 
 export const socialLinks = [
   { key: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/smdn.ksa/', Icon: FaInstagram },
@@ -8,6 +8,14 @@ export const socialLinks = [
   { key: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/profile.php?id=61592403342115', Icon: FaFacebookF },
   { key: 'whatsapp', label: 'WhatsApp', url: 'https://wa.me/966555185657', Icon: FaWhatsapp },
   { key: 'email', label: 'Email', url: 'mailto:smdn.ksa@gmail.com', Icon: FaEnvelope }
+]
+
+// Platforms with no hardcoded fallback URL — they only ever appear once an
+// admin sets a real URL in Site Settings, since we have no default for them
+// the way the static list above does.
+const DYNAMIC_ONLY_PLATFORMS = [
+  { key: 'telegram', label: 'Telegram', settingsField: 'telegramUrl', Icon: FaTelegram },
+  { key: 'youtube', label: 'YouTube', settingsField: 'youtubeUrl', Icon: FaYoutube }
 ]
 
 // Builds the list from Strapi's Site Settings once loaded, falling back to the
@@ -26,11 +34,20 @@ export function buildSocialLinks(settings) {
     email: settings.email ? `mailto:${settings.email}` : undefined
   }
 
-  return socialLinks
+  const staticOnes = socialLinks
     .map((link) => {
       const override = urlByKey[link.key]
       const url = override === undefined ? link.url : override
       return url ? { ...link, url } : null
     })
     .filter(Boolean)
+
+  const dynamicOnly = DYNAMIC_ONLY_PLATFORMS
+    .map((platform) => {
+      const url = settings[platform.settingsField]
+      return url ? { key: platform.key, label: platform.label, url, Icon: platform.Icon } : null
+    })
+    .filter(Boolean)
+
+  return [...staticOnes, ...dynamicOnly]
 }
