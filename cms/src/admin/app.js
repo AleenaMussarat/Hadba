@@ -1109,15 +1109,20 @@ const fixArabicContentInputDirection = (root) => {
 };
 
 // The "Set up preview" button in the edit view's side panel is likely an
-// <a> styled as a button sitting inside an <aside>-tagged panel, so the
-// broad `aside a { text-align: right }` rule above (meant for real sidebar
-// nav links) caught it too — a button's own label should stay centered,
-// not pushed to one edge. `text-align` only has an effect on the element
-// that owns the line box, though — setting it on the inline <span> that
-// directly wraps the text (the previous attempt) does nothing, because
-// that span isn't block-level. This walks up from the text node to the
-// actual <a>/<button> the CSS rule targeted (setting text-align along the
-// way in case of wrapper spans/divs in between too) and stops there.
+// <a> styled as a button sitting inside an <aside>-tagged panel. Two things
+// fight it under RTL specifically (which is why English renders fine and
+// only Arabic is broken): (1) the broad `aside a { text-align: right }`
+// CSS rule above (meant for real sidebar nav links) also catches this
+// button, and (2) that same rule sets `display: block` on it — which kills
+// whatever flex layout Strapi's own Button component normally centers
+// itself with. An earlier version of this fix only set justify-content/
+// align-items when the element's CURRENT computed display was already
+// flex — but under RTL it reads "block" (because of #2 above), so that
+// check silently skipped the button every time Arabic was active, leaving
+// it stuck with the CSS rule's plain top-of-line-box text flow. This now
+// force-sets display:flex directly on the actual <a>/<button> (not just
+// checking what it already is), which is guaranteed to win over the
+// stylesheet rule since inline styles always beat a plain tag selector.
 const CENTER_ALIGN_TEXT = ['إعداد المعاينة', 'Set up preview', 'Set up the preview'];
 
 const fixPreviewButtonAlignment = (root) => {
@@ -1129,12 +1134,12 @@ const fixPreviewButtonAlignment = (root) => {
       let el = node.parentElement;
       while (el && el !== root) {
         el.style.textAlign = 'center';
-        const display = window.getComputedStyle(el).display;
-        if (display === 'flex' || display === 'inline-flex') {
+        if (el.tagName === 'A' || el.tagName === 'BUTTON') {
+          el.style.display = 'flex';
           el.style.justifyContent = 'center';
           el.style.alignItems = 'center';
+          break;
         }
-        if (el.tagName === 'A' || el.tagName === 'BUTTON') break;
         el = el.parentElement;
       }
     }
