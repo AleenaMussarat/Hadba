@@ -325,13 +325,16 @@ const installTitleRewrite = () => {
   }
 };
 
-// Strapi's table date cells (Created At, Updated At, and the Inquiry "date"
-// field) are hardcoded to render with Intl's "full" date style (e.g.
-// "Wednesday, August 5, 2026") — there's no config to change the format
-// per-field. That output is distinctive enough to safely pattern-match and
-// rewrite to DD/MM/YYYY wherever it shows up in the admin.
+// Strapi's table date cells (Created At, Updated At) are hardcoded to render
+// with Intl's "full" date style (e.g. "Wednesday, August 5, 2026") — there's
+// no config to change the format per-field. Date-only fields (like the
+// Inquiry "date" field) render the same way but without the weekday prefix
+// (e.g. "August 5, 2026"). Both outputs are distinctive enough to safely
+// pattern-match and rewrite to DD/MM/YYYY wherever they show up in the admin.
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-const FULL_DATE_RE = /(?:Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday), (January|February|March|April|May|June|July|August|September|October|November|December) (\d{1,2}), (\d{4})/g;
+const DATE_CORE_SRC = '(January|February|March|April|May|June|July|August|September|October|November|December) (\\d{1,2}), (\\d{4})';
+const FULL_DATE_RE = new RegExp(`(?:Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday), ${DATE_CORE_SRC}`, 'g');
+const SHORT_DATE_RE = new RegExp(DATE_CORE_SRC, 'g');
 
 const toDdmmyyyy = (_match, month, day, year) => {
   const mm = String(MONTHS.indexOf(month) + 1).padStart(2, '0');
@@ -339,17 +342,26 @@ const toDdmmyyyy = (_match, month, day, year) => {
   return `${dd}/${mm}/${year}`;
 };
 
+const rewriteDateText = (text) => text.replace(FULL_DATE_RE, toDdmmyyyy).replace(SHORT_DATE_RE, toDdmmyyyy);
+
+const hasDateMatch = (text) => {
+  const full = FULL_DATE_RE.test(text);
+  FULL_DATE_RE.lastIndex = 0;
+  const short = SHORT_DATE_RE.test(text);
+  SHORT_DATE_RE.lastIndex = 0;
+  return full || short;
+};
+
 const rewriteDateNodesIn = (root) => {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   const nodes = [];
   let node = walker.nextNode();
   while (node) {
-    if (node.nodeValue && FULL_DATE_RE.test(node.nodeValue)) nodes.push(node);
-    FULL_DATE_RE.lastIndex = 0;
+    if (node.nodeValue && hasDateMatch(node.nodeValue)) nodes.push(node);
     node = walker.nextNode();
   }
   nodes.forEach((n) => {
-    n.nodeValue = n.nodeValue.replace(FULL_DATE_RE, toDdmmyyyy);
+    n.nodeValue = rewriteDateText(n.nodeValue);
   });
 };
 
@@ -361,8 +373,7 @@ const installDateFormatRewrite = () => {
     mutations.forEach((m) => {
       m.addedNodes.forEach((n) => {
         if (n.nodeType === Node.TEXT_NODE) {
-          if (FULL_DATE_RE.test(n.nodeValue || '')) n.nodeValue = n.nodeValue.replace(FULL_DATE_RE, toDdmmyyyy);
-          FULL_DATE_RE.lastIndex = 0;
+          if (hasDateMatch(n.nodeValue || '')) n.nodeValue = rewriteDateText(n.nodeValue);
         } else if (n.nodeType === Node.ELEMENT_NODE) {
           rewriteDateNodesIn(n);
         }
@@ -394,6 +405,80 @@ const isArabicInterfaceActive = () => {
     ''
   ).toLowerCase();
   return lang.startsWith('ar') || dir === 'rtl';
+};
+
+// Strapi is supposed to flip the whole admin (including the pre-login screen
+// and every page after it — sidebar on the right, content on the left) to
+// RTL the moment Arabic is selected, by setting <html lang>/dir together.
+// In practice it doesn't always keep both attributes in sync — lang updates
+// but dir is left stale on some screens (notably the login page). This
+// forces dir to always match whatever lang is currently set, closing that
+// gap everywhere at once instead of chasing it page by page.
+const enforceDirectionFromLang = () => {
+  const lang = (document.documentElement.getAttribute('lang') || '').toLowerCase();
+  if (!lang) return;
+  const expectedDir = lang.startsWith('ar') ? 'rtl' : 'ltr';
+  if (document.documentElement.getAttribute('dir') !== expectedDir) {
+    document.documentElement.setAttribute('dir', expectedDir);
+  }
+  if (document.body && document.body.getAttribute('dir') !== expectedDir) {
+    document.body.setAttribute('dir', expectedDir);
+  }
+};
+
+const installDirectionEnforcement = () => {
+  if (typeof document === 'undefined' || window.__samdanDirectionEnforceInstalled) return;
+  window.__samdanDirectionEnforceInstalled = true;
+  enforceDirectionFromLang();
+  new MutationObserver(enforceDirectionFromLang).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['lang']
+  });
+};
+
+// Strapi (via react-intl's Intl.NumberFormat/DateTimeFormat) renders digits
+// as Eastern Arabic-Indic numerals (٠١٢٣...) in some widgets once the
+// interface locale is Arabic — the dashboard's "Project statistics" counts
+// are the clearest example. Numbers should always stay in plain Latin
+// digits regardless of interface language, so this normalizes any Eastern
+// Arabic-Indic digit found anywhere in the admin back to its Latin
+// equivalent — unconditionally, not just while Arabic is active, since
+// Latin digits are always correct.
+const EASTERN_ARABIC_DIGITS = '٠١٢٣٤٥٦٧٨٩';
+const EASTERN_DIGIT_RE = /[٠-٩]/g;
+
+const normalizeDigitsIn = (root) => {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  let node = walker.nextNode();
+  while (node) {
+    if (node.nodeValue && EASTERN_DIGIT_RE.test(node.nodeValue)) nodes.push(node);
+    EASTERN_DIGIT_RE.lastIndex = 0;
+    node = walker.nextNode();
+  }
+  nodes.forEach((n) => {
+    n.nodeValue = n.nodeValue.replace(EASTERN_DIGIT_RE, (d) => String(EASTERN_ARABIC_DIGITS.indexOf(d)));
+  });
+};
+
+const installDigitNormalizer = () => {
+  if (typeof document === 'undefined' || window.__samdanDigitNormalizerInstalled) return;
+  window.__samdanDigitNormalizerInstalled = true;
+  normalizeDigitsIn(document.body);
+  new MutationObserver((mutations) => {
+    mutations.forEach((m) => {
+      m.addedNodes.forEach((n) => {
+        if (n.nodeType === Node.TEXT_NODE) {
+          if (EASTERN_DIGIT_RE.test(n.nodeValue || '')) {
+            n.nodeValue = n.nodeValue.replace(EASTERN_DIGIT_RE, (d) => String(EASTERN_ARABIC_DIGITS.indexOf(d)));
+          }
+          EASTERN_DIGIT_RE.lastIndex = 0;
+        } else if (n.nodeType === Node.ELEMENT_NODE) {
+          normalizeDigitsIn(n);
+        }
+      });
+    });
+  }).observe(document.body, { childList: true, subtree: true });
 };
 
 const pickActiveBilingualText = (text) => {
@@ -460,12 +545,58 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   "You don't have any content yet": 'لا يوجد محتوى بعد',
   'Create new entry': 'إنشاء عنصر جديد',
   'See more': 'عرض المزيد',
+
+  // Dashboard "Project statistics" widget.
+  'Project statistics': 'إحصائيات المشروع',
+  'Delete': 'حذف',
+  'Entries': 'الإدخالات',
+  'Assets': 'الأصول',
+  'Content-Types': 'أنواع المحتوى',
+  'Components': 'المكونات',
+  'Locales': 'اللغات',
+  'Admins': 'المسؤولون',
+  'Webhooks': 'الويب هوك',
+  'API Tokens': 'رموز API',
+
+  // Generic single-language field/column labels — content types with only
+  // one language per field (like Inquiry) show these as-is rather than the
+  // "English (EN) / Arabic (EN)" pattern the bilingual rewriter handles.
+  'Name': 'الاسم',
+  'Phone': 'الهاتف',
+  'Guests': 'الضيوف',
+  'Date': 'التاريخ',
+  'Time': 'الوقت',
+  'Notes': 'الملاحظات',
+  'Stage': 'الحالة',
+  'Price': 'السعر',
+  'Calories': 'السعرات الحرارية',
+  'Featured': 'مميز',
+  'Order': 'الترتيب',
+  'Image': 'الصورة',
+  'Created At': 'تاريخ الإنشاء',
+  'Updated At': 'تاريخ التحديث',
+  'Published At': 'تاريخ النشر',
 };
 
 // "Hello Admin" / "Hello Jane" etc. — the greeting is a fixed template with
 // the logged-in admin's own name spliced in, so it can't be matched as one
 // exact phrase the way the dictionary above works.
 const HELLO_GREETING_RE = /^Hello\s+(.+)$/;
+
+// "1 entry found" / "5 entries found" — same idea, a template with the
+// live count spliced in. Arabic count agreement is simplified here (2 gets
+// its own dual form, everything else just uses the plural noun) rather than
+// full classical grammar, which is the normal, accepted approach for UI
+// strings — the number itself is left untouched, per "numbers stay English".
+const ENTRIES_FOUND_RE = /^(\d+)\s+entr(?:y|ies)\s+found$/i;
+
+const arabicEntriesFound = (count) => {
+  const n = Number(count);
+  if (n === 0) return 'لم يتم العثور على أي إدخالات';
+  if (n === 1) return `تم العثور على ${count} إدخال`;
+  if (n === 2) return `تم العثور على ${count} إدخالين`;
+  return `تم العثور على ${count} إدخالات`;
+};
 
 const pickFixedPhraseTranslation = (text) => {
   if (!isArabicInterfaceActive()) return null;
@@ -475,6 +606,9 @@ const pickFixedPhraseTranslation = (text) => {
 
   const helloMatch = trimmed.match(HELLO_GREETING_RE);
   if (helloMatch) return `مرحباً ${helloMatch[1]}`;
+
+  const entriesMatch = trimmed.match(ENTRIES_FOUND_RE);
+  if (entriesMatch) return arabicEntriesFound(entriesMatch[1]);
 
   return null;
 };
@@ -508,6 +642,8 @@ const bootstrap = () => {
   installSharedFetchPatch();
   installTitleRewrite();
   installDateFormatRewrite();
+  installDirectionEnforcement();
+  installDigitNormalizer();
   installBilingualLabelRewrite();
   installFixedPhraseRewrite();
   // Both disabled — wasn't working reliably (the media-picker jump kept
