@@ -215,3 +215,35 @@ export async function fetchGalleryImages(locale) {
     image: mediaUrl(item.image)
   }))
 }
+
+export async function fetchSiteSettings(locale) {
+  const endpoints = ['site-setting', 'site-settings']
+
+  for (const endpoint of endpoints) {
+    try {
+      const res = await fetch(`${STRAPI_URL}/api/${endpoint}`)
+      if (!res.ok) continue
+      const json = await res.json()
+      const record = Array.isArray(json?.data) ? json.data[0] : json?.data
+      if (!record) continue
+
+      return {
+        tagline: locale === 'ar' ? record.taglineAr : record.taglineEn,
+        address: locale === 'ar' ? record.addressAr : record.addressEn,
+        phone: record.phone,
+        email: record.email,
+        hours: locale === 'ar' ? record.hoursAr : record.hoursEn,
+        instagramUrl: record.instagramUrl,
+        xUrl: record.xUrl,
+        snapchatUrl: record.snapchatUrl,
+        tiktokUrl: record.tiktokUrl,
+        facebookUrl: record.facebookUrl,
+        whatsappUrl: record.whatsappUrl
+      }
+    } catch (error) {
+      console.warn(`Unable to fetch site settings from ${endpoint}:`, error)
+    }
+  }
+
+  return null
+}

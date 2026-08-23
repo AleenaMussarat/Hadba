@@ -1,15 +1,28 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
-import { socialLinks } from '../data/social'
+import { buildSocialLinks } from '../data/social'
 import { FaLocationDot, FaPhone, FaClock } from 'react-icons/fa6'
+import { fetchSiteSettings } from '../services/strapi'
 
 const FooterLinkIcon = () => <img className="footer-link-icon" src="/brand/icon-chef-hat.webp" alt="" />
 
 const Footer = ({ onReserveClick }) => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
+  const [settings, setSettings] = useState(null)
+
+  useEffect(() => {
+    fetchSiteSettings(currentLang)
+      .then((data) => setSettings(data))
+      .catch(() => setSettings(null))
+  }, [currentLang])
+
+  const tagline = settings?.tagline || t.hero.tagline
+  const address = settings?.address || t.contact.address
+  const phone = settings?.phone || t.contact.phone
+  const hours = settings?.hours || t.contact.hours
 
   return (
     <footer className="footer">
@@ -17,7 +30,7 @@ const Footer = ({ onReserveClick }) => {
         <div className="footer-brand">
           <img className="footer-logo" src="/brand/logo-orange.webp" alt="SAMDAN" />
           <span className="footer-divider" />
-          <p className="footer-quote" dangerouslySetInnerHTML={{ __html: t.hero.tagline }} />
+          <p className="footer-quote" dangerouslySetInnerHTML={{ __html: tagline }} />
         </div>
 
         <div className="footer-col">
@@ -36,16 +49,16 @@ const Footer = ({ onReserveClick }) => {
           <div className="footer-contact-list">
             <h4>{t.footer.contactTitle}</h4>
             <div className="footer-contact-rows">
-              <p><FaLocationDot className="footer-contact-icon" /><span>{t.contact.address}</span></p>
-              <p><FaPhone className="footer-contact-icon" /><span dir="ltr">{t.contact.phone}</span></p>
-              <p><FaClock className="footer-contact-icon" /><span>{t.contact.hours}</span></p>
+              <p><FaLocationDot className="footer-contact-icon" /><span>{address}</span></p>
+              <p><FaPhone className="footer-contact-icon" /><span dir="ltr">{phone}</span></p>
+              <p><FaClock className="footer-contact-icon" /><span>{hours}</span></p>
             </div>
           </div>
 
           <div className="footer-follow">
             <h4>{t.footer.follow}</h4>
             <div className="social-icons">
-              {socialLinks.map(({ key, url, label, Icon }) => (
+              {buildSocialLinks(settings).map(({ key, url, label, Icon }) => (
                 <a key={key} href={url} target="_blank" rel="noreferrer" aria-label={label}><Icon /></a>
               ))}
             </div>

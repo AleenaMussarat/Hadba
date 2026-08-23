@@ -1,0 +1,33 @@
+{
+  "kind": "singleType",
+  "collectionName": "site_settings",
+  "info": {
+    "singularName": "site-setting",
+    "pluralName": "site-settings",
+    "displayName": "Site Settings / إعدادات الموقع",
+    "description": "Footer and Contact page details — editable without code changes / تفاصيل التذييل وصفحة التواصل - قابلة للتعديل دون تغييرات برمجية"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "taglineEn": { "type": "string", "displayName": "Footer Tagline (EN) / شعار التذييل (EN)" },
+    "taglineAr": { "type": "string", "displayName": "Footer Tagline (AR) / شعار التذييل (AR)" },
+    "addressEn": { "type": "text", "displayName": "Address (EN) / العنوان (EN)" },
+    "addressAr": { "type": "text", "displayName": "Address (AR) / العنوان (AR)" },
+    "phone": {
+      "type": "string",
+      "displayName": "Phone Number(s) / أرقام الهاتف",
+      "description": "Shown exactly as typed — separate multiple numbers with | e.g. +966 55 518 5657 | +966 53 334 7721"
+    },
+    "email": { "type": "email", "displayName": "Email Address / البريد الإلكتروني" },
+    "hoursEn": { "type": "string", "displayName": "Working Hours (EN) / ساعات العمل (EN)" },
+    "hoursAr": { "type": "string", "displayName": "Working Hours (AR) / ساعات العمل (AR)" },
+    "instagramUrl": { "type": "string", "displayName": "Instagram URL" },
+    "xUrl": { "type": "string", "displayName": "X (Twitter) URL" },
+    "snapchatUrl": { "type": "string", "displayName": "Snapchat URL" },
+    "tiktokUrl": { "type": "string", "displayName": "TikTok URL" },
+    "facebookUrl": { "type": "string", "displayName": "Facebook URL" },
+    "whatsappUrl": { "type": "string", "displayName": "WhatsApp URL" }
+  }
+}

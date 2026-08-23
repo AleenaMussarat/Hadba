@@ -3,16 +3,17 @@ import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
 import { useReservationForm } from '../lib/useReservationForm'
 import { FaLocationDot, FaPhone, FaEnvelope, FaClock, FaCircleCheck, FaTriangleExclamation } from 'react-icons/fa6'
-import { socialLinks } from '../data/social'
+import { buildSocialLinks } from '../data/social'
 import { MAP_QUERY, MAP_EMBED_SRC } from '../lib/mapConfig'
 import mapLocationIcon from '../../assets/images/Icons/Samdan Guidlines ICONS-08.webp'
-import { fetchPageHero } from '../services/strapi'
+import { fetchPageHero, fetchSiteSettings } from '../services/strapi'
 
 const Contact = () => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
   const { form, submitted, isSubmitting, submitError, isReservationsClosed, handleChange, handleSubmit, reset } = useReservationForm()
-    const [heroData, setHeroData] = useState(null)
+  const [heroData, setHeroData] = useState(null)
+  const [settings, setSettings] = useState(null)
 
   useEffect(() => {
     fetchPageHero('contact', currentLang)
@@ -20,14 +21,26 @@ const Contact = () => {
       .catch(() => setHeroData(null))
   }, [currentLang])
 
+  useEffect(() => {
+    fetchSiteSettings(currentLang)
+      .then((data) => setSettings(data))
+      .catch(() => setSettings(null))
+  }, [currentLang])
+
   const hero = heroData || {
     title: t.contact.title,
     subtitle: t.contact.description,
     backgroundImage: '/brand/photo-sadu-interior.webp'
   }
+
+  const address = settings?.address || t.contact.address
+  const phone = settings?.phone || t.contact.phone
+  const email = settings?.email || t.contact.email
+  const hours = settings?.hours || t.contact.hours
+
   return (
     <section className="section contact-section">
-<div className="page-intro-bg" style={{ backgroundImage: 'url(/brand/photo-sadu-interior.webp)' }} aria-hidden="true" />
+<div className="page-intro-bg" style={{ backgroundImage: `url(${hero.backgroundImage})` }} aria-hidden="true" />
       <div className="container">
         <div className="section-heading">
           <p className="eyebrow eyebrow-icon fade-in-up" style={{ animationDelay: '0.05s' }}>
@@ -35,7 +48,7 @@ const Contact = () => {
             {t.contact.eyebrow}
           </p>
           <h2 className="section-title fade-in-up" style={{ animationDelay: '0.15s' }}>{hero.title}</h2>
-          <p className="section-copy fade-in-up" style={{ animationDelay: '0.25s' }}>{hero.description}</p>
+          <p className="section-copy fade-in-up" style={{ animationDelay: '0.25s' }}>{hero.subtitle}</p>
         </div>
 
         <div className="contact-grid">
@@ -43,25 +56,25 @@ const Contact = () => {
             <div className="contact-details">
               <a className="contact-item" href={`https://maps.google.com/?q=${encodeURIComponent(MAP_QUERY)}`} target="_blank" rel="noreferrer">
                 <span className="contact-item-icon"><FaLocationDot /></span>
-                <span>{t.contact.address}</span>
+                <span>{address}</span>
               </a>
-              <a className="contact-item" href="tel:+966555185657">
+              <a className="contact-item" href={`tel:${phone.split('|')[0].replace(/\s/g, '')}`}>
                 <span className="contact-item-icon"><FaPhone /></span>
-                <span dir="ltr">{t.contact.phone}</span>
+                <span dir="ltr">{phone}</span>
               </a>
-              <a className="contact-item" href="mailto:smdn.ksa@gmail.com">
+              <a className="contact-item" href={`mailto:${email}`}>
                 <span className="contact-item-icon"><FaEnvelope /></span>
-                <span>{t.contact.email}</span>
+                <span>{email}</span>
               </a>
               <div className="contact-item">
                 <span className="contact-item-icon"><FaClock /></span>
-                <span>{t.contact.hours}</span>
+                <span>{hours}</span>
               </div>
             </div>
 
             <div className="contact-actions">
               <div className="social-links">
-                {socialLinks.map(({ key, url, label, Icon }) => (
+                {buildSocialLinks(settings).map(({ key, url, label, Icon }) => (
                   <a key={key} href={url} target="_blank" rel="noreferrer" aria-label={label}><Icon /></a>
                 ))}
               </div>
@@ -90,7 +103,7 @@ const Contact = () => {
                 <p className="reserve-closed-phone">
                   {t.reserve.callPhone}
                   <br />
-                  <strong dir="ltr">+966 55 518 5657 | +966 53 334 7721</strong>
+                  <strong dir="ltr">{phone}</strong>
                 </p>
               </div>
             ) : (

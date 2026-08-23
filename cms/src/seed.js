@@ -64,6 +64,7 @@ async function setPublicPermissions(strapi) {
     'api::branch.branch.findOne',
     'api::gallery-image.gallery-image.find',
     'api::gallery-image.gallery-image.findOne',
+    'api::site-setting.site-setting.find',
     // Create-only — the public can submit an inquiry but never list/read
     // other people's submissions back out through the API.
     'api::inquiry.inquiry.create'
@@ -116,6 +117,36 @@ async function seedMenuCategories(strapi) {
   return categoryMap;
 }
 
+// Idempotent single-row seed — creates the record once from the site's current
+// static values so nothing changes on the live site until an admin edits it.
+async function seedSiteSettings(strapi) {
+  const existing = await strapi.db.query('api::site-setting.site-setting').findOne();
+  if (existing) {
+    strapi.log.info('[seed] Site settings already present — skipping.');
+    return;
+  }
+
+  await strapi.documents('api::site-setting.site-setting').create({
+    data: {
+      taglineEn: 'Authentic Experience... With A Modern Spirit',
+      taglineAr: 'تجربة أصيلة…<br /> بروح معاصرة',
+      addressEn: 'Saeed bin Zaid Street, Qurtubah, Riyadh, Saudi Arabia',
+      addressAr: 'طريق سعيد بن زيد، قرطبة، الرياض، المملكة العربية السعودية',
+      phone: '+966 55 518 5657 | +966 53 334 7721',
+      email: 'smdn.ksa@gmail.com',
+      hoursEn: '24 Hours Daily',
+      hoursAr: 'مفتوح 24 ساعة يومياً',
+      instagramUrl: 'https://www.instagram.com/smdn.ksa/',
+      xUrl: 'https://x.com/smdnksa',
+      snapchatUrl: 'https://snapchat.com/t/eJEGJY7M',
+      tiktokUrl: 'https://www.tiktok.com/@smdn.ksa',
+      facebookUrl: 'https://www.facebook.com/profile.php?id=61592403342115',
+      whatsappUrl: 'https://wa.me/966555185657'
+    }
+  });
+  strapi.log.info('[seed] Created site settings.');
+}
+
 async function seedPageHeroes(strapi) {
   for (const hero of pageHeroes) {
     const existing = await strapi.db.query('api::page-hero.page-hero').findOne({
@@ -145,6 +176,7 @@ module.exports = async function seed({ strapi }) {
   await ensureArabicLocale(strapi);
   const categoryMap = await seedMenuCategories(strapi);
   await seedPageHeroes(strapi);
+  await seedSiteSettings(strapi);
 
   const existingItems = await strapi.documents('api::menu-item.menu-item').findMany();
   if (existingItems.length > 0) {
