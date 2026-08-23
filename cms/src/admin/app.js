@@ -1132,6 +1132,7 @@ const fixPreviewButtonAlignment = (root) => {
         const display = window.getComputedStyle(el).display;
         if (display === 'flex' || display === 'inline-flex') {
           el.style.justifyContent = 'center';
+          el.style.alignItems = 'center';
         }
         if (el.tagName === 'A' || el.tagName === 'BUTTON') break;
         el = el.parentElement;
