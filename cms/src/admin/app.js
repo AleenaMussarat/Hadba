@@ -643,6 +643,9 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   'Description (En)': 'الوصف (EN)',
   'menuCategory': 'فئة القائمة',
 
+  'Accepting Reservations': 'قبول الحجوزات',
+  'Accepting Reservations*': 'قبول الحجوزات *',
+
   // Page Hero fields.
   'backgroundImage': 'صورة الخلفية',
   'Page Name': 'اسم الصفحة',
@@ -657,7 +660,7 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   'Temporary Password': 'كلمة مرور مؤقتة',
 
   // Reservation Settings singleType.
-  'Accepting Reservations*': 'قبول الحجوزات *',
+
 
   // Site Settings singleType (Contact information group).
 
@@ -769,6 +772,8 @@ const installRtlTableAlignmentFix = () => {
       text-align: right;
     }
     html[dir="rtl"] label {
+      display: block;
+      width: 100%;
       text-align: right;
     }
   `;
