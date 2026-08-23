@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { checkReservationsEnabled, submitInquiry } from '../services/strapi'
 
-const emptyForm = { name: '', phone: '', guests: 2, date: '', time: '', notes: '' }
+const emptyForm = { name: '', phone: '', guests: 1, date: '', time: '', notes: '' }
 
 const getTodayDateString = () => {
   const today = new Date()

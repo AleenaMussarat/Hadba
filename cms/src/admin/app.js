@@ -437,11 +437,79 @@ const installBilingualLabelRewrite = () => {
   new MutationObserver(rerun).observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'dir'] });
 };
 
+// Strapi's own bundled Arabic translations don't cover every core string —
+// notably the left-nav plugin names (Home, Content Manager, Media Library,
+// Content-Type Builder) and the dashboard homepage widgets are missing from
+// the shipped ar.json even though Settings/Marketplace are covered. Strapi
+// gives no way to patch individual gaps in its own translation pack, so this
+// does the same job as the bilingual rewriter above but with a maintained
+// dictionary of exact English phrases → Arabic, only ever applied while the
+// interface is set to Arabic (English stays untouched either way). If more
+// untranslated strings turn up, add them here — same pattern, one more entry.
+const FIXED_PHRASE_TRANSLATIONS_AR = {
+  'Home': 'الرئيسية',
+  'Content Manager': 'إدارة المحتوى',
+  'Media Library': 'مكتبة الوسائط',
+  'Content-Type Builder': 'منشئ أنواع المحتوى',
+  'Add Widget': 'إضافة عنصر',
+  'Welcome to your administration panel': 'مرحباً بك في لوحة التحكم الخاصة بك',
+  'Last edited entries': 'آخر العناصر التي تم تعديلها',
+  'Last published entries': 'آخر العناصر التي تم نشرها',
+  'Quick Actions': 'إجراءات سريعة',
+  'No content found': 'لا يوجد محتوى',
+  "You don't have any content yet": 'لا يوجد محتوى بعد',
+  'Create new entry': 'إنشاء عنصر جديد',
+  'See more': 'عرض المزيد',
+};
+
+// "Hello Admin" / "Hello Jane" etc. — the greeting is a fixed template with
+// the logged-in admin's own name spliced in, so it can't be matched as one
+// exact phrase the way the dictionary above works.
+const HELLO_GREETING_RE = /^Hello\s+(.+)$/;
+
+const pickFixedPhraseTranslation = (text) => {
+  if (!isArabicInterfaceActive()) return null;
+
+  const trimmed = text.trim();
+  if (FIXED_PHRASE_TRANSLATIONS_AR[trimmed]) return FIXED_PHRASE_TRANSLATIONS_AR[trimmed];
+
+  const helloMatch = trimmed.match(HELLO_GREETING_RE);
+  if (helloMatch) return `مرحباً ${helloMatch[1]}`;
+
+  return null;
+};
+
+const rewriteFixedPhraseNodesIn = (root) => {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  let node = walker.nextNode();
+  while (node) {
+    if (node.nodeValue && node.nodeValue.trim()) nodes.push(node);
+    node = walker.nextNode();
+  }
+  nodes.forEach((n) => {
+    const picked = pickFixedPhraseTranslation(n.nodeValue);
+    if (picked && picked !== n.nodeValue) n.nodeValue = picked;
+  });
+};
+
+const installFixedPhraseRewrite = () => {
+  if (typeof document === 'undefined' || window.__samdanFixedPhraseRewriteInstalled) return;
+  window.__samdanFixedPhraseRewriteInstalled = true;
+
+  const rerun = () => rewriteFixedPhraseNodesIn(document.body);
+  rerun();
+
+  new MutationObserver(rerun).observe(document.body, { childList: true, subtree: true, characterData: true });
+  new MutationObserver(rerun).observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'dir'] });
+};
+
 const bootstrap = () => {
   installSharedFetchPatch();
   installTitleRewrite();
   installDateFormatRewrite();
   installBilingualLabelRewrite();
+  installFixedPhraseRewrite();
   // Both disabled — wasn't working reliably (the media-picker jump kept
   // re-triggering and discarding real file selections; the CSV export had
   // auth issues). Code left in place in case it's worth revisiting later.

@@ -148,7 +148,7 @@ const Contact = () => {
 
                   <label className="reserve-field reserve-field-guests">
                     <span>{t.reserve.guests}</span>
-                    <input type="number" min="1" max="20" required value={form.guests} onChange={handleChange('guests')} />
+                    <input type="number" lang="en" min="1" max="10000" required value={form.guests} onChange={handleChange('guests')} />
                   </label>
                 </div>
 
