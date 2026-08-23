@@ -46,8 +46,6 @@ function App() {
     return () => stopSmoothScroll()
   }, [])
 
-    // Proactively surface the closed-reservations popup on load, instead of
-  // only showing it after a visitor clicks "Reserve a Table" themselves.
   useEffect(() => {
     checkReservationsEnabled().then((enabled) => {
       if (!enabled) setIsReserveOpen(true)

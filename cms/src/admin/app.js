@@ -371,10 +371,77 @@ const installDateFormatRewrite = () => {
   }).observe(document.body, { childList: true, subtree: true });
 };
 
+// Every bilingual string we author in our schemas (content-type display
+// names, field labels, descriptions) follows the same "<non-Arabic side> /
+// <Arabic side>" convention — e.g. "Name (EN) / الاسم (EN)" or
+// "Branch / الفرع". Strapi's own core UI switches language automatically
+// with the admin's chosen interface language, but has no equivalent for
+// labels that live in *our* schemas — those are always plain static text.
+// This fills that gap by rewriting any such text node down to just the
+// currently active side, keyed off the <html lang>/dir Strapi itself sets
+// when an admin changes their interface language (no page reload needed).
+// Only text where exactly one side actually contains Arabic characters is
+// touched, so incidental "/" text elsewhere (URLs, "and/or", etc.) is left
+// alone.
+const ARABIC_CHAR_RE = /[؀-ۿ]/;
+const BILINGUAL_TEXT_RE = /^\s*(.+?)\s*\/\s*(.+?)\s*$/;
+
+const isArabicInterfaceActive = () => {
+  const lang = (document.documentElement.getAttribute('lang') || '').toLowerCase();
+  const dir = (
+    document.documentElement.getAttribute('dir') ||
+    document.body.getAttribute('dir') ||
+    ''
+  ).toLowerCase();
+  return lang.startsWith('ar') || dir === 'rtl';
+};
+
+const pickActiveBilingualText = (text) => {
+  const match = text.match(BILINGUAL_TEXT_RE);
+  if (!match) return null;
+  const [, first, second] = match;
+  const firstIsArabic = ARABIC_CHAR_RE.test(first);
+  const secondIsArabic = ARABIC_CHAR_RE.test(second);
+  if (firstIsArabic === secondIsArabic) return null;
+
+  const arabicSide = firstIsArabic ? first : second;
+  const nonArabicSide = firstIsArabic ? second : first;
+  return isArabicInterfaceActive() ? arabicSide : nonArabicSide;
+};
+
+const rewriteBilingualNodesIn = (root) => {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  let node = walker.nextNode();
+  while (node) {
+    if (node.nodeValue && node.nodeValue.includes('/')) nodes.push(node);
+    node = walker.nextNode();
+  }
+  nodes.forEach((n) => {
+    const picked = pickActiveBilingualText(n.nodeValue);
+    if (picked && picked !== n.nodeValue) n.nodeValue = picked;
+  });
+};
+
+const installBilingualLabelRewrite = () => {
+  if (typeof document === 'undefined' || window.__samdanBilingualRewriteInstalled) return;
+  window.__samdanBilingualRewriteInstalled = true;
+
+  const rerun = () => rewriteBilingualNodesIn(document.body);
+  rerun();
+
+  // Re-scan on every DOM change (Strapi is a SPA — content re-renders
+  // without a full reload as you navigate) and whenever the interface
+  // language itself flips (Strapi swaps <html lang>/dir in place).
+  new MutationObserver(rerun).observe(document.body, { childList: true, subtree: true, characterData: true });
+  new MutationObserver(rerun).observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'dir'] });
+};
+
 const bootstrap = () => {
   installSharedFetchPatch();
   installTitleRewrite();
   installDateFormatRewrite();
+  installBilingualLabelRewrite();
   // Both disabled — wasn't working reliably (the media-picker jump kept
   // re-triggering and discarding real file selections; the CSV export had
   // auth issues). Code left in place in case it's worth revisiting later.
