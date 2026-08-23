@@ -1070,6 +1070,27 @@ const fixArabicContentInputDirection = (root) => {
   });
 };
 
+// The "Set up preview" button in the edit view's side panel is likely an
+// <a> styled as a button sitting inside an <aside>-tagged panel, so the
+// broad `aside a { text-align: right }` rule above (meant for real sidebar
+// nav links) caught it too — a button's own label should stay centered,
+// not pushed to one edge. This forces it back to center regardless of what
+// caught it, taking priority since inline styles beat the stylesheet rule.
+const CENTER_ALIGN_TEXT = ['إعداد المعاينة', 'Set up preview', 'Set up the preview'];
+
+const fixPreviewButtonAlignment = (root) => {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let node = walker.nextNode();
+  while (node) {
+    const text = (node.nodeValue || '').trim();
+    if (CENTER_ALIGN_TEXT.includes(text)) {
+      const el = node.parentElement;
+      if (el) el.style.textAlign = 'center';
+    }
+    node = walker.nextNode();
+  }
+};
+
 const installRecordFormAlignmentFixes = () => {
   if (typeof document === 'undefined' || window.__samdanRecordFormAlignFixInstalled) return;
   window.__samdanRecordFormAlignFixInstalled = true;
@@ -1078,6 +1099,7 @@ const installRecordFormAlignmentFixes = () => {
     fixKnownLabelAlignment(document.body);
     fixBooleanToggleAlignment(document.body);
     fixArabicContentInputDirection(document.body);
+    fixPreviewButtonAlignment(document.body);
   };
   rerun();
 
