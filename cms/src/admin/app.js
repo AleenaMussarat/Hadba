@@ -576,6 +576,15 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   'Created At': 'تاريخ الإنشاء',
   'Updated At': 'تاريخ التحديث',
   'Published At': 'تاريخ النشر',
+
+  // Entry edit-view header (preview link, status labels, document id panel).
+  'Set up preview': 'إعداد المعاينة',
+  'Set up the preview': 'إعداد المعاينة',
+  'Delete entry': 'حذف العنصر',
+  'Updated': 'تم التحديث',
+  'Created': 'تم الإنشاء',
+  'Document ID': 'معرف المستند',
+  'Copy Document ID': 'نسخ معرف المستند',
 };
 
 // "Hello Admin" / "Hello Jane" etc. — the greeting is a fixed template with
@@ -638,11 +647,36 @@ const installFixedPhraseRewrite = () => {
   new MutationObserver(rerun).observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'dir'] });
 };
 
+// The overall page layout flips correctly for RTL (sidebar to the right,
+// table column order mirrors — both come from the browser's native bidi
+// handling of <html dir="rtl">), but Strapi's own Table component doesn't
+// adapt text-align inside header/data cells to match — they stay left-
+// aligned, so header and body text end up visually offset from each other
+// within the same column once Arabic is active (see the Branch list view).
+// This injects one small stylesheet forcing right-alignment for every table
+// cell while RTL is active. Plain tag selectors (table/th/td), not Strapi's
+// internal hashed class names, so it isn't tied to a specific Strapi build
+// and covers every list view at once.
+const installRtlTableAlignmentFix = () => {
+  if (typeof document === 'undefined' || window.__samdanRtlTableFixInstalled) return;
+  window.__samdanRtlTableFixInstalled = true;
+
+  const style = document.createElement('style');
+  style.textContent = `
+    html[dir="rtl"] table th,
+    html[dir="rtl"] table td {
+      text-align: right;
+    }
+  `;
+  document.head.appendChild(style);
+};
+
 const bootstrap = () => {
   installSharedFetchPatch();
   installTitleRewrite();
   installDateFormatRewrite();
   installDirectionEnforcement();
+  installRtlTableAlignmentFix();
   installDigitNormalizer();
   installBilingualLabelRewrite();
   installFixedPhraseRewrite();
