@@ -426,6 +426,45 @@ const enforceDirectionFromLang = () => {
   }
 };
 
+// The pre-login screen's own language switcher only affects that one page
+// — it's discarded the moment you authenticate, when Strapi loads the
+// account's saved "Interface language" from its Profile settings instead.
+// That mismatch is confusing (pick English at login, land on an Arabic
+// dashboard), so this hides the pre-login switcher entirely, leaving the
+// Profile setting as the one and only place language is chosen. Best-effort
+// text match since there's no stable class name to target from outside the
+// live app — safe either way: if the text doesn't match, nothing happens.
+const LOGIN_LANGUAGE_PICKER_HINTS = ['not the right language', 'ليست اللغة الصحيحة'];
+
+const isOnLoginRoute = () => /\/admin\/auth\/(login|register)/.test(window.location.pathname);
+
+const hideLoginLanguagePicker = () => {
+  if (!isOnLoginRoute()) return;
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  let node = walker.nextNode();
+  while (node) {
+    const text = (node.nodeValue || '').trim().toLowerCase();
+    if (text && LOGIN_LANGUAGE_PICKER_HINTS.some((hint) => text.includes(hint))) {
+      let el = node.parentElement;
+      for (let i = 0; i < 5 && el; i++) {
+        if (el.tagName === 'BUTTON' || el.tagName === 'A' || el.getAttribute('role') === 'button') {
+          el.style.display = 'none';
+          break;
+        }
+        el = el.parentElement;
+      }
+    }
+    node = walker.nextNode();
+  }
+};
+
+const installLoginLanguagePickerHide = () => {
+  if (typeof document === 'undefined' || window.__samdanLoginPickerHideInstalled) return;
+  window.__samdanLoginPickerHideInstalled = true;
+  hideLoginLanguagePicker();
+  new MutationObserver(hideLoginLanguagePicker).observe(document.body, { childList: true, subtree: true });
+};
+
 const installDirectionEnforcement = () => {
   if (typeof document === 'undefined' || window.__samdanDirectionEnforceInstalled) return;
   window.__samdanDirectionEnforceInstalled = true;
@@ -661,7 +700,6 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
 
   // Reservation Settings singleType.
 
-
   // Site Settings singleType (Contact information group).
 
   'Tagline (En)': 'الشعار (EN)',
@@ -698,6 +736,16 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   // Search input placeholder (handled separately below since placeholder
   // text lives in an attribute, not a text node the rewriter can walk).
   'Search': 'بحث',
+
+  // Relation/media field headers on individual record edit forms — Strapi
+  // auto-generates these from the field name in Title Case, a different
+  // string than the lowercase "menuCategory"/"backgroundImage" keys used
+  // for the "Displayed fields" picker above.
+  'Background Image': 'صورة الخلفية',
+
+  // Site Settings singleType — new social platforms.
+  'Telegram URL': 'رابط تيليجرام',
+  'YouTube URL': 'رابط يوتيوب',
 };
 
 // "Hello Admin" / "Hello Jane" etc. — the greeting is a fixed template with
@@ -711,6 +759,10 @@ const HELLO_GREETING_RE = /^Hello\s+(.+)$/;
 // full classical grammar, which is the normal, accepted approach for UI
 // strings — the number itself is left untouched, per "numbers stay English".
 const ENTRIES_FOUND_RE = /^(\d+)\s+entr(?:y|ies)\s+found$/i;
+
+// "Menu Category (1)" — the relation field's card header on the Menu Item
+// edit form, with the live selected-count spliced in the same way.
+const MENU_CATEGORY_HEADER_RE = /^Menu Category(?:\s+\((\d+)\))?$/;
 
 const arabicEntriesFound = (count) => {
   const n = Number(count);
@@ -731,6 +783,9 @@ const pickFixedPhraseTranslation = (text) => {
 
   const entriesMatch = trimmed.match(ENTRIES_FOUND_RE);
   if (entriesMatch) return arabicEntriesFound(entriesMatch[1]);
+
+  const menuCategoryMatch = trimmed.match(MENU_CATEGORY_HEADER_RE);
+  if (menuCategoryMatch) return menuCategoryMatch[1] ? `فئة القائمة (${menuCategoryMatch[1]})` : 'فئة القائمة';
 
   return null;
 };
@@ -800,6 +855,12 @@ const installRtlTableAlignmentFix = () => {
       width: 100%;
       text-align: right;
     }
+    html[dir="rtl"] nav a,
+    html[dir="rtl"] aside a {
+      display: block;
+      width: 100%;
+      text-align: right;
+    }
   `;
   document.head.appendChild(style);
 };
@@ -808,8 +869,10 @@ const installRtlTableAlignmentFix = () => {
 // context, which lets the browser's bidi algorithm insert invisible RTL
 // marks around the "/" separators and reorder the whole value — turning
 // "22/08/2026" into "22‏/08‏/2026" (with a right-to-left mark before each
-// slash). Forcing just these inputs to explicit LTR direction stops the
-// browser from touching them, regardless of the page's own RTL layout.
+// slash). dir="ltr" fixes the internal digit order; text-align is set to
+// right (not left) so the field still sits flush with the right edge of
+// its row, matching the rest of the RTL form — dir and text-align are
+// independent, so an LTR-ordered value can still be right-aligned overall.
 const DATE_VALUE_RE = /^\d{1,4}[/-]\d{1,2}[/-]\d{1,4}$/;
 const TIME_VALUE_RE = /^\d{1,2}:\d{2}(\s?[AP]M)?$/i;
 
@@ -819,7 +882,7 @@ const fixDateTimeInputDirection = (root) => {
     const value = (input.value || '').trim();
     if (DATE_VALUE_RE.test(value) || TIME_VALUE_RE.test(value)) {
       if (input.dir !== 'ltr') input.dir = 'ltr';
-      if (input.style.textAlign !== 'left') input.style.textAlign = 'left';
+      if (input.style.textAlign !== 'right') input.style.textAlign = 'right';
     }
   });
 };
@@ -938,8 +1001,13 @@ const fixKnownLabelAlignment = (root) => {
     if (RIGHT_ALIGN_TEXT_AR.includes(text)) {
       const el = node.parentElement;
       if (el) {
+        // display:block alone isn't enough — a block element still shrinks
+        // to fit its own text unless it's also given width:100%, so
+        // text-align has nothing to align within otherwise (this was the
+        // bug: the element became block but stayed content-width).
+        el.style.display = 'block';
+        el.style.width = '100%';
         el.style.textAlign = 'right';
-        if (window.getComputedStyle(el).display === 'inline') el.style.display = 'block';
       }
     }
     node = walker.nextNode();
@@ -1005,6 +1073,7 @@ const bootstrap = () => {
   installSharedFetchPatch();
   installTitleRewrite();
   installDateFormatRewrite();
+  installLoginLanguagePickerHide();
   installDirectionEnforcement();
   installRtlTableAlignmentFix();
   installLtrDateTimeFix();
