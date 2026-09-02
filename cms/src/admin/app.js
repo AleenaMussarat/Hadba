@@ -750,6 +750,26 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   'Telegram URL': 'رابط تيليجرام',
   'YouTube URL': 'رابط يوتيوب',
   'Youtube URL': 'رابط يوتيوب',
+
+  // Media Library upload dialog. @strapi/upload ships NO ar.json (only en/he/
+  // fr/de/... — Arabic is simply not among its bundled locales), so with the
+  // interface in Arabic this whole modal otherwise stays entirely in English.
+  // "N asset(s) ready to upload" and "Upload N assets to the library" are
+  // count templates, handled by regex in pickFixedPhraseTranslation below.
+  'Add new assets': 'إضافة وسائط جديدة',
+  'Close modal': 'إغلاق النافذة',
+  'From computer': 'من الجهاز',
+  'From url': 'من رابط',
+  'From URL': 'من رابط',
+  'Drag & Drop here or': 'اسحب وأفلت هنا أو',
+  'Drag & Drop here or browse': 'اسحب وأفلت هنا أو تصفح',
+  'browse': 'تصفح',
+  'Selected files': 'الملفات المحددة',
+  'Add folder': 'إضافة مجلد',
+  'Add more assets': 'إضافة المزيد من الوسائط',
+  'Manage the assets before adding them to the Media Library':
+    'قم بإدارة الوسائط قبل إضافتها إلى مكتبة الوسائط',
+  'Upload assets': 'رفع الوسائط',
 };
 
 // "Hello Admin" / "Hello Jane" etc. — the greeting is a fixed template with
@@ -768,12 +788,32 @@ const ENTRIES_FOUND_RE = /^(\d+)\s+entr(?:y|ies)\s+found$/i;
 // edit form, with the live selected-count spliced in the same way.
 const MENU_CATEGORY_HEADER_RE = /^Menu Category(?:\s+\((\d+)\))?$/;
 
+// Media Library upload dialog, count templates: "1 asset ready to upload" /
+// "3 assets ready to upload", and the footer button "Upload 1 asset to the
+// library". @strapi/upload has no ar.json so these are English otherwise.
+const ASSETS_READY_RE = /^(\d+)\s+assets?\s+ready\s+to\s+upload$/i;
+const UPLOAD_TO_LIBRARY_RE = /^Upload\s+(\d+)\s+assets?\s+to\s+the\s+library$/i;
+
 const arabicEntriesFound = (count) => {
   const n = Number(count);
   if (n === 0) return 'لم يتم العثور على أي إدخالات';
   if (n === 1) return `تم العثور على ${count} إدخال`;
   if (n === 2) return `تم العثور على ${count} إدخالين`;
   return `تم العثور على ${count} إدخالات`;
+};
+
+const arabicAssetsReady = (count) => {
+  const n = Number(count);
+  if (n === 1) return 'أصل واحد جاهز للرفع';
+  if (n === 2) return 'أصلان جاهزان للرفع';
+  return `${count} أصول جاهزة للرفع`;
+};
+
+const arabicUploadToLibrary = (count) => {
+  const n = Number(count);
+  if (n === 1) return 'رفع أصل واحد إلى المكتبة';
+  if (n === 2) return 'رفع أصلين إلى المكتبة';
+  return `رفع ${count} أصول إلى المكتبة`;
 };
 
 const pickFixedPhraseTranslation = (text) => {
@@ -790,6 +830,12 @@ const pickFixedPhraseTranslation = (text) => {
 
   const menuCategoryMatch = trimmed.match(MENU_CATEGORY_HEADER_RE);
   if (menuCategoryMatch) return menuCategoryMatch[1] ? `فئة القائمة (${menuCategoryMatch[1]})` : 'فئة القائمة';
+
+  const assetsReadyMatch = trimmed.match(ASSETS_READY_RE);
+  if (assetsReadyMatch) return arabicAssetsReady(assetsReadyMatch[1]);
+
+  const uploadToLibraryMatch = trimmed.match(UPLOAD_TO_LIBRARY_RE);
+  if (uploadToLibraryMatch) return arabicUploadToLibrary(uploadToLibraryMatch[1]);
 
   return null;
 };
@@ -817,6 +863,14 @@ const rewritePlaceholdersIn = (root) => {
   fields.forEach((field) => {
     const picked = pickFixedPhraseTranslation(field.placeholder);
     if (picked && picked !== field.placeholder) field.placeholder = picked;
+  });
+
+  // aria-label lives in an attribute too — e.g. the upload modal's close (×)
+  // button, whose only text is aria-label="Close modal".
+  const labelled = root.querySelectorAll ? root.querySelectorAll('[aria-label]') : [];
+  labelled.forEach((el) => {
+    const picked = pickFixedPhraseTranslation(el.getAttribute('aria-label') || '');
+    if (picked && picked !== el.getAttribute('aria-label')) el.setAttribute('aria-label', picked);
   });
 };
 
