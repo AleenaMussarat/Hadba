@@ -19,6 +19,14 @@ module.exports = {
    * run jobs, or perform some special logic.
    */
   async bootstrap({ strapi }) {
-    await seed({ strapi });
+    // Deliberately not awaited: bootstrap() blocks the HTTP server from
+    // starting until it resolves, and seeding ~80 items with real images
+    // (each generating multiple thumbnail sizes) takes tens of seconds even
+    // with local files. On a host with a process startup timeout, that risks
+    // the app being killed before it ever binds a port. Run seeding in the
+    // background instead so the server starts listening immediately.
+    seed({ strapi }).catch((err) => {
+      strapi.log.error('[seed] Background seeding failed:', err);
+    });
   },
 };

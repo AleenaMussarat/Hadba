@@ -2,33 +2,24 @@
 
 const path = require('path');
 
-const img = (id, w = 800) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=70`;
 // Local brand asset, copied into cms/public/brand so the seed script is
-// self-contained and works when only the cms/ folder is deployed (e.g. Railway
-// with Root Directory set to cms — it never sees the sibling frontend folder).
+// self-contained and works when only the cms/ folder is deployed (e.g.
+// Hostinger/Railway with Root Directory set to cms — it never sees the
+// sibling frontend folder).
+//
+// Every image below is local (no remote fetches). This data previously used
+// Unsplash URLs for menu items, which meant the bootstrap seed fetched ~80
+// images over the network on first boot — on shared hosting with a startup
+// timeout, that's slow enough to risk the process being killed before it
+// ever finishes starting. Local files remove that risk entirely.
 const localAsset = (filename) => path.join(__dirname, '..', 'public', 'brand', filename);
 
-const IMAGES = {
-  lambKabsa: img('photo-1681116997174-76efb15220f4'),
-  chickenKabsa: img('photo-1708184528306-f75a0a5118ee'),
-  kabsaMashawi: img('photo-1739909364240-95e95db8dbc1'),
-  jarish: img('photo-1630409351217-bc4fa6422075'),
-  margoog: img('photo-1542627501-51dde88c1bdc'),
-  saleeg: img('photo-1696950169710-bbed68aec0e1'),
-  hejaziMandi: img('photo-1633945274309-2c16c9682a8c'),
-  mutabbaq: img('photo-1696950169170-a433c9eefac4'),
-  hejaziSaleeg: img('photo-1719239885399-f87d992e0f18'),
-  coffeeDates: img('photo-1604924434662-4127d9fa3070'),
-  luqaimat: img('photo-1553499944-76f9d2bc9349'),
-  fattoush: img('photo-1540420773420-3366772f4999')
-};
-
-// Canonical menu categories — kept in sync with src/i18n/translations.jsx (CAT/CATEGORY_ORDER)
-// on the frontend. seed.js creates these as real menu-category records (idempotent, by
-// nameEn), then each seeded item below is linked to one via the real relation. Any category
-// added later through the Strapi admin just becomes another row in the same collection.
+// Real production menu data, exported from the live CMS (Aug 2026). Category
+// order values and the handful of items with no category or no photo yet are
+// preserved exactly as exported, not re-derived — this is what staff had
+// actually set up, not a guess at what it should be.
 const CATEGORIES = [
-  { nameEn: 'Breakfast', nameAr: 'الفطور', order: 1 },
+  { nameEn: 'Breakfast', nameAr: 'الفطور', order: 0 },
   { nameEn: 'Traditional Dishes', nameAr: 'الأكلات الشعبية', order: 2 },
   { nameEn: 'Madhghoot & Kabsa Barriya', nameAr: 'المضغوط', order: 3 },
   { nameEn: 'Goat Haneeth', nameAr: 'الأطباق الرئيسية', order: 4 },
@@ -40,25 +31,10 @@ const CATEGORIES = [
   { nameEn: 'Sides', nameAr: 'الإيدامات', order: 10 },
   { nameEn: 'Salads', nameAr: 'السلطات', order: 11 },
   { nameEn: 'Drinks', nameAr: 'المشروبات', order: 12 },
-  { nameEn: 'Desserts', nameAr: 'الحلا', order: 13 }
+  { nameEn: 'Desserts', nameAr: 'الحلا', order: 13 },
+  { nameEn: 'Add-ons', nameAr: 'الإضافات', order: 0 },
+  { nameEn: 'Raw Meat', nameAr: 'لحم ني', order: 0 }
 ];
-
-// Maps each MENU_ROWS category key below to its canonical category name above.
-const CATEGORY_NAME_BY_KEY = {
-  breakfast: 'Breakfast',
-  traditional: 'Traditional Dishes',
-  madhghoot: 'Madhghoot & Kabsa Barriya',
-  goatHaneeth: 'Goat Haneeth',
-  lambHaneeth: 'Camel Haneeth',
-  chicken: 'Chicken',
-  wholeLamb: 'Whole Lamb',
-  riceSides: 'Rice',
-  soupsPastries: 'Appetizers',
-  sides: 'Sides',
-  salads: 'Salads',
-  drinks: 'Drinks',
-  desserts: 'Desserts'
-};
 
 // Default hero content for each secondary page — seeded once as real menu-category-
 // style records, then editable in Strapi like everything else. Home's hero already
@@ -114,102 +90,968 @@ const pageHeroes = [
   }
 ];
 
-// [en name, ar name, en desc, ar desc, category key, price, calories|null, imageKey, featured?]
-const MENU_ROWS = [
-  ['Kabda Baladi', 'كبدة بلدي', 'Sautéed local liver with onions and warm spices', 'كبدة طازجة سوتيه مع البصل والبهارات الدافئة', 'breakfast', '25', 420, 'margoog'],
-  ['Muqalqal Lahm', 'مقلقل لحم', 'Pan-tossed beef with peppers, onion, and tomato', 'لحم مقلقل مع الفلفل والبصل والطماطم', 'breakfast', '30', 510, 'margoog'],
-  ['Muqalqal Dajaj', 'مقلقل دجاج', 'Pan-tossed chicken with peppers and tomato', 'دجاج مقلقل مع الفلفل والطماطم', 'breakfast', '20', 430, 'chickenKabsa'],
-  ['Nawashef', 'نواشف', 'Traditional dried-meat morning stew', 'طبق فطور تقليدي من اللحم المجفف', 'breakfast', '30', 540, 'margoog'],
-  ['Homaisa', 'حميسة', 'Slow-simmered wheat and meat breakfast porridge', 'قمح مطهو ببطء مع اللحم، فطور تقليدي', 'breakfast', '27', 390, 'jarish'],
-  ['Tuna', 'تونة', 'Fresh tuna breakfast plate with vegetables', 'طبق تونة طازج مع الخضار', 'breakfast', '15', 280, 'fattoush'],
-  ['Shakshuka', 'شكشوكة', 'Eggs poached in a spiced tomato and pepper sauce', 'بيض مطهو في صلصة الطماطم والفلفل المتبلة', 'breakfast', '10', 330, 'margoog'],
-  ['Lahsa', 'لحسة', 'Warm spiced flour porridge, a Najdi breakfast classic', 'عصيدة دقيق دافئة ومتبلة، طبق نجدي تقليدي', 'breakfast', '12', 350, 'jarish'],
-  ['Fried Eggs', 'بيض عيون', 'Two eggs, sunny side up, with fresh bread', 'بيضتان مقليتان مع خبز طازج', 'breakfast', '10', 240, 'margoog'],
-  ['Foul', 'فول', 'Slow-cooked fava beans with olive oil and spices', 'فول مدمس مطهو ببطء مع زيت الزيتون والبهارات', 'breakfast', '10', 360, 'margoog'],
-  ['Qishta & Honey', 'قشطة وعسل', 'Clotted cream drizzled with natural honey', 'قشطة طازجة مغطاة بالعسل الطبيعي', 'breakfast', '20', 420, 'luqaimat'],
-
-  ['Areeka Janoubia', 'عريكة جنوبية', 'Southern-style bread mash with meat and ghee', 'عريكة على الطريقة الجنوبية مع اللحم والسمن', 'traditional', '35', 690, 'jarish', true],
-  ['Mashghoutha', 'مشغوثة', 'Traditional mashed bread and meat dish', 'طبق تقليدي من الخبز المهروس واللحم', 'traditional', '35', 610, 'margoog'],
-  ['Fattah with Ghee & Honey', 'فتة بالسمن والعسل', 'Layered bread soaked in ghee and honey', 'خبز مطبق منقوع بالسمن والعسل', 'traditional', '20', 780, 'luqaimat'],
-  ['Marasa', 'مرسة', 'Traditional Najdi bread and broth dish', 'طبق نجدي تقليدي من الخبز والمرق', 'traditional', '20', 480, 'jarish'],
-  ['Maksaf', 'مكسف', 'Hearty traditional bread and meat mash', 'طبق تراثي دسم من الخبز واللحم المهروس', 'traditional', '20', 640, 'margoog'],
-  ['Local Ghee', 'سمن بلدي', 'Pure traditional Saudi ghee', 'سمن بلدي أصيل', 'traditional', '9', 180, 'jarish'],
-  ['Natural Honey', 'عسل طبيعي', 'Pure natural Saudi honey', 'عسل طبيعي سعودي خالص', 'traditional', '10', 95, 'luqaimat'],
-  ['Radeefa', 'رضيفة', 'Traditional bread side', 'طبق خبز تقليدي', 'traditional', '6', 320, 'jarish'],
-
-  ['Madhghoot Ghanam', 'مضغوط غنم', 'Rice slow-pressed with tender mutton and warm spices', 'أرز مضغوط ببطء مع لحم الغنم الطري والبهارات الدافئة', 'madhghoot', '95', 980, 'lambKabsa'],
-  ['Madhghoot Hashi', 'مضغوط حاشي', 'Rice slow-pressed with tender lamb and warm spices', 'أرز مضغوط ببطء مع لحم الحاشي الطري والبهارات الدافئة', 'madhghoot', '75', 900, 'kabsaMashawi'],
-  ['Arabic Madhghoot Ghanam', 'مضغوط عربي غنم', 'Arabic-style pressed rice with mutton', 'أرز مضغوط على الطريقة العربية مع لحم الغنم', 'madhghoot', '95', 1040, 'hejaziMandi'],
-  ['Arabic Madhghoot Hashi', 'مضغوط عربي حاشي', 'Arabic-style pressed rice with lamb', 'أرز مضغوط على الطريقة العربية مع لحم الحاشي', 'madhghoot', '75', 950, 'hejaziSaleeg'],
-  ['Kabsa Barriya Ghanam', 'كبسة بريه غنم', 'Open-fire Bedouin-style kabsa with mutton', 'كبسة بريّة على الفحم مع لحم الغنم', 'madhghoot', '95', 950, 'lambKabsa'],
-  ['Kabsa Barriya Hashi', 'كبسة بريه حاشي', 'Open-fire Bedouin-style kabsa with lamb', 'كبسة بريّة على الفحم مع لحم الحاشي', 'madhghoot', '75', 870, 'kabsaMashawi'],
-
-  ['Nafar Haneeth Mathloutha', 'نفر تيس حنيذ مثلوثة', 'Individual slow-roasted goat haneeth over spiced rice', 'حنيذ تيس فردي مطهو ببطء فوق أرز متبل', 'goatHaneeth', '100', 2467, 'hejaziMandi', true],
-  ['Nafar Haneeth Saleeg', 'نفر تيس حنيذ سليق', 'Individual goat haneeth served with creamy saleeg rice', 'حنيذ تيس فردي يقدم مع أرز السليق الكريمي', 'goatHaneeth', '95', 2467, 'saleeg'],
-  ['Nafar Haneeth Shaabi', 'نفر تيس حنيذ شعبي', 'Individual goat haneeth, traditional folk style', 'حنيذ تيس فردي على الطريقة الشعبية', 'goatHaneeth', '95', 2467, 'hejaziMandi'],
-  ['Nafar Haneeth Bashawer', 'نفر تيس حنيذ بشاور', 'Individual goat haneeth with bashawer-style rice', 'حنيذ تيس فردي مع أرز على طريقة البشاور', 'goatHaneeth', '95', 2467, 'kabsaMashawi'],
-  ['Quarter Goat Haneeth', 'ربع تيس حنيذ', 'Slow-roasted quarter goat haneeth — serves 2–3', 'ربع تيس حنيذ مطهو ببطء - يكفي ٢-٣ أشخاص', 'goatHaneeth', '380', 9870, 'hejaziMandi'],
-  ['Half Goat Haneeth', 'نصف تيس حنيذ', 'Slow-roasted half goat haneeth — serves 4–6', 'نصف تيس حنيذ مطهو ببطء - يكفي ٤-٦ أشخاص', 'goatHaneeth', '760', 20350, 'hejaziMandi', true],
-  ['Whole Goat Haneeth', 'تيس كامل حنيذ', 'Slow-roasted whole goat haneeth — serves 8–10', 'تيس كامل حنيذ مطهو ببطء - يكفي ٨-١٠ أشخاص', 'goatHaneeth', '1520', 40750, 'hejaziMandi'],
-
-  ['Hashi Haneeth Mathloutha', 'حاشي حنيذ مثلوثة', 'Individual slow-roasted lamb haneeth over spiced rice', 'حنيذ حاشي فردي مطهو ببطء فوق أرز متبل', 'lambHaneeth', '80', 780, 'lambKabsa'],
-  ['Hashi Haneeth Saleeg', 'حاشي حنيذ سليق', 'Individual lamb haneeth served with creamy saleeg rice', 'حنيذ حاشي فردي يقدم مع أرز السليق الكريمي', 'lambHaneeth', '75', 720, 'saleeg'],
-  ['Hashi Haneeth Shaabi', 'حاشي حنيذ شعبي', 'Individual lamb haneeth, traditional folk style', 'حنيذ حاشي فردي على الطريقة الشعبية', 'lambHaneeth', '75', 650, 'lambKabsa'],
-  ['Hashi Haneeth Bashawer', 'حاشي حنيذ بشاور', 'Individual lamb haneeth with bashawer-style rice', 'حنيذ حاشي فردي مع أرز على طريقة البشاور', 'lambHaneeth', '75', 760, 'kabsaMashawi'],
-
-  ['Whole Chicken (Madhbi-Haneeth)', 'حبة دجاج (مضبي - حنيذ)', 'Whole chicken, roasted or Madhbi-style, over spiced rice', 'دجاجة كاملة مشوية أو مضبي فوق أرز متبل', 'chicken', '50', 2625, 'chickenKabsa'],
-  ['Half Chicken (Madhbi-Haneeth)', 'نصف دجاج (مضبي - حنيذ)', 'Half chicken, roasted or Madhbi-style, over spiced rice', 'نصف دجاجة مشوية أو مضبي فوق أرز متبل', 'chicken', '25', 1313, 'hejaziSaleeg'],
-
-  ['Quarter Lamb', 'ربع ذبيحة', 'Quarter raw lamb, butchered to order — serves 2–3', 'ربع ذبيحة نيّة حسب الطلب - يكفي ٢-٣ أشخاص', 'wholeLamb', '350', null, 'lambKabsa'],
-  ['Half Lamb', 'نص ذبيحة', 'Half raw lamb, butchered to order — serves 4–6', 'نصف ذبيحة نيّة حسب الطلب - يكفي ٤-٦ أشخاص', 'wholeLamb', '700', null, 'lambKabsa'],
-  ['Whole Lamb', 'ذبيحة كاملة', 'Whole raw lamb, butchered to order — serves 8–10', 'ذبيحة كاملة نيّة حسب الطلب - يكفي ٨-١٠ أشخاص', 'wholeLamb', '1400', null, 'lambKabsa'],
-
-  ['Rice Bashawer', 'رز بشاور', 'Fragrant bashawer-style rice', 'أرز على طريقة البشاور العطر', 'riceSides', '10', null, 'jarish'],
-  ['Rice Shaabi', 'رز شعبي', 'Traditional folk-style rice', 'أرز على الطريقة الشعبية', 'riceSides', '10', null, 'saleeg'],
-  ['Sahn Qasdeer (Medium)', 'صحن قصدير وسط', 'Medium tin-plate rice portion', 'صحن قصدير أرز - حجم وسط', 'riceSides', '6', null, 'jarish'],
-  ['Sahn Qasdeer (Large)', 'صحن قصدير كبير', 'Large tin-plate rice portion', 'صحن قصدير أرز - حجم كبير', 'riceSides', '10', null, 'saleeg'],
-
-  ['Samdan Soup', 'شوربة سمدان', 'Our signature house soup', 'شوربتنا المميزة الخاصة بسمدان', 'soupsPastries', '5', 180, 'margoog'],
-  ['Meat Samosa', 'سمبوسة لحم', 'Crisp pastry filled with spiced meat', 'سمبوسة مقرمشة محشوة باللحم المتبل', 'soupsPastries', '3', 130, 'mutabbaq'],
-
-  ['Jareesh (Side)', 'جريش', 'Cracked wheat side, simmered with spices', 'جريش جانبي مطهو مع البهارات', 'sides', '10', 577, 'jarish'],
-  ['Qursan', 'قرصان', 'Traditional layered bread side', 'خبز مطبق تقليدي', 'sides', '10', 447, 'mutabbaq'],
-  ['Musaqqaa', 'مسقعة', 'Sautéed vegetable and meat side', 'خضار ولحم سوتيه', 'sides', '10', 543, 'margoog'],
-  ['Bamia Lahm', 'بامية لحم', 'Okra stewed with tender meat', 'بامية مطهوة مع اللحم الطري', 'sides', '15', 340, 'margoog'],
-  ['Mulukhiyah', 'ملوخية', 'Traditional jute-leaf stew', 'طبق الملوخية التقليدي', 'sides', '10', 116, 'margoog'],
-  ['Vegetable Idam', 'ايدام خضار', 'Mixed vegetable stew', 'إيدام خضار مشكل', 'sides', '10', 190, 'margoog'],
-  ['Southern Bread', 'خبز جنوبي', 'Fresh-baked traditional southern bread', 'خبز جنوبي طازج تقليدي', 'sides', '5', 260, 'jarish'],
-
-  ['Green Salad', 'سلطة خضراء', 'Crisp seasonal green salad', 'سلطة خضراء طازجة', 'salads', '10', 90, 'fattoush'],
-  ['Laban Khiyar', 'لبن خيار', 'Cucumber and yogurt salad', 'سلطة اللبن والخيار', 'salads', '10', 120, 'fattoush'],
-  ['Samtara', 'سمطرة', 'Traditional Saudi vegetable salad', 'سلطة سعودية تقليدية', 'salads', '4', 170, 'fattoush'],
-  ['Spicy Salad', 'سلطة حارة', 'Chopped salad with a spiced dressing', 'سلطة مفرومة مع تتبيلة حارة', 'salads', '0', 70, 'fattoush'],
-  ['Tahini', 'طحينية', 'Traditional sesame tahini dip', 'طحينة تقليدية', 'salads', '0', 180, 'fattoush'],
-
-  ['Laban Samdan', 'لبن سمدان', 'Our house-style traditional buttermilk', 'لبن سمدان التقليدي الخاص بنا', 'drinks', '5', 160, 'coffeeDates'],
-  ['Soft Drink', 'مشروب غازي', 'Assorted soft drinks', 'مشروبات غازية متنوعة', 'drinks', '4', 132, 'coffeeDates'],
-  ['Al-Qarya Laban', 'لبن القرية', 'Chilled traditional laban', 'لبن القرية بارد', 'drinks', '4', 175, 'coffeeDates'],
-  ['Almarai Laban', 'لبن مراعي', 'Chilled Almarai laban', 'لبن مراعي بارد', 'drinks', '2', 120, 'coffeeDates'],
-  ['Water', 'ماء', 'Bottled water', 'مياه معدنية', 'drinks', '1', 0, 'coffeeDates'],
-  ['Tea', 'شاهي تلقيمة', 'Traditional Saudi tea', 'شاهي سعودي تقليدي', 'drinks', '3', 2, 'coffeeDates'],
-  ['Arabic Coffee Pot with Dates', 'دلة مع التمر', 'Traditional dallah of qahwa served with premium dates', 'دلة قهوة عربية تقدم مع أجود أنواع التمر', 'drinks', '20', 220, 'coffeeDates'],
-
-  ['Kunafa', 'كنافة', 'Crisp shredded pastry with cheese and syrup', 'كنافة مقرمشة بالجبن والقطر', 'desserts', '10', 560, 'luqaimat', true],
-  ['Crème Caramel', 'كريم كراميل', 'Silky caramel custard dessert', 'حلا كريم كراميل الحريري', 'desserts', '10', 290, 'luqaimat']
+const items = [
+  {
+    order: 1,
+    price: 25,
+    calories: 420,
+    featured: true,
+    image: localAsset('dish-kabda-baladi.webp'),
+    nameEn: 'Kabda Baladi',
+    nameAr: 'كبدة بلدي',
+    descriptionEn: 'Sautéed local liver with onions and warm spices',
+    descriptionAr: 'كبدة طازجة سوتيه مع البصل والبهارات الدافئة',
+    categoryName: 'Breakfast'
+  },
+  {
+    order: 2,
+    price: 30,
+    calories: 510,
+    featured: false,
+    image: localAsset('photo-breakfast-spread-1.webp'),
+    nameEn: 'Muqalqal Lahm',
+    nameAr: 'مقلقل لحم',
+    descriptionEn: 'Pan-tossed beef with peppers, onion, and tomato',
+    descriptionAr: 'لحم مقلقل مع الفلفل والبصل والطماطم',
+    categoryName: 'Breakfast'
+  },
+  {
+    order: 3,
+    price: 20,
+    calories: 430,
+    featured: false,
+    image: localAsset('photo-breakfast-spread-1.webp'),
+    nameEn: 'Muqalqal Dajaj',
+    nameAr: 'مقلقل دجاج',
+    descriptionEn: 'Pan-tossed chicken with peppers and tomato',
+    descriptionAr: 'دجاج مقلقل مع الفلفل والطماطم',
+    categoryName: 'Breakfast'
+  },
+  {
+    order: 4,
+    price: 30,
+    calories: 540,
+    featured: false,
+    image: localAsset('photo-nawashef.webp'),
+    nameEn: 'Nawashef',
+    nameAr: 'نواشف',
+    descriptionEn: 'Traditional dried-meat morning stew',
+    descriptionAr: 'طبق فطور تقليدي من اللحم المجفف',
+    categoryName: 'Breakfast'
+  },
+  {
+    order: 5,
+    price: 27,
+    calories: 390,
+    featured: false,
+    image: localAsset('photo-breakfast-spread-1.webp'),
+    nameEn: 'Meat Homaisa',
+    nameAr: 'حميسة لحم',
+    descriptionEn: 'Slow-simmered wheat and meat breakfast porridge',
+    descriptionAr: 'قمح مطهو ببطء مع اللحم، فطور تقليدي',
+    categoryName: 'Breakfast'
+  },
+  {
+    order: 6,
+    price: 15,
+    calories: 280,
+    featured: true,
+    image: localAsset('dish-tuna.webp'),
+    nameEn: 'Homaisa Tuna',
+    nameAr: 'حميسة تونة',
+    descriptionEn: 'Fresh tuna breakfast plate with vegetables',
+    descriptionAr: 'طبق تونة طازج مع الخضار',
+    categoryName: 'Breakfast'
+  },
+  {
+    order: 7,
+    price: 10,
+    calories: 330,
+    featured: false,
+    image: localAsset('photo-breakfast-spread-1.webp'),
+    nameEn: 'Shakshuka',
+    nameAr: 'شكشوكة',
+    descriptionEn: 'Eggs poached in a spiced tomato and pepper sauce',
+    descriptionAr: 'بيض مطهو في صلصة الطماطم والفلفل المتبلة',
+    categoryName: 'Breakfast'
+  },
+  {
+    order: 8,
+    price: 12,
+    calories: 350,
+    featured: false,
+    image: localAsset('photo-breakfast-spread-1.webp'),
+    nameEn: 'Lahsa',
+    nameAr: 'لحسة',
+    descriptionEn: 'Warm spiced flour porridge, a Najdi breakfast classic',
+    descriptionAr: 'عصيدة دقيق دافئة ومتبلة، طبق نجدي تقليدي',
+    categoryName: 'Breakfast'
+  },
+  {
+    order: 9,
+    price: 10,
+    calories: 240,
+    featured: true,
+    image: localAsset('dish-fried-eggs.webp'),
+    nameEn: 'Fried Eggs',
+    nameAr: 'بيض عيون',
+    descriptionEn: 'Two eggs, sunny side up, with fresh bread',
+    descriptionAr: 'بيضتان مقليتان مع خبز طازج',
+    categoryName: null
+  },
+  {
+    order: 10,
+    price: 10,
+    calories: 360,
+    featured: false,
+    image: localAsset('photo-breakfast-spread-1.webp'),
+    nameEn: 'Foul',
+    nameAr: 'فول',
+    descriptionEn: 'Slow-cooked fava beans with olive oil and spices',
+    descriptionAr: 'فول مدمس مطهو ببطء مع زيت الزيتون والبهارات',
+    categoryName: 'Breakfast'
+  },
+  {
+    order: 11,
+    price: 20,
+    calories: 420,
+    featured: false,
+    image: localAsset('photo-breakfast-spread-1.webp'),
+    nameEn: 'Qishta & Honey',
+    nameAr: 'قشطة وعسل',
+    descriptionEn: 'Clotted cream drizzled with natural honey',
+    descriptionAr: 'قشطة طازجة مغطاة بالعسل الطبيعي',
+    categoryName: 'Breakfast'
+  },
+  {
+    order: 12,
+    price: 35,
+    calories: 690,
+    featured: false,
+    image: localAsset('photo-najdi-breakfast-table.webp'),
+    nameEn: 'Areeka Janoubia',
+    nameAr: 'عريكة جنوبية',
+    descriptionEn: 'Southern-style bread mash with meat and ghee',
+    descriptionAr: 'عريكة على الطريقة الجنوبية مع اللحم والسمن',
+    categoryName: 'Traditional Dishes'
+  },
+  {
+    order: 13,
+    price: 35,
+    calories: 610,
+    featured: false,
+    image: localAsset('photo-najdi-breakfast-table.webp'),
+    nameEn: 'Mashghoutha',
+    nameAr: 'مشغوثة',
+    descriptionEn: 'Traditional mashed bread and meat dish',
+    descriptionAr: 'طبق تقليدي من الخبز المهروس واللحم',
+    categoryName: 'Traditional Dishes'
+  },
+  {
+    order: 14,
+    price: 20,
+    calories: 780,
+    featured: false,
+    image: localAsset('photo-najdi-breakfast-table.webp'),
+    nameEn: 'Fattah with Ghee & Honey',
+    nameAr: 'فتة بالسمن والعسل',
+    descriptionEn: 'Layered bread soaked in ghee and honey',
+    descriptionAr: 'خبز مطبق منقوع بالسمن والعسل',
+    categoryName: 'Traditional Dishes'
+  },
+  {
+    order: 15,
+    price: 20,
+    calories: 480,
+    featured: false,
+    image: localAsset('photo-najdi-breakfast-table.webp'),
+    nameEn: 'Marasa',
+    nameAr: 'مرسة',
+    descriptionEn: 'Traditional Najdi bread and broth dish',
+    descriptionAr: 'طبق نجدي تقليدي من الخبز والمرق',
+    categoryName: 'Traditional Dishes'
+  },
+  {
+    order: 16,
+    price: 20,
+    calories: 640,
+    featured: false,
+    image: localAsset('photo-najdi-breakfast-table.webp'),
+    nameEn: 'Maksaf',
+    nameAr: 'مكسف',
+    descriptionEn: 'Hearty traditional bread and meat mash',
+    descriptionAr: 'طبق تراثي دسم من الخبز واللحم المهروس',
+    categoryName: 'Traditional Dishes'
+  },
+  {
+    order: 17,
+    price: 9,
+    calories: 180,
+    featured: false,
+    image: localAsset('photo-najdi-breakfast-table.webp'),
+    nameEn: 'Local Ghee',
+    nameAr: 'سمن بلدي',
+    descriptionEn: 'Pure traditional Saudi ghee',
+    descriptionAr: 'سمن بلدي أصيل',
+    categoryName: 'Traditional Dishes'
+  },
+  {
+    order: 18,
+    price: 10,
+    calories: 95,
+    featured: false,
+    image: localAsset('photo-najdi-breakfast-table.webp'),
+    nameEn: 'Natural Honey',
+    nameAr: 'عسل طبيعي',
+    descriptionEn: 'Pure natural Saudi honey',
+    descriptionAr: 'عسل طبيعي سعودي خالص',
+    categoryName: 'Traditional Dishes'
+  },
+  {
+    order: 19,
+    price: 6,
+    calories: 320,
+    featured: false,
+    image: localAsset('photo-najdi-breakfast-table.webp'),
+    nameEn: 'Radeefa',
+    nameAr: 'رضيفة',
+    descriptionEn: 'Traditional bread side',
+    descriptionAr: 'طبق خبز تقليدي',
+    categoryName: 'Traditional Dishes'
+  },
+  {
+    order: 20,
+    price: 95,
+    calories: 980,
+    featured: false,
+    image: localAsset('photo-najdi-architecture.jpg'),
+    nameEn: 'Madhghoot Ghanam (Sella Rice - American Rice)',
+    nameAr: '(رز مزه - رز امريكي) مضغوط غنم',
+    descriptionEn: 'Rice slow-pressed with tender mutton and warm spices',
+    descriptionAr: 'أرز مضغوط ببطء مع لحم الغنم الطري والبهارات الدافئة',
+    categoryName: 'Madhghoot & Kabsa Barriya'
+  },
+  {
+    order: 21,
+    price: 75,
+    calories: 900,
+    featured: false,
+    image: localAsset('photo-najdi-architecture.jpg'),
+    nameEn: 'Madhghoot Hashi (Sella Rice - American Rice)',
+    nameAr: '(رز مزه - رز امريكي) مضغوط حاشي',
+    descriptionEn: 'Rice slow-pressed with tender lamb and warm spices',
+    descriptionAr: 'أرز مضغوط ببطء مع لحم الحاشي الطري والبهارات الدافئة',
+    categoryName: 'Madhghoot & Kabsa Barriya'
+  },
+  {
+    order: 22,
+    price: 95,
+    calories: 1040,
+    featured: false,
+    image: localAsset('photo-najdi-architecture.jpg'),
+    nameEn: 'Arabic Madhghoot Ghanam (American Rice)',
+    nameAr: '( رز امريكي ) مضغوط عربي غنم',
+    descriptionEn: 'Arabic-style pressed rice with mutton',
+    descriptionAr: 'أرز مضغوط على الطريقة العربية مع لحم الغنم',
+    categoryName: 'Madhghoot & Kabsa Barriya'
+  },
+  {
+    order: 23,
+    price: 75,
+    calories: 950,
+    featured: false,
+    image: localAsset('photo-najdi-architecture.jpg'),
+    nameEn: 'Arabic Madhghoot Hashi (American Rice)',
+    nameAr: '( رز امريكي ) مضغوط عربي حاشي',
+    descriptionEn: 'Arabic-style pressed rice with lamb',
+    descriptionAr: 'أرز مضغوط على الطريقة العربية مع لحم الحاشي',
+    categoryName: 'Madhghoot & Kabsa Barriya'
+  },
+  {
+    order: 24,
+    price: 95,
+    calories: 950,
+    featured: false,
+    image: localAsset('photo-najdi-architecture.jpg'),
+    nameEn: 'Kabsa Barriya Ghanam (Peshawar Rice)',
+    nameAr: '( رز بشاور) كبسة بريه غنم',
+    descriptionEn: 'Open-fire Bedouin-style kabsa with mutton',
+    descriptionAr: 'كبسة بريّة على الفحم مع لحم الغنم',
+    categoryName: 'Madhghoot & Kabsa Barriya'
+  },
+  {
+    order: 25,
+    price: 75,
+    calories: 870,
+    featured: false,
+    image: localAsset('photo-najdi-architecture.jpg'),
+    nameEn: 'Kabsa Barriya Hashi (Peshawar Rice)',
+    nameAr: '( رز بشاور) كبسة بريه حاشي',
+    descriptionEn: 'Open-fire Bedouin-style kabsa with lamb',
+    descriptionAr: 'كبسة بريّة على الفحم مع لحم الحاشي',
+    categoryName: 'Madhghoot & Kabsa Barriya'
+  },
+  {
+    order: 26,
+    price: 100,
+    calories: 2467,
+    featured: false,
+    image: localAsset('photo-najdi-architecture.jpg'),
+    nameEn: 'Nafar Haneeth Mathloutha',
+    nameAr: 'نفر تيس حنيذ مثلوثة',
+    descriptionEn: 'Individual slow-roasted goat haneeth over spiced rice',
+    descriptionAr: 'حنيذ تيس فردي مطهو ببطء فوق أرز متبل',
+    categoryName: 'Whole Lamb'
+  },
+  {
+    order: 27,
+    price: 95,
+    calories: 2467,
+    featured: false,
+    image: localAsset('photo-najdi-architecture.jpg'),
+    nameEn: 'Nafar Haneeth Saleeg',
+    nameAr: 'نفر تيس حنيذ سليق',
+    descriptionEn: 'Individual goat haneeth served with creamy saleeg rice',
+    descriptionAr: 'حنيذ تيس فردي يقدم مع أرز السليق الكريمي',
+    categoryName: 'Whole Lamb'
+  },
+  {
+    order: 28,
+    price: 95,
+    calories: 2467,
+    featured: false,
+    image: localAsset('photo-najdi-architecture.jpg'),
+    nameEn: 'Nafar Haneeth Shaabi',
+    nameAr: 'نفر تيس حنيذ شعبي',
+    descriptionEn: 'Individual goat haneeth, traditional folk style',
+    descriptionAr: 'حنيذ تيس فردي على الطريقة الشعبية',
+    categoryName: 'Whole Lamb'
+  },
+  {
+    order: 29,
+    price: 95,
+    calories: 2467,
+    featured: false,
+    image: localAsset('photo-najdi-architecture.jpg'),
+    nameEn: 'Nafar Haneeth Bashawer',
+    nameAr: 'نفر تيس حنيذ بشاور',
+    descriptionEn: 'Individual goat haneeth with bashawer-style rice',
+    descriptionAr: 'حنيذ تيس فردي مع أرز على طريقة البشاور',
+    categoryName: 'Whole Lamb'
+  },
+  {
+    order: 30,
+    price: 380,
+    calories: 9870,
+    featured: false,
+    image: localAsset('photo-najdi-architecture.jpg'),
+    nameEn: 'Quarter Goat Haneeth',
+    nameAr: 'ربع تيس حنيذ',
+    descriptionEn: 'Slow-roasted quarter goat haneeth — serves 2–3',
+    descriptionAr: 'ربع تيس حنيذ مطهو ببطء - يكفي ٢-٣ أشخاص',
+    categoryName: 'Whole Lamb'
+  },
+  {
+    order: 31,
+    price: 760,
+    calories: 20350,
+    featured: false,
+    image: localAsset('photo-najdi-architecture.jpg'),
+    nameEn: 'Half Goat Haneeth',
+    nameAr: 'نصف تيس حنيذ',
+    descriptionEn: 'Slow-roasted half goat haneeth — serves 4–6',
+    descriptionAr: 'نصف تيس حنيذ مطهو ببطء - يكفي ٤-٦ أشخاص',
+    categoryName: 'Whole Lamb'
+  },
+  {
+    order: 32,
+    price: 1520,
+    calories: 40750,
+    featured: false,
+    image: localAsset('photo-najdi-architecture.jpg'),
+    nameEn: 'Whole Goat Haneeth',
+    nameAr: 'تيس كامل حنيذ',
+    descriptionEn: 'Slow-roasted whole goat haneeth — serves 8–10',
+    descriptionAr: 'تيس كامل حنيذ مطهو ببطء - يكفي ٨-١٠ أشخاص',
+    categoryName: 'Whole Lamb'
+  },
+  {
+    order: 33,
+    price: 80,
+    calories: 780,
+    featured: false,
+    image: localAsset('photo-sadu-interior.jpg'),
+    nameEn: 'Hashi Haneeth Mathloutha',
+    nameAr: 'حاشي حنيذ مثلوثة',
+    descriptionEn: 'Individual slow-roasted lamb haneeth over spiced rice',
+    descriptionAr: 'حنيذ حاشي فردي مطهو ببطء فوق أرز متبل',
+    categoryName: 'Camel Haneeth'
+  },
+  {
+    order: 34,
+    price: 75,
+    calories: 720,
+    featured: false,
+    image: localAsset('photo-sadu-interior.jpg'),
+    nameEn: 'Hashi Haneeth Saleeg',
+    nameAr: 'حاشي حنيذ سليق',
+    descriptionEn: 'Individual lamb haneeth served with creamy saleeg rice',
+    descriptionAr: 'حنيذ حاشي فردي يقدم مع أرز السليق الكريمي',
+    categoryName: 'Camel Haneeth'
+  },
+  {
+    order: 35,
+    price: 75,
+    calories: 650,
+    featured: false,
+    image: localAsset('photo-sadu-interior.jpg'),
+    nameEn: 'Hashi Haneeth Shaabi',
+    nameAr: 'حاشي حنيذ شعبي',
+    descriptionEn: 'Individual lamb haneeth, traditional folk style',
+    descriptionAr: 'حنيذ حاشي فردي على الطريقة الشعبية',
+    categoryName: 'Camel Haneeth'
+  },
+  {
+    order: 36,
+    price: 75,
+    calories: 760,
+    featured: false,
+    image: localAsset('photo-sadu-interior.jpg'),
+    nameEn: 'Hashi Haneeth Bashawer',
+    nameAr: 'حاشي حنيذ بشاور',
+    descriptionEn: 'Individual lamb haneeth with bashawer-style rice',
+    descriptionAr: 'حنيذ حاشي فردي مع أرز على طريقة البشاور',
+    categoryName: 'Camel Haneeth'
+  },
+  {
+    order: 37,
+    price: 50,
+    calories: 2625,
+    featured: false,
+    image: localAsset('photo-breakfast-bread.webp'),
+    nameEn: 'Whole Chicken (Madhbi-Haneeth)',
+    nameAr: 'حبة دجاج (مضبي - حنيذ)',
+    descriptionEn: 'Whole chicken, roasted or Madhbi-style, over spiced rice',
+    descriptionAr: 'دجاجة كاملة مشوية أو مضبي فوق أرز متبل',
+    categoryName: 'Chicken'
+  },
+  {
+    order: 38,
+    price: 25,
+    calories: 1313,
+    featured: false,
+    image: localAsset('photo-breakfast-bread.webp'),
+    nameEn: 'Half Chicken (Madhbi-Haneeth)',
+    nameAr: 'نصف دجاج (مضبي - حنيذ)',
+    descriptionEn: 'Half chicken, roasted or Madhbi-style, over spiced rice',
+    descriptionAr: 'نصف دجاجة مشوية أو مضبي فوق أرز متبل',
+    categoryName: 'Chicken'
+  },
+  {
+    order: 39,
+    price: 350,
+    calories: undefined,
+    featured: false,
+    image: localAsset('photo-riyadh-skyline.jpg'),
+    nameEn: 'Quarter Lamb',
+    nameAr: 'ربع ذبيحة',
+    descriptionEn: 'Quarter raw lamb, butchered to order — serves 2–3',
+    descriptionAr: 'ربع ذبيحة نيّة حسب الطلب - يكفي ٢-٣ أشخاص',
+    categoryName: 'Raw Meat'
+  },
+  {
+    order: 40,
+    price: 700,
+    calories: undefined,
+    featured: false,
+    image: localAsset('photo-riyadh-skyline.jpg'),
+    nameEn: 'Half Lamb',
+    nameAr: 'نصف ذبيحة',
+    descriptionEn: 'Half raw lamb, butchered to order — serves 4–6',
+    descriptionAr: 'نصف ذبيحة نيّة حسب الطلب - يكفي ٤-٦ أشخاص',
+    categoryName: 'Raw Meat'
+  },
+  {
+    order: 41,
+    price: 1400,
+    calories: undefined,
+    featured: false,
+    image: localAsset('photo-riyadh-skyline.jpg'),
+    nameEn: 'Whole Lamb',
+    nameAr: 'ذبيحة كاملة',
+    descriptionEn: 'Whole raw lamb, butchered to order — serves 8–10',
+    descriptionAr: 'ذبيحة كاملة نيّة حسب الطلب - يكفي ٨-١٠ أشخاص',
+    categoryName: 'Raw Meat'
+  },
+  {
+    order: 42,
+    price: 10,
+    calories: undefined,
+    featured: false,
+    image: localAsset('photo-najdi-breakfast-table.webp'),
+    nameEn: 'Rice Bashawer',
+    nameAr: 'رز بشاور',
+    descriptionEn: 'Fragrant bashawer-style rice',
+    descriptionAr: 'أرز على طريقة البشاور العطر',
+    categoryName: 'Rice'
+  },
+  {
+    order: 43,
+    price: 10,
+    calories: undefined,
+    featured: false,
+    image: localAsset('photo-najdi-breakfast-table.webp'),
+    nameEn: 'Rice Shaabi',
+    nameAr: 'رز شعبي',
+    descriptionEn: 'Traditional folk-style rice',
+    descriptionAr: 'أرز على الطريقة الشعبية',
+    categoryName: 'Rice'
+  },
+  {
+    order: 44,
+    price: 6,
+    calories: undefined,
+    featured: false,
+    image: localAsset('photo-najdi-breakfast-table.webp'),
+    nameEn: 'Sahn Qasdeer (Medium)',
+    nameAr: 'صحن قصدير وسط',
+    descriptionEn: 'Medium tin-plate rice portion',
+    descriptionAr: 'صحن قصدير أرز - حجم وسط',
+    categoryName: 'Rice'
+  },
+  {
+    order: 45,
+    price: 10,
+    calories: undefined,
+    featured: false,
+    image: localAsset('photo-najdi-breakfast-table.webp'),
+    nameEn: 'Sahn Qasdeer (Large)',
+    nameAr: 'صحن قصدير كبير',
+    descriptionEn: 'Large tin-plate rice portion',
+    descriptionAr: 'صحن قصدير أرز - حجم كبير',
+    categoryName: 'Rice'
+  },
+  {
+    order: 46,
+    price: 5,
+    calories: 180,
+    featured: false,
+    image: localAsset('photo-hummus-meat.webp'),
+    nameEn: 'Samdan Soup',
+    nameAr: 'شوربة سمدان',
+    descriptionEn: 'Our signature house soup',
+    descriptionAr: 'شوربتنا المميزة الخاصة بسمدان',
+    categoryName: 'Appetizers'
+  },
+  {
+    order: 47,
+    price: 3,
+    calories: 130,
+    featured: false,
+    image: localAsset('photo-hummus-meat.webp'),
+    nameEn: 'Meat Samosa',
+    nameAr: 'سمبوسة لحم',
+    descriptionEn: 'Crisp pastry filled with spiced meat',
+    descriptionAr: 'سمبوسة مقرمشة محشوة باللحم المتبل',
+    categoryName: 'Appetizers'
+  },
+  {
+    order: 48,
+    price: 10,
+    calories: 577,
+    featured: false,
+    image: localAsset('photo-hummus-meat.webp'),
+    nameEn: 'Jareesh (Side)',
+    nameAr: 'جريش',
+    descriptionEn: 'Cracked wheat side, simmered with spices',
+    descriptionAr: 'جريش جانبي مطهو مع البهارات',
+    categoryName: 'Appetizers'
+  },
+  {
+    order: 49,
+    price: 10,
+    calories: 447,
+    featured: false,
+    image: localAsset('dish-southern-bread.webp'),
+    nameEn: 'Qursan',
+    nameAr: 'قرصان',
+    descriptionEn: 'Traditional layered bread side',
+    descriptionAr: 'خبز مطبق تقليدي',
+    categoryName: 'Sides'
+  },
+  {
+    order: 50,
+    price: 10,
+    calories: 543,
+    featured: false,
+    image: localAsset('dish-southern-bread.webp'),
+    nameEn: 'Musaqqaa',
+    nameAr: 'مصقعة',
+    descriptionEn: 'Sautéed vegetable and meat side',
+    descriptionAr: 'خضار ولحم سوتيه',
+    categoryName: 'Sides'
+  },
+  {
+    order: 51,
+    price: 15,
+    calories: 340,
+    featured: false,
+    image: localAsset('dish-southern-bread.webp'),
+    nameEn: 'Meat Bamia',
+    nameAr: 'بامية لحم',
+    descriptionEn: 'Okra stewed with tender meat',
+    descriptionAr: 'بامية مطهوة مع اللحم الطري',
+    categoryName: 'Sides'
+  },
+  {
+    order: 52,
+    price: 10,
+    calories: 116,
+    featured: false,
+    image: localAsset('dish-southern-bread.webp'),
+    nameEn: 'Molokhia',
+    nameAr: 'ملوخية',
+    descriptionEn: 'Traditional jute-leaf stew',
+    descriptionAr: 'طبق الملوخية التقليدي',
+    categoryName: 'Sides'
+  },
+  {
+    order: 53,
+    price: 10,
+    calories: 190,
+    featured: false,
+    image: localAsset('dish-southern-bread.webp'),
+    nameEn: 'Vegetable Stew',
+    nameAr: 'ايدام خضار',
+    descriptionEn: 'Mixed vegetable stew',
+    descriptionAr: 'إيدام خضار مشكل',
+    categoryName: 'Sides'
+  },
+  {
+    order: 54,
+    price: 5,
+    calories: 260,
+    featured: false,
+    image: localAsset('dish-southern-bread.webp'),
+    nameEn: 'Southern Bread',
+    nameAr: 'خبز جنوبي',
+    descriptionEn: 'Fresh-baked traditional southern bread',
+    descriptionAr: 'خبز جنوبي طازج تقليدي',
+    categoryName: 'Sides'
+  },
+  {
+    order: 55,
+    price: 10,
+    calories: 90,
+    featured: false,
+    image: localAsset('photo-tomato-relish.webp'),
+    nameEn: 'Green Salad',
+    nameAr: 'سلطة خضراء',
+    descriptionEn: 'Crisp seasonal green salad',
+    descriptionAr: 'سلطة خضراء طازجة',
+    categoryName: 'Salads'
+  },
+  {
+    order: 56,
+    price: 10,
+    calories: 120,
+    featured: false,
+    image: localAsset('dish-tea.webp'),
+    nameEn: 'Laban Khiyar',
+    nameAr: 'لبن خيار',
+    descriptionEn: 'Cucumber and yogurt salad',
+    descriptionAr: 'سلطة اللبن والخيار',
+    categoryName: 'Drinks'
+  },
+  {
+    order: 57,
+    price: 4,
+    calories: 170,
+    featured: false,
+    image: localAsset('photo-tomato-relish.webp'),
+    nameEn: 'Samtara',
+    nameAr: 'سومطرة',
+    descriptionEn: 'Traditional Saudi vegetable salad',
+    descriptionAr: 'سلطة سعودية تقليدية',
+    categoryName: 'Salads'
+  },
+  {
+    order: 58,
+    price: 4,
+    calories: 70,
+    featured: false,
+    image: localAsset('photo-tomato-relish.webp'),
+    nameEn: 'Spicy Salad',
+    nameAr: 'سلطة حارة',
+    descriptionEn: 'Chopped salad with a spiced dressing',
+    descriptionAr: 'سلطة مفرومة مع تتبيلة حارة',
+    categoryName: 'Salads'
+  },
+  {
+    order: 59,
+    price: 4,
+    calories: 180,
+    featured: false,
+    image: localAsset('photo-tomato-relish.webp'),
+    nameEn: 'Tahini',
+    nameAr: 'طحينة',
+    descriptionEn: 'Traditional sesame tahini dip',
+    descriptionAr: 'طحينة تقليدية',
+    categoryName: 'Salads'
+  },
+  {
+    order: 60,
+    price: 5,
+    calories: 160,
+    featured: false,
+    image: localAsset('dish-tea.webp'),
+    nameEn: 'Laban Samdan',
+    nameAr: 'لبن سمدان',
+    descriptionEn: 'Our house-style traditional buttermilk',
+    descriptionAr: 'لبن سمدان التقليدي الخاص بنا',
+    categoryName: 'Drinks'
+  },
+  {
+    order: 61,
+    price: 4,
+    calories: 132,
+    featured: false,
+    image: localAsset('dish-tea.webp'),
+    nameEn: 'Soft Drink',
+    nameAr: 'مشروب غازي',
+    descriptionEn: 'Assorted soft drinks',
+    descriptionAr: 'مشروبات غازية متنوعة',
+    categoryName: 'Drinks'
+  },
+  {
+    order: 62,
+    price: 4,
+    calories: 175,
+    featured: false,
+    image: localAsset('dish-tea.webp'),
+    nameEn: 'Al-Qarya Laban',
+    nameAr: 'لبن القرية',
+    descriptionEn: 'Chilled traditional laban',
+    descriptionAr: 'لبن القرية بارد',
+    categoryName: 'Drinks'
+  },
+  {
+    order: 63,
+    price: 2,
+    calories: 120,
+    featured: false,
+    image: localAsset('dish-tea.webp'),
+    nameEn: 'Almarai Laban',
+    nameAr: 'لبن مراعي',
+    descriptionEn: 'Chilled Almarai laban',
+    descriptionAr: 'لبن مراعي بارد',
+    categoryName: 'Drinks'
+  },
+  {
+    order: 64,
+    price: 1,
+    calories: undefined,
+    featured: false,
+    image: localAsset('dish-tea.webp'),
+    nameEn: 'Water',
+    nameAr: 'ماء',
+    descriptionEn: 'Bottled water',
+    descriptionAr: 'مياه معدنية',
+    categoryName: 'Drinks'
+  },
+  {
+    order: 65,
+    price: 3,
+    calories: 2,
+    featured: false,
+    image: localAsset('dish-tea.webp'),
+    nameEn: 'Tea',
+    nameAr: 'شاهي تلقيمة',
+    descriptionEn: 'Traditional Saudi tea',
+    descriptionAr: 'شاهي سعودي تقليدي',
+    categoryName: 'Drinks'
+  },
+  {
+    order: 66,
+    price: 20,
+    calories: 220,
+    featured: false,
+    image: localAsset('dish-tea.webp'),
+    nameEn: 'Arabic Coffee Pot with Dates',
+    nameAr: 'دلة مع التمر',
+    descriptionEn: 'Traditional dallah of qahwa served with premium dates',
+    descriptionAr: 'دلة قهوة عربية تقدم مع أجود أنواع التمر',
+    categoryName: 'Drinks'
+  },
+  {
+    order: 67,
+    price: 10,
+    calories: 560,
+    featured: true,
+    image: localAsset('photo-breakfast-spread-1.webp'),
+    nameEn: 'Kunafa',
+    nameAr: 'كنافة',
+    descriptionEn: 'Crisp shredded pastry with cheese and syrup',
+    descriptionAr: 'كنافة مقرمشة بالجبن والقطر',
+    categoryName: 'Desserts'
+  },
+  {
+    order: 68,
+    price: 10,
+    calories: 290,
+    featured: false,
+    image: localAsset('photo-breakfast-spread-1.webp'),
+    nameEn: 'Crème Caramel',
+    nameAr: 'كريم كراميل',
+    descriptionEn: 'Silky caramel custard dessert',
+    descriptionAr: 'حلا الكريم كرميل الحريري',
+    categoryName: 'Desserts'
+  },
+  {
+    order: 69,
+    price: 30,
+    calories: 580,
+    featured: false,
+    image: localAsset('photo-najdi-breakfast-table.webp'),
+    nameEn: 'Mabthoutha Janoubia',
+    nameAr: 'مبثوثة جنوبية',
+    descriptionEn: 'Traditional southern-style bread and meat mash',
+    descriptionAr: 'طبق تقليدي من الخبز واللحم المهروس على الطريقة الجنوبية',
+    categoryName: 'Traditional Dishes'
+  },
+  {
+    order: 70,
+    price: 30,
+    calories: 520,
+    featured: false,
+    image: localAsset('photo-najdi-breakfast-table.webp'),
+    nameEn: 'Thareef Dakhn',
+    nameAr: 'ثريف دخن',
+    descriptionEn: 'Traditional millet thareef bread dish',
+    descriptionAr: 'طبق ثريد تقليدي من خبز الدخن',
+    categoryName: 'Traditional Dishes'
+  },
+  {
+    order: 71,
+    price: 20,
+    calories: 450,
+    featured: false,
+    image: localAsset('photo-sadu-interior.jpg'),
+    nameEn: 'Masabib',
+    nameAr: 'مصابيب',
+    descriptionEn: 'Traditional Saudi pancake-style bread',
+    descriptionAr: 'طبق مصابيب تقليدي، فطائر سعودية',
+    categoryName: null
+  },
+  {
+    order: 72,
+    price: 9,
+    calories: 280,
+    featured: false,
+    image: localAsset('photo-sadu-interior.jpg'),
+    nameEn: 'Hummus',
+    nameAr: 'حمص',
+    descriptionEn: 'A creamy, savory dip made from blended chickpeas, tahini, lemon juice, and garlic.',
+    descriptionAr: 'غموس كريمي لذيذ مصنوع من الحمص المهروس، الطحينة، عصير الليمون، والثوم',
+    categoryName: null
+  },
+  {
+    order: 73,
+    price: 9,
+    calories: 220,
+    featured: false,
+    image: localAsset('photo-sadu-interior.jpg'),
+    nameEn: 'Mutabbal',
+    nameAr: 'متبل',
+    descriptionEn: 'A smoky, creamy dip made from roasted eggplant, tahini, yogurt, and garlic.',
+    descriptionAr: 'غموس كريمي بنكهة مدخنة مصنوع من الباذنجان المشوي، الطحينة، اللبن، والثوم',
+    categoryName: null
+  },
+  {
+    order: 74,
+    price: 9,
+    calories: 180,
+    featured: false,
+    image: localAsset('photo-sadu-interior.jpg'),
+    nameEn: 'Baba Ghanouj',
+    nameAr: 'بابا غنوج',
+    descriptionEn: 'A smoky, chunky dip made from roasted eggplant, tomatoes, bell peppers, onions, and pomegranate molasses',
+    descriptionAr: 'مقبلات شهية بقوام خشن ونكهة مدخنة مصنوعة من الباذنجان المشوي، الطماطم، الفلفل، البصل، ودبس الرمان',
+    categoryName: null
+  },
+  {
+    order: 75,
+    price: 10,
+    calories: 240,
+    featured: false,
+    image: localAsset('photo-sadu-interior.jpg'),
+    nameEn: 'Stuffed Wine Leaves',
+    nameAr: 'ورق عنب',
+    descriptionEn: 'Tender vine leaves stuffed with a savory mixture of rice, fresh herbs, and warm spices.',
+    descriptionAr: 'ورق عنب طري محشي بمزيج شهي من الأرز، الأعشاب الطازجة، والبهارات الدافئة',
+    categoryName: null
+  },
+  {
+    order: 76,
+    price: 15,
+    calories: 180,
+    featured: false,
+    image: localAsset('photo-sadu-interior.jpg'),
+    nameEn: 'Samdan Salad',
+    nameAr: 'سلطة سمدان',
+    descriptionEn: 'Crisp seasonal green salad',
+    descriptionAr: 'سلطة خضراء طازجة',
+    categoryName: null
+  },
+  {
+    order: 77,
+    price: 10,
+    calories: 90,
+    featured: false,
+    image: localAsset('photo-sadu-interior.jpg'),
+    nameEn: 'Home Salad',
+    nameAr: 'سلطة البيت',
+    descriptionEn: 'Crisp seasonal green salad',
+    descriptionAr: 'سلطة خضراء طازجة',
+    categoryName: null
+  },
+  {
+    order: 78,
+    price: 8,
+    calories: 180,
+    featured: false,
+    image: localAsset('photo-sadu-interior.jpg'),
+    nameEn: 'Tabbouleh',
+    nameAr: 'تبوله',
+    descriptionEn: 'A refreshing, herb-forward salad made with finely chopped parsley, mint, tomatoes, bulgur, and a zesty lemon-olive oil dressing.',
+    descriptionAr: 'سلطة منعشة وغنية بالأعشاب مصنوعة من البقدونس المفروم فرماً ناعماً، النعناع، الطماطم، البرغل، وتتبيلة الليمون وزيت الزيتون',
+    categoryName: null
+  },
+  {
+    order: 0,
+    price: 4,
+    calories: undefined,
+    featured: false,
+    image: localAsset('photo-hummus-meat.webp'),
+    nameEn: 'Hummus',
+    nameAr: 'حمص',
+    descriptionEn: 'Additional item with breakfast',
+    descriptionAr: 'عنصر إضافي مع وجبة الإفطار',
+    categoryName: 'Add-ons'
+  },
+  {
+    order: 0,
+    price: 4,
+    calories: undefined,
+    featured: false,
+    image: localAsset('photo-hummus-meat.webp'),
+    nameEn: 'Cheese',
+    nameAr: 'جبن',
+    descriptionEn: 'Additional item with breakfast',
+    descriptionAr: 'عنصر إضافي مع وجبة الإفطار',
+    categoryName: 'Add-ons'
+  }
 ];
-
-const items = MENU_ROWS.map(([enName, arName, enDesc, arDesc, catKey, price, calories, imageKey, featured], index) => ({
-  order: index + 1,
-  price,
-  calories: calories || undefined,
-  featured: !!featured,
-  image: IMAGES[imageKey],
-  nameEn: enName,
-  nameAr: arName,
-  descriptionEn: enDesc,
-  descriptionAr: arDesc,
-  categoryName: CATEGORY_NAME_BY_KEY[catKey]
-}));
 
 const carouselSlides = [
   {
@@ -226,7 +1068,7 @@ const carouselSlides = [
   {
     order: 2,
     isActive: true,
-    image: IMAGES.lambKabsa,
+    image: localAsset('dish-kabda-baladi.webp'),
     badgeEn: 'Signature Dish',
     titleEn: 'Lamb Kabsa',
     subtitleEn: 'Tender lamb slow-cooked with heirloom spices over saffron rice.',
@@ -237,7 +1079,7 @@ const carouselSlides = [
   {
     order: 3,
     isActive: true,
-    image: IMAGES.hejaziMandi,
+    image: localAsset('photo-nawashef.webp'),
     badgeEn: "Chef's Pick",
     titleEn: 'Hejazi Mandi',
     subtitleEn: 'Slow-roasted lamb with smoky flavors and crispy fried onions.',
@@ -254,10 +1096,10 @@ const branches = [
     order: 1,
     nameEn: 'SAMDAN — Qurtubah',
     nameAr: 'سمدان - قرطبة',
-    locationEn: 'Khalid bin Al Waleed Street, Qurtubah, Riyadh, Saudi Arabia',
-    locationAr: 'شارع خالد بن الوليد، قرطبة، الرياض، المملكة العربية السعودية',
-    hoursEn: 'Daily 12:00 PM – 12:00 AM',
-    hoursAr: 'يومياً ١٢:٠٠ ظهراً - ١٢:٠٠ منتصف الليل',
+    locationEn: 'Saeed bin Zaid Street, Qurtubah, Riyadh, Saudi Arabia',
+    locationAr: 'طريق سعيد بن زيد، قرطبة، الرياض، المملكة العربية السعودية',
+    hoursEn: '24 Hours | Daily',
+    hoursAr: 'مفتوح 24 ساعة يومياً',
     image: localAsset('photo-najdi-architecture.jpg'),
     mapsLink: `https://maps.google.com/?q=${encodeURIComponent(MAP_QUERY)}`
   }
@@ -267,12 +1109,12 @@ const galleryImages = [
   { order: 1, image: localAsset('photo-najdi-architecture.jpg'), captionEn: 'Najdi Architecture', captionAr: 'العمارة النجدية' },
   { order: 2, image: localAsset('photo-sadu-interior.jpg'), captionEn: 'Sadu-Inspired Interior', captionAr: 'الديكور المستوحى من السدو' },
   { order: 3, image: localAsset('photo-riyadh-skyline.jpg'), captionEn: 'SAMDAN, Riyadh', captionAr: 'سمدان، الرياض' },
-  { order: 4, image: IMAGES.hejaziMandi, captionEn: 'Hejazi Mandi', captionAr: 'مندي حجازي' },
-  { order: 5, image: IMAGES.lambKabsa, captionEn: 'Lamb Kabsa', captionAr: 'كبسة لحم' },
-  { order: 6, image: IMAGES.kabsaMashawi, captionEn: 'Kabsa Mashawi', captionAr: 'كبسة مشاوي' },
-  { order: 7, image: IMAGES.saleeg, captionEn: 'Saleeg', captionAr: 'سليق' },
-  { order: 8, image: IMAGES.coffeeDates, captionEn: 'Arabic Coffee & Dates', captionAr: 'قهوة عربية وتمر' },
-  { order: 9, image: IMAGES.luqaimat, captionEn: 'Luqaimat', captionAr: 'لقيمات' }
+  { order: 4, image: localAsset('photo-nawashef.webp'), captionEn: 'Hejazi Mandi', captionAr: 'مندي حجازي' },
+  { order: 5, image: localAsset('dish-kabda-baladi.webp'), captionEn: 'Lamb Kabsa', captionAr: 'كبسة لحم' },
+  { order: 6, image: localAsset('photo-najdi-breakfast-table.webp'), captionEn: 'Kabsa Mashawi', captionAr: 'كبسة مشاوي' },
+  { order: 7, image: localAsset('photo-breakfast-spread-1.webp'), captionEn: 'Saleeg', captionAr: 'سليق' },
+  { order: 8, image: localAsset('dish-tea.webp'), captionEn: 'Arabic Coffee & Dates', captionAr: 'قهوة عربية وتمر' },
+  { order: 9, image: localAsset('photo-hummus-meat.webp'), captionEn: 'Luqaimat', captionAr: 'لقيمات' }
 ];
 
 module.exports = { items, categories: CATEGORIES, pageHeroes, carouselSlides, branches, galleryImages };
