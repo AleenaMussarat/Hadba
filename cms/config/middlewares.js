@@ -6,6 +6,9 @@ module.exports = [
     name: 'strapi::cors',
     config: {
       origin: [
+        'https://samdan.sa',
+        'https://www.samdan.sa',
+        'https://samdan-sa-868953.hostingersite.com',
         'https://samdan.vercel.app',
         'http://localhost:5173',
       ],
