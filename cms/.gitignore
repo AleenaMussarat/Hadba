@@ -126,6 +126,12 @@ license.txt
 exports
 .strapi
 dist
-build
 .strapi-updater.json
 .strapi-cloud.json
+
+# NOTE: cms/build/ (the compiled admin panel) is intentionally committed.
+# Hostinger's Node deploy produced an inconsistent admin bundle (duplicate
+# @strapi/admin -> "useRBAC must be used within Auth"), so the panel is built
+# locally with `npm run build` and shipped in the repo instead. After ANY
+# change to src/admin/** or a Strapi version bump, re-run `npm run build` in
+# cms/ and commit the updated build/ folder.
