@@ -192,6 +192,7 @@ const buildMenuItems = (lang) =>
 
 export const translations = {
   en: {
+    documentTitle: 'SAMDAN · Saudi Heritage Dining',
     nav: {
       home: 'Home',
       about: 'Our Story',
@@ -343,6 +344,7 @@ export const translations = {
     }
   },
   ar: {
+    documentTitle: 'سَمْدَان · أصالة الضيافة السعودية',
     nav: {
       home: 'الرئيسية',
       about: 'قصتنا',

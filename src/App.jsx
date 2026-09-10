@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { LanguageProvider, getLanguageDir } from './i18n'
+import { translations } from './i18n/translations'
 import Navbar from './components/Navbar'
 import PageBorders from './components/PageBorders'
 import Hero from './components/Hero'
@@ -38,6 +39,13 @@ function App() {
 
     return () => link.remove()
   }, [])
+
+  // Keep the browser-tab title in the active language (the static one in
+  // index.html only covers the first paint, before React mounts).
+  useEffect(() => {
+    const t = translations[currentLang] || translations.en
+    if (t.documentTitle) document.title = t.documentTitle
+  }, [currentLang])
 
   // One smooth-scroll instance for the whole site (not just pages that
   // happen to mount ScrollStack) — see src/lib/smoothScroll.js.

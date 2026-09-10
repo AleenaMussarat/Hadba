@@ -1,6 +1,7 @@
 'use strict';
 
 const seed = require('./seed');
+const { backfillMissingImages } = require('./seed');
 
 module.exports = {
   /**
@@ -25,8 +26,10 @@ module.exports = {
     // with local files. On a host with a process startup timeout, that risks
     // the app being killed before it ever binds a port. Run seeding in the
     // background instead so the server starts listening immediately.
-    seed({ strapi }).catch((err) => {
-      strapi.log.error('[seed] Background seeding failed:', err);
-    });
+    seed({ strapi })
+      .then(() => backfillMissingImages(strapi))
+      .catch((err) => {
+        strapi.log.error('[seed] Background seeding failed:', err);
+      });
   },
 };

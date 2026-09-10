@@ -27,8 +27,43 @@ process.on('unhandledRejection', (err) => {
   process.exit(1);
 });
 
+// Persist uploaded media across deploys. Hostinger (and most PaaS) give each
+// deploy a fresh directory tree, so the default <appDir>/public/uploads is
+// wiped on every redeploy. When UPLOADS_PATH points at a directory OUTSIDE
+// the deploy tree (e.g. /home/<user>/domains/<site>/persistent_uploads),
+// symlink public/uploads to it so the local upload provider reads/writes the
+// persistent location. No-op locally when UPLOADS_PATH is unset.
+function linkPersistentUploads() {
+  const target = process.env.UPLOADS_PATH;
+  const localUploads = path.join(__dirname, 'public', 'uploads');
+
+  if (!target) {
+    fs.mkdirSync(localUploads, { recursive: true });
+    return;
+  }
+
+  fs.mkdirSync(target, { recursive: true });
+
+  let current = null;
+  try {
+    current = fs.lstatSync(localUploads);
+  } catch (e) {
+    // localUploads doesn't exist yet — fine
+  }
+
+  if (current) {
+    if (current.isSymbolicLink() && fs.realpathSync(localUploads) === fs.realpathSync(target)) {
+      return; // already linked to the right place
+    }
+    fs.rmSync(localUploads, { recursive: true, force: true });
+  }
+
+  fs.symlinkSync(target, localUploads, 'dir'); // type ignored on Linux
+  console.log(`[server.js] uploads -> ${target}`);
+}
+
 try {
-  fs.mkdirSync(path.join(__dirname, 'public', 'uploads'), { recursive: true });
+  linkPersistentUploads();
 
   const { createStrapi } = require('@strapi/strapi');
 

@@ -171,6 +171,55 @@ async function seedPageHeroes(strapi) {
   }
 }
 
+// Re-attach a media file to records whose image relation is empty. Media
+// files live on disk and can be lost independently of the database (a host
+// that wipes the upload directory on redeploy, a manual Media Library purge),
+// which leaves every content row pointing at a file that 404s. This walks the
+// image-bearing collections, and for any row with no image, uploads the
+// matching source asset from src/seed-data.js and links it. Only ever fills a
+// blank — never replaces an image an admin set.
+async function backfillMissingImages(strapi) {
+  const jobs = [
+    { uid: 'api::page-hero.page-hero', field: 'backgroundImage', source: pageHeroes,
+      match: (row) => pageHeroes.find((h) => h.pageKey === row.pageKey),
+      name: (row) => `page-hero-${row.pageKey}.jpg` },
+    { uid: 'api::carousel-slide.carousel-slide', field: 'image', source: carouselSlides,
+      match: (row) => carouselSlides.find((s) => s.titleEn === row.titleEn),
+      name: (row) => `carousel-${row.id}.jpg` },
+    { uid: 'api::branch.branch', field: 'image', source: branches,
+      match: (row) => branches.find((b) => b.nameEn === row.nameEn) || branches[0],
+      name: (row) => `branch-${row.id}.jpg` },
+    { uid: 'api::gallery-image.gallery-image', field: 'image', source: galleryImages,
+      match: (row, i) => galleryImages[i] || galleryImages[0],
+      name: (row) => `gallery-${row.id}.jpg` },
+    { uid: 'api::menu-item.menu-item', field: 'image', source: items,
+      match: (row) => items.find((it) => it.nameEn === row.nameEn),
+      name: (row) => `${row.nameEn}.jpg` },
+  ];
+
+  let filled = 0;
+  for (const job of jobs) {
+    const rows = await strapi.documents(job.uid).findMany({ populate: [job.field] });
+    for (let i = 0; i < rows.length; i += 1) {
+      const row = rows[i];
+      if (row[job.field]) continue;
+      const seedRow = job.match(row, i);
+      if (!seedRow || !seedRow.image) continue;
+      try {
+        const media = await uploadImage(strapi, seedRow.image, job.name(row));
+        await strapi.documents(job.uid).update({
+          documentId: row.documentId,
+          data: { [job.field]: media.id },
+        });
+        filled += 1;
+      } catch (err) {
+        strapi.log.warn(`[seed] backfill image failed for ${job.uid} ${row.documentId}: ${err.message}`);
+      }
+    }
+  }
+  if (filled > 0) strapi.log.info(`[seed] Backfilled ${filled} missing image(s).`);
+}
+
 module.exports = async function seed({ strapi }) {
   await setPublicPermissions(strapi);
   await ensureArabicLocale(strapi);
@@ -270,3 +319,5 @@ module.exports = async function seed({ strapi }) {
 
   strapi.log.info('[seed] Done.');
 };
+
+module.exports.backfillMissingImages = backfillMissingImages;
