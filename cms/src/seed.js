@@ -188,6 +188,11 @@ function mediaFileIsMissing(strapi, media) {
 // Never replaces an image whose file is actually present (so admin uploads and
 // the real menu photos are left alone).
 async function backfillMissingImages(strapi) {
+  // Menu items fall back to the SAMDAN logo rather than a stand-in food photo:
+  // a real per-item photo replaces it later, and a logo is honest about "no
+  // photo yet" where a mismatched dish photo would mislead.
+  const logoAsset = path.join(__dirname, 'admin', 'assets', 'logo-red.png');
+
   const jobs = [
     { uid: 'api::page-hero.page-hero', field: 'backgroundImage', source: pageHeroes,
       match: (row) => pageHeroes.find((h) => h.pageKey === row.pageKey),
@@ -202,13 +207,16 @@ async function backfillMissingImages(strapi) {
       match: (row, i) => galleryImages[i] || galleryImages[0],
       name: (row) => `gallery-${row.id}.jpg` },
     { uid: 'api::menu-item.menu-item', field: 'image', source: items,
-      match: (row) => items.find((it) => it.nameEn === row.nameEn),
-      name: (row) => `${row.nameEn}.jpg` },
+      match: () => ({ image: logoAsset }),
+      name: () => 'menu-item-logo.png',
+      // one shared upload for every item that needs the logo fallback
+      reuse: true },
   ];
 
   let filled = 0;
   for (const job of jobs) {
     const rows = await strapi.documents(job.uid).findMany({ populate: [job.field] });
+    let reused = null;
     for (let i = 0; i < rows.length; i += 1) {
       const row = rows[i];
       const linked = row[job.field];
@@ -216,7 +224,10 @@ async function backfillMissingImages(strapi) {
       const seedRow = job.match(row, i);
       if (!seedRow || !seedRow.image) continue;
       try {
-        const media = await uploadImage(strapi, seedRow.image, job.name(row));
+        const media = job.reuse && reused
+          ? reused
+          : await uploadImage(strapi, seedRow.image, job.name(row));
+        if (job.reuse) reused = media;
         await strapi.documents(job.uid).update({
           documentId: row.documentId,
           data: { [job.field]: media.id },
