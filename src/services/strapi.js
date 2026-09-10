@@ -1,5 +1,10 @@
 const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337'
-const FETCH_TIMEOUT_MS = 2500
+// The CMS runs as a Node app behind a proxy that cold-starts it after idle
+// periods (first request can take 20-40s). A short timeout here means the
+// first visitor after a lull always gets the static fallback; 12s covers a
+// warm-but-slow response without hanging the page for too long on a genuinely
+// unreachable CMS. A keep-warm cron on the CMS side keeps cold starts rare.
+const FETCH_TIMEOUT_MS = 12000
 
 async function strapiFetch(path) {
   const controller = new AbortController()

@@ -651,6 +651,7 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   'Badge (Ar)': 'الشارة (AR)',
   'Badge (En)': 'الشارة (EN)',
   'isActive': 'نشط',
+  'Is Active': 'نشط',
   'Subtitle (Ar)': 'العنوان الفرعي (AR)',
   'Subtitle (En)': 'العنوان الفرعي (EN)',
   'Title (Ar)': 'العنوان (AR)',
@@ -667,6 +668,7 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   'createdAt': 'تاريخ الإنشاء',
   'createdBy': 'أنشأ بواسطة',
   'displayLabel': 'التسمية المعروضة',
+  'Display Label': 'التسمية المعروضة',
   'id': 'المعرف',
   'menuItems': 'عناصر القائمة',
   'name(Ar)': 'الاسم (AR)',
@@ -678,6 +680,8 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   // Menu Item fields (legacy category enum + relation + description).
   'categoryAr': 'الفئة (AR)',
   'categoryEn': 'الفئة (EN)',
+  'Category (Ar)': 'الفئة (AR)',
+  'Category (En)': 'الفئة (EN)',
   'Description (Ar)': 'الوصف (AR)',
   'Description (En)': 'الوصف (EN)',
   'menuCategory': 'فئة القائمة',
@@ -687,6 +691,7 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
 
   // Page Hero fields.
   'backgroundImage': 'صورة الخلفية',
+  'Background Image': 'صورة الخلفية',
   'Page Name': 'اسم الصفحة',
   'subtitleAr': 'العنوان الفرعي (AR)',
   'subtitleEn': 'العنوان الفرعي (EN)',
@@ -765,6 +770,7 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   'Drag & Drop here or browse': 'اسحب وأفلت هنا أو تصفح',
   'browse': 'تصفح',
   'Selected files': 'الملفات المحددة',
+  "click to add an asset or drag and drop one in this area": "انقر لإضافة أصل أو قم بسحبه وإسقاطه في هذه المنطقة",
   'Add folder': 'إضافة مجلد',
   'Add more assets': 'إضافة المزيد من الوسائط',
   'Manage the assets before adding them to the Media Library':

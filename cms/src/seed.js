@@ -65,6 +65,7 @@ async function setPublicPermissions(strapi) {
     'api::gallery-image.gallery-image.find',
     'api::gallery-image.gallery-image.findOne',
     'api::site-setting.site-setting.find',
+    'api::reservation-setting.reservation-setting.find',
     // Create-only — the public can submit an inquiry but never list/read
     // other people's submissions back out through the API.
     'api::inquiry.inquiry.create'
@@ -171,13 +172,21 @@ async function seedPageHeroes(strapi) {
   }
 }
 
-// Re-attach a media file to records whose image relation is empty. Media
-// files live on disk and can be lost independently of the database (a host
-// that wipes the upload directory on redeploy, a manual Media Library purge),
-// which leaves every content row pointing at a file that 404s. This walks the
-// image-bearing collections, and for any row with no image, uploads the
-// matching source asset from src/seed-data.js and links it. Only ever fills a
-// blank — never replaces an image an admin set.
+// True when a media row's underlying file is gone from disk. Media files live
+// on disk and can be lost independently of the database (a host that wipes the
+// upload directory on redeploy, a manual purge), leaving content rows pointing
+// at a file that 404s. Only meaningful for the local provider.
+function mediaFileIsMissing(strapi, media) {
+  if (!media || media.provider !== 'local' || !media.url) return false;
+  const rel = media.url.replace(/^\//, '');
+  return !fs.existsSync(path.join(strapi.dirs.static.public, rel));
+}
+
+// Re-attach a media file to records whose image is empty OR whose linked file
+// has vanished from disk. Walks the image-bearing collections and, for any such
+// row, uploads the matching source asset from src/seed-data.js and links it.
+// Never replaces an image whose file is actually present (so admin uploads and
+// the real menu photos are left alone).
 async function backfillMissingImages(strapi) {
   const jobs = [
     { uid: 'api::page-hero.page-hero', field: 'backgroundImage', source: pageHeroes,
@@ -202,7 +211,8 @@ async function backfillMissingImages(strapi) {
     const rows = await strapi.documents(job.uid).findMany({ populate: [job.field] });
     for (let i = 0; i < rows.length; i += 1) {
       const row = rows[i];
-      if (row[job.field]) continue;
+      const linked = row[job.field];
+      if (linked && !mediaFileIsMissing(strapi, linked)) continue;
       const seedRow = job.match(row, i);
       if (!seedRow || !seedRow.image) continue;
       try {
@@ -211,6 +221,10 @@ async function backfillMissingImages(strapi) {
           documentId: row.documentId,
           data: { [job.field]: media.id },
         });
+        if (linked) {
+          // drop the now-orphaned record that pointed at the vanished file
+          await strapi.db.query('plugin::upload.file').delete({ where: { id: linked.id } }).catch(() => {});
+        }
         filled += 1;
       } catch (err) {
         strapi.log.warn(`[seed] backfill image failed for ${job.uid} ${row.documentId}: ${err.message}`);
