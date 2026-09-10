@@ -55,16 +55,7 @@
   "LanguagePicker": {
     "languages": {
       "en": "English",
-      "ar": "العربية",
-      "fr": "Français",
-      "de": "Deutsch",
-      "es": "Español",
-      "it": "Italiano",
-      "pt": "Português",
-      "ru": "Русский",
-      "zh": "简体中文",
-      "ja": "日本語",
-      "ko": "한국어"
+      "ar": "العربية"
     }
   },
   "GlobalSearch": {
@@ -171,6 +162,8 @@
       "price": "السعر",
       "featured": "مميز",
       "image": "الصورة",
+      "Image": "الصورة",
+      "click to add an asset or drag and drop one in this area": "انقر لإضافة أصل أو قم بسحبه وإسقاطه في هذه المنطقة",
       "slug": "الرابط",
       "order": "الترتيب"
     }
@@ -181,12 +174,16 @@
     "descriptionEn": "الوصف (EN)",
     "descriptionAr": "الوصف (AR)",
     "categoryEn": "الفئة (EN)",
+    "Category (En)": "الفئة (EN)",
     "categoryAr": "الفئة (AR)",
+    "Category (Ar)": "الفئة (AR)",
     "locationEn": "الموقع (EN)",
     "locationAr": "الموقع (AR)",
     "hoursEn": "الساعات (EN)",
     "hoursAr": "الساعات (AR)",
     "image": "الصورة",
+    "Image": "الصورة",
+    "click to add an asset or drag and drop one in this area": "انقر لإضافة أصل أو قم بسحبه وإسقاطه في هذه المنطقة",
     "mapsLink": "رابط الخرائط",
     "price": "السعر",
     "calories": "السعرات الحرارية",
@@ -198,7 +195,14 @@
     "subtitleEn": "العنوان الفرعي (EN)",
     "subtitleAr": "العنوان الفرعي (AR)",
     "order": "الترتيب",
-    "isActive": "مفعل"
+    "isActive": "مفعل",
+    "Is Active": "مفعل",
+    "new": "جديد",
+    "contacted": "تم الاتصال",
+    "confirmed": "تم التأكيد",
+    "Display Label": "اسم العرض",
+    "Menu Items": "عناصر القائمة",
+    "Page": "الصفحة"
   },
   "navigation": {
     "home": "الرئيسية",
