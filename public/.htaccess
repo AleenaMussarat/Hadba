@@ -1,0 +1,18 @@
+# React Router uses real browser paths (/menu, /about, ...). Without this,
+# a hard refresh or a direct link to anything but "/" asks the server for a
+# literal file that doesn't exist. This is the Hostinger/LiteSpeed equivalent
+# of the "rewrites" block in the old vercel.json — serve real files/folders
+# (JS, CSS, images) as-is, and fall back to index.html for everything else so
+# React Router can take over client-side.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  RewriteRule ^index\.html$ - [L]
+
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  RewriteRule ^ /index.html [L]
+</IfModule>
