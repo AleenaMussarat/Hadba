@@ -38,6 +38,16 @@ function linkPersistentUploads() {
   const localUploads = path.join(__dirname, 'public', 'uploads');
 
   if (!target) {
+    // Loud on purpose: this is silent data loss waiting to happen — every
+    // file uploaded in this state lives only in this deploy's ephemeral
+    // tree and disappears on the next redeploy. It printed exactly this way
+    // once before and went unnoticed until every uploaded image 404'd.
+    console.warn(
+      '[server.js] UPLOADS_PATH is not set — uploads are being stored inside ' +
+        'this deploy tree and will NOT survive the next redeploy. Set ' +
+        'UPLOADS_PATH to a persistent absolute path outside the app/deploy ' +
+        'directory in the host\'s Node.js environment variables.'
+    );
     fs.mkdirSync(localUploads, { recursive: true });
     return;
   }
@@ -53,13 +63,25 @@ function linkPersistentUploads() {
 
   if (current) {
     if (current.isSymbolicLink() && fs.realpathSync(localUploads) === fs.realpathSync(target)) {
+      console.log(`[server.js] uploads already linked -> ${target}`);
       return; // already linked to the right place
     }
     fs.rmSync(localUploads, { recursive: true, force: true });
   }
 
   fs.symlinkSync(target, localUploads, 'dir'); // type ignored on Linux
-  console.log(`[server.js] uploads -> ${target}`);
+
+  // Confirm the link actually resolves and report what's already in it —
+  // an empty count here means the persistent directory itself is empty
+  // (wiped, wrong path, or never had anything written to it), not a
+  // symlink problem, and is worth telling apart in the boot log.
+  let fileCount = 'unknown';
+  try {
+    fileCount = fs.readdirSync(target).length;
+  } catch (e) {
+    console.warn(`[server.js] uploads target ${target} could not be read after linking: ${e.message}`);
+  }
+  console.log(`[server.js] uploads -> ${target} (${fileCount} existing file(s))`);
 }
 
 try {

@@ -79,6 +79,71 @@ const config = {
       'Auth.form.welcome.title': 'مرحباً بكم في سمدان',
       'app.components.LeftMenu.navbrand.title': 'سمدان',
       'app.components.LeftMenu.navbrand.workplace': 'لوحة تحكم المطعم',
+
+      // Strapi's own bundled ar.json for @strapi/content-manager leaves a
+      // handful of keys word-for-word identical to English — not missing (so
+      // the FIXED_PHRASE_TRANSLATIONS_AR/DOM route below never sees "English"
+      // text to rewrite), just untranslated by Strapi itself. Overriding them
+      // here is the only way to actually change what's shown. Found by
+      // diffing node_modules/@strapi/content-manager's en.json against its
+      // ar.json for every notification/hint key.
+      //
+      // Field min/max-length hint ("min. 8 characters" under a text input) —
+      // {min}/{max}/{divider}/{unit}/{br}/{description} are placeholders
+      // substituted by Strapi's own code, not translatable text; the numbers
+      // inside them stay Latin digits automatically since we never touch how
+      // {min}/{max} are formatted, only the surrounding words.
+      'content-manager.form.Input.hint.text':
+        '{min, select, undefined {} other {الحد الأدنى {min}}}{divider}{max, select, undefined {} other {الحد الأقصى {max}}}{unit}{br}{description}',
+      'content-manager.form.Input.hint.character.unit':
+        '{maxValue, plural, zero {} one { حرف} two { حرفين} few { أحرف} many { حرفاً} other { حرفاً}}',
+
+      // Delete/publish/unpublish confirmation toasts and dialogs — the
+      // "Successfully deleted." toast the user reported is
+      // success.records.delete below.
+      'content-manager.actions.delete.dialog.body':
+        'هل أنت متأكد أنك تريد حذف هذا المستند؟ هذا الإجراء لا يمكن التراجع عنه.',
+      'content-manager.actions.delete.error': 'حدث خطأ أثناء محاولة حذف المستند.',
+      'content-manager.actions.delete.label': 'حذف العنصر{isLocalized, select, true { (جميع اللغات)} other {}}',
+      'content-manager.actions.copy-documentId.success': 'تم نسخ معرف المستند إلى الحافظة',
+      'content-manager.actions.unpublish.error': 'حدث خطأ أثناء محاولة إلغاء نشر المستند.',
+      'content-manager.actions.unpublish.dialog.body': 'هل أنت متأكد أنك تريد إلغاء نشر هذا؟',
+      'content-manager.actions.unpublish.dialog.option.keep-draft': 'إلغاء النشر مع الاحتفاظ بآخر مسودة',
+      'content-manager.actions.unpublish.dialog.option.replace-draft': 'إلغاء النشر واستبدال آخر مسودة',
+      'content-manager.popUpWarning.bodyMessage.contentType.publish.all': 'هل أنت متأكد أنك تريد نشر هذه العناصر؟',
+      'content-manager.popUpWarning.bodyMessage.contentType.unpublish.all': 'هل أنت متأكد أنك تريد إلغاء نشر هذه العناصر؟',
+      'content-manager.preview.copy.success': 'تم نسخ رابط المعاينة',
+      // Edit-view page title shown while creating a new entry.
+      'content-manager.containers.edit.title.new': 'إنشاء عنصر',
+      'content-manager.success.record.clone': 'تم نسخ المستند',
+      'content-manager.success.record.discard': 'تم تجاهل التغييرات',
+      'content-manager.success.records.delete': 'تم الحذف بنجاح.',
+      'content-manager.success.records.unpublish': 'تم إلغاء النشر بنجاح.',
+      'content-manager.success.records.publish': 'تم النشر بنجاح.',
+      'content-manager.history.restore.success.title': 'تم استعادة الإصدار.',
+      'content-manager.history.restore.success.message': 'تم استعادة نسخة سابقة من المحتوى.',
+
+      // Media Library toasts — @strapi/upload ships no ar.json at all (see
+      // the comment above the upload dictionary entries further down), so
+      // every one of these is entirely missing rather than mistranslated.
+      'upload.asset-details.update.success': 'تم تحديث الملف',
+      'upload.asset-details.update.error': 'فشل تحديث الملف.',
+      'upload.asset-details.delete.error': 'فشل حذف الملف.',
+      'upload.asset-details.replace.success': 'تم استبدال الملف.',
+      'upload.asset-details.replace.error': 'فشل استبدال الملف.',
+      'upload.asset-details.copy-link.success': 'تم نسخ الرابط.',
+      'upload.upload.generic-error': 'حدث خطأ أثناء رفع الملف.',
+      'upload.upload.progress.success': 'تم الرفع بنجاح!',
+      'upload.upload.progress.success.subtitle':
+        '{count, plural, zero {} one {تم رفع # ملف بنجاح} two {تم رفع # ملفين بنجاح} few {تم رفع # ملفات بنجاح} many {تم رفع # ملفاً بنجاح} other {تم رفع # ملف بنجاح}}',
+      'upload.folder.create.success': 'تم إنشاء المجلد',
+      'upload.folder.create.form.error.unknown': 'حدث خطأ أثناء إنشاء المجلد',
+      'upload.modal.remove.success-label': 'تم حذف العناصر بنجاح.',
+      'upload.modal.move.success-label': 'تم نقل العناصر بنجاح',
+      'upload.modal.move.error-label': 'حدث خطأ أثناء نقل العناصر.',
+      'upload.list.bulk-actions.delete.success':
+        '{count, plural, zero {} one {تم حذف # عنصر} two {تم حذف # عنصرين} few {تم حذف # عناصر} many {تم حذف # عنصراً} other {تم حذف # عنصر}}',
+      'upload.list.bulk-actions.delete.error': 'حدث خطأ أثناء حذف العناصر.',
     },
   },
   tutorials: false,
@@ -624,6 +689,11 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   'Featured': 'مميز',
   'Order': 'الترتيب',
   'Image': 'الصورة',
+  // Page Hero's pageKey field — Strapi auto-humanizes the raw attribute key
+  // for the list column header ("Page Key"), separately from whatever
+  // decorative displayName the schema.json carries.
+  'Page Key': 'مفتاح الصفحة',
+  'Page': 'الصفحة',
   'Created At': 'تاريخ الإنشاء',
   'Updated At': 'تاريخ التحديث',
   'Published At': 'تاريخ النشر',
@@ -1086,19 +1156,38 @@ const installRtlTableAlignmentFix = () => {
 // context, which lets the browser's bidi algorithm insert invisible RTL
 // marks around the "/" separators and reorder the whole value — turning
 // "22/08/2026" into "22‏/08‏/2026" (with a right-to-left mark before each
-// slash). dir="ltr" fixes the internal digit order; text-align is set to
-// right (not left) so the field still sits flush with the right edge of
-// its row, matching the rest of the RTL form — dir and text-align are
-// independent, so an LTR-ordered value can still be right-aligned overall.
+// slash).
+//
+// Setting only the `dir` HTML *attribute* wasn't enough to actually fix the
+// rendering: it maps to a low-specificity UA-stylesheet rule, and Strapi's
+// own styled-components CSS on the field (targeting it by class, not by
+// `[dir]`) can still win and leave `direction: rtl` in effect even with the
+// attribute set. Setting `direction` and `unicode-bidi` as *inline styles*
+// instead guarantees this wins — inline styles beat any class-based rule
+// short of `!important`. `unicode-bidi: plaintext` additionally lets the
+// browser pick direction from the text's own strong characters (all digits
+// here) rather than inheriting the RTL block context, which is what was
+// letting the invisible marks appear around the slashes in the first place.
+// text-align stays right so the field still sits flush with the right edge
+// of its row, matching the rest of the RTL form — direction and text-align
+// are independent, so an LTR-ordered value can still be right-aligned.
+//
+// The value itself may also carry the bidi marks (as real ‎/‏ characters, not
+// just a rendering artifact) once Strapi has reformatted it — strip those
+// before testing so the field is still recognised as a date/time value on
+// every later pass, not just its first, clean one.
+const BIDI_MARKS_RE = /[‎‏؜‪-‮⁦-⁩]/g;
 const DATE_VALUE_RE = /^\d{1,4}[/-]\d{1,2}[/-]\d{1,4}$/;
 const TIME_VALUE_RE = /^\d{1,2}:\d{2}(\s?[AP]M)?$/i;
 
 const fixDateTimeInputDirection = (root) => {
   const inputs = root.querySelectorAll ? root.querySelectorAll('input') : [];
   inputs.forEach((input) => {
-    const value = (input.value || '').trim();
+    const value = (input.value || '').replace(BIDI_MARKS_RE, '').trim();
     if (DATE_VALUE_RE.test(value) || TIME_VALUE_RE.test(value)) {
       if (input.dir !== 'ltr') input.dir = 'ltr';
+      if (input.style.direction !== 'ltr') input.style.direction = 'ltr';
+      if (input.style.unicodeBidi !== 'plaintext') input.style.unicodeBidi = 'plaintext';
       if (input.style.textAlign !== 'right') input.style.textAlign = 'right';
     }
   });
