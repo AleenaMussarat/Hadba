@@ -826,6 +826,102 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   // Menu Items) shows a bare "items" expand link — not part of any bundled
   // locale, so it stays English without this.
   'items': 'عناصر',
+
+  // The Inquiry "Stage" field is a plain enumeration (New/Contacted/
+  // Confirmed/Cancelled) — Strapi always shows an enum's raw option values
+  // verbatim, in both the list column and the edit-form dropdown, with no
+  // locale involved at all.
+  'New': 'جديد',
+  'Contacted': 'تم التواصل',
+  'Confirmed': 'مؤكد',
+  'Cancelled': 'ملغى',
+
+  // Menu Item names. Like menu categories, the menuItem→menuCategory relation
+  // picker (search dropdown, selected chips, "Menu Items (N)" card on the
+  // category side) shows the item's main field, which is nameEn — map every
+  // canonical item (see cms/src/seed-data.js) to its nameAr. "Whole Lamb" is
+  // deliberately omitted: it collides with the category of the same name
+  // above, and only one Arabic side can win a flat exact-match dictionary —
+  // the category's translation was already in place and is the more visible
+  // of the two (shown on every item row), so it takes priority here.
+  'Kabda Baladi': 'كبدة بلدي',
+  'Muqalqal Lahm': 'مقلقل لحم',
+  'Muqalqal Dajaj': 'مقلقل دجاج',
+  'Nawashef': 'نواشف',
+  'Meat Homaisa': 'حميسة لحم',
+  'Homaisa Tuna': 'حميسة تونة',
+  'Shakshuka': 'شكشوكة',
+  'Lahsa': 'لحسة',
+  'Fried Eggs': 'بيض عيون',
+  'Foul': 'فول',
+  'Qishta & Honey': 'قشطة وعسل',
+  'Areeka Janoubia': 'عريكة جنوبية',
+  'Mashghoutha': 'مشغوثة',
+  'Fattah with Ghee & Honey': 'فتة بالسمن والعسل',
+  'Marasa': 'مرسة',
+  'Maksaf': 'مكسف',
+  'Local Ghee': 'سمن بلدي',
+  'Natural Honey': 'عسل طبيعي',
+  'Radeefa': 'رضيفة',
+  'Madhghoot Ghanam (Sella Rice - American Rice)': '(رز مزه - رز امريكي) مضغوط غنم',
+  'Madhghoot Hashi (Sella Rice - American Rice)': '(رز مزه - رز امريكي) مضغوط حاشي',
+  'Arabic Madhghoot Ghanam (American Rice)': '( رز امريكي ) مضغوط عربي غنم',
+  'Arabic Madhghoot Hashi (American Rice)': '( رز امريكي ) مضغوط عربي حاشي',
+  'Kabsa Barriya Ghanam (Peshawar Rice)': '( رز بشاور) كبسة بريه غنم',
+  'Kabsa Barriya Hashi (Peshawar Rice)': '( رز بشاور) كبسة بريه حاشي',
+  'Nafar Haneeth Mathloutha': 'نفر تيس حنيذ مثلوثة',
+  'Nafar Haneeth Saleeg': 'نفر تيس حنيذ سليق',
+  'Nafar Haneeth Shaabi': 'نفر تيس حنيذ شعبي',
+  'Nafar Haneeth Bashawer': 'نفر تيس حنيذ بشاور',
+  'Quarter Goat Haneeth': 'ربع تيس حنيذ',
+  'Half Goat Haneeth': 'نصف تيس حنيذ',
+  'Whole Goat Haneeth': 'تيس كامل حنيذ',
+  'Hashi Haneeth Mathloutha': 'حاشي حنيذ مثلوثة',
+  'Hashi Haneeth Saleeg': 'حاشي حنيذ سليق',
+  'Hashi Haneeth Shaabi': 'حاشي حنيذ شعبي',
+  'Hashi Haneeth Bashawer': 'حاشي حنيذ بشاور',
+  'Whole Chicken (Madhbi-Haneeth)': 'حبة دجاج (مضبي - حنيذ)',
+  'Half Chicken (Madhbi-Haneeth)': 'نصف دجاج (مضبي - حنيذ)',
+  'Quarter Lamb': 'ربع ذبيحة',
+  'Half Lamb': 'نصف ذبيحة',
+  'Rice Bashawer': 'رز بشاور',
+  'Rice Shaabi': 'رز شعبي',
+  'Sahn Qasdeer (Medium)': 'صحن قصدير وسط',
+  'Sahn Qasdeer (Large)': 'صحن قصدير كبير',
+  'Samdan Soup': 'شوربة سمدان',
+  'Meat Samosa': 'سمبوسة لحم',
+  'Jareesh (Side)': 'جريش',
+  'Qursan': 'قرصان',
+  'Musaqqaa': 'مصقعة',
+  'Meat Bamia': 'بامية لحم',
+  'Molokhia': 'ملوخية',
+  'Vegetable Stew': 'ايدام خضار',
+  'Southern Bread': 'خبز جنوبي',
+  'Green Salad': 'سلطة خضراء',
+  'Laban Khiyar': 'لبن خيار',
+  'Samtara': 'سومطرة',
+  'Spicy Salad': 'سلطة حارة',
+  'Tahini': 'طحينة',
+  'Laban Samdan': 'لبن سمدان',
+  'Soft Drink': 'مشروب غازي',
+  'Al-Qarya Laban': 'لبن القرية',
+  'Almarai Laban': 'لبن مراعي',
+  'Water': 'ماء',
+  'Tea': 'شاهي تلقيمة',
+  'Arabic Coffee Pot with Dates': 'دلة مع التمر',
+  'Kunafa': 'كنافة',
+  'Crème Caramel': 'كريم كراميل',
+  'Mabthoutha Janoubia': 'مبثوثة جنوبية',
+  'Thareef Dakhn': 'ثريف دخن',
+  'Masabib': 'مصابيب',
+  'Hummus': 'حمص',
+  'Mutabbal': 'متبل',
+  'Baba Ghanouj': 'بابا غنوج',
+  'Stuffed Wine Leaves': 'ورق عنب',
+  'Samdan Salad': 'سلطة سمدان',
+  'Home Salad': 'سلطة البيت',
+  'Tabbouleh': 'تبوله',
+  'Cheese': 'جبن',
 };
 
 // "Hello Admin" / "Hello Jane" etc. — the greeting is a fixed template with
@@ -843,6 +939,10 @@ const ENTRIES_FOUND_RE = /^(\d+)\s+entr(?:y|ies)\s+found$/i;
 // "Menu Category (1)" — the relation field's card header on the Menu Item
 // edit form, with the live selected-count spliced in the same way.
 const MENU_CATEGORY_HEADER_RE = /^Menu Category(?:\s+\((\d+)\))?$/;
+
+// "Menu Items (2)" — the mirror-image relation card header on the Menu
+// Category edit form.
+const MENU_ITEMS_HEADER_RE = /^Menu Items(?:\s+\((\d+)\))?$/;
 
 // Media Library upload dialog, count templates: "1 asset ready to upload" /
 // "3 assets ready to upload", and the footer button "Upload 1 asset to the
@@ -886,6 +986,9 @@ const pickFixedPhraseTranslation = (text) => {
 
   const menuCategoryMatch = trimmed.match(MENU_CATEGORY_HEADER_RE);
   if (menuCategoryMatch) return menuCategoryMatch[1] ? `فئة القائمة (${menuCategoryMatch[1]})` : 'فئة القائمة';
+
+  const menuItemsMatch = trimmed.match(MENU_ITEMS_HEADER_RE);
+  if (menuItemsMatch) return menuItemsMatch[1] ? `عناصر القائمة (${menuItemsMatch[1]})` : 'عناصر القائمة';
 
   const assetsReadyMatch = trimmed.match(ASSETS_READY_RE);
   if (assetsReadyMatch) return arabicAssetsReady(assetsReadyMatch[1]);

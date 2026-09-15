@@ -49,6 +49,9 @@ const Menu = () => {
   )
   const itemRefs = useRef([])
   const [heroData, setHeroData] = useState(null)
+  // Once a real Strapi fetch has succeeded, stop showing the static fallback
+  // on every subsequent page/category change — see the effect below.
+  const hasLiveData = useRef(false)
 
   useEffect(() => {
     setPage(1)
@@ -102,18 +105,30 @@ const Menu = () => {
       ? activeDynamicCategory.name
       : (activeCategory ? CAT[activeCategory]?.[currentLang] : undefined)
 
-    const fallback = paginateStatic(t.menu.items, categoryName, page)
-    setItems(fallback.items)
-    setPageCount(fallback.pageCount)
+    // Only paint the static fallback ahead of the fetch on the very first
+    // load. It has no relation to the CMS's real item count (different
+    // dataset entirely), so once Strapi has answered even once, using it
+    // again on every later page/category change was flashing a wrong page
+    // count ("x of 9") for an instant before the real one ("x of 10")
+    // replaced it. After that first success, a page/category change just
+    // keeps showing the previous (correct) items/count until the new
+    // fetch resolves, instead of a flash of unrelated fallback data.
+    if (!hasLiveData.current) {
+      const fallback = paginateStatic(t.menu.items, categoryName, page)
+      setItems(fallback.items)
+      setPageCount(fallback.pageCount)
+    }
 
     fetchMenuItems(currentLang, { categoryId, page, pageSize: PAGE_SIZE })
       .then((data) => {
         if (!active) return
+        hasLiveData.current = true
         setItems(data.items)
         setPageCount(data.pageCount)
       })
       .catch(() => {
-        // Strapi unavailable or empty — keep the static fallback already set above.
+        // Strapi unavailable — keep whatever is already on screen (the static
+        // fallback if this was the first load, or the last live data otherwise).
       })
 
     return () => {

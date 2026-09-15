@@ -172,21 +172,32 @@ async function seedPageHeroes(strapi) {
   }
 }
 
-// True when a media row's underlying file is gone from disk. Media files live
-// on disk and can be lost independently of the database (a host that wipes the
-// upload directory on redeploy, a manual purge), leaving content rows pointing
-// at a file that 404s. Only meaningful for the local provider.
+// Diagnostic only, never acted on: true when a media row's underlying file
+// looks absent from disk. This used to also drive auto-replacing the linked
+// image — that was wrong. The check runs against whatever `public/uploads`
+// happens to resolve to on THIS boot (normally a symlink to persistent
+// storage, set up in server.js), and if that symlink is ever momentarily
+// missing, unset, or mid-recreation — a redeploy race, an env var that failed
+// to carry over, anything — every real, still-present photo an admin uploaded
+// looks "missing" for that one boot. Backfill used to read that as "gone,
+// replace it", which deleted real uploaded images and put placeholders in
+// their place — exactly what an admin uploading a real photo would least
+// expect from a background job. Images are now only ever touched by an admin
+// through Strapi; this just logs a warning so a genuine problem is visible
+// without the code taking any destructive action on a check it can't fully
+// trust.
 function mediaFileIsMissing(strapi, media) {
   if (!media || media.provider !== 'local' || !media.url) return false;
   const rel = media.url.replace(/^\//, '');
   return !fs.existsSync(path.join(strapi.dirs.static.public, rel));
 }
 
-// Re-attach a media file to records whose image is empty OR whose linked file
-// has vanished from disk. Walks the image-bearing collections and, for any such
-// row, uploads the matching source asset from src/seed-data.js and links it.
-// Never replaces an image whose file is actually present (so admin uploads and
-// the real menu photos are left alone).
+// Fills in images ONLY for rows that have none at all — never touches a row
+// that already has an image linked, no matter what. Walks the image-bearing
+// collections and, for any row with an empty image field, uploads the
+// matching source asset from src/seed-data.js and links it once. This only
+// ever runs once per row in practice: the moment it's filled (by this or by
+// an admin), the row is never revisited.
 async function backfillMissingImages(strapi) {
   // Menu items fall back to the SAMDAN logo rather than a stand-in food photo:
   // a real per-item photo replaces it later, and a logo is honest about "no
@@ -214,13 +225,29 @@ async function backfillMissingImages(strapi) {
   ];
 
   let filled = 0;
+  let suspect = 0;
   for (const job of jobs) {
     const rows = await strapi.documents(job.uid).findMany({ populate: [job.field] });
     let reused = null;
     for (let i = 0; i < rows.length; i += 1) {
       const row = rows[i];
       const linked = row[job.field];
-      if (linked && !mediaFileIsMissing(strapi, linked)) continue;
+
+      if (linked) {
+        // Never touch a row that already has an image — that image may well
+        // be a real photo an admin uploaded through Strapi. If the file check
+        // says it's missing, that's logged for a human to look at; nothing
+        // here acts on it.
+        if (mediaFileIsMissing(strapi, linked)) {
+          suspect += 1;
+          strapi.log.warn(
+            `[seed] ${job.uid} ${row.documentId} has an image linked (media #${linked.id}, ${linked.url}) ` +
+            'whose file was not found on this boot. Left untouched — check the upload storage if this persists.'
+          );
+        }
+        continue;
+      }
+
       const seedRow = job.match(row, i);
       if (!seedRow || !seedRow.image) continue;
       try {
@@ -232,17 +259,14 @@ async function backfillMissingImages(strapi) {
           documentId: row.documentId,
           data: { [job.field]: media.id },
         });
-        if (linked) {
-          // drop the now-orphaned record that pointed at the vanished file
-          await strapi.db.query('plugin::upload.file').delete({ where: { id: linked.id } }).catch(() => {});
-        }
         filled += 1;
       } catch (err) {
         strapi.log.warn(`[seed] backfill image failed for ${job.uid} ${row.documentId}: ${err.message}`);
       }
     }
   }
-  if (filled > 0) strapi.log.info(`[seed] Backfilled ${filled} missing image(s).`);
+  if (filled > 0) strapi.log.info(`[seed] Filled ${filled} previously-empty image slot(s).`);
+  if (suspect > 0) strapi.log.warn(`[seed] ${suspect} linked image(s) look missing on disk — left untouched, see warnings above.`);
 }
 
 module.exports = async function seed({ strapi }) {
