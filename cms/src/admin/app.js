@@ -336,20 +336,32 @@ const DATE_CORE_SRC = '(January|February|March|April|May|June|July|August|Septem
 const FULL_DATE_RE = new RegExp(`(?:Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday), ${DATE_CORE_SRC}`, 'g');
 const SHORT_DATE_RE = new RegExp(DATE_CORE_SRC, 'g');
 
+// The Arabic interface locale renders dates numerically as YYYY/MM/DD (or with
+// "-"); Eastern Arabic digits are already normalised to Latin by the digit
+// normaliser. Rewrite to the DD/MM/YYYY the rest of the admin uses. The output
+// (DD first) can't re-match a YYYY-first pattern, so this is idempotent.
+const ISO_DATE_RE = /(?<!\d)(\d{4})[/-](\d{1,2})[/-](\d{1,2})(?!\d)/g;
+
 const toDdmmyyyy = (_match, month, day, year) => {
   const mm = String(MONTHS.indexOf(month) + 1).padStart(2, '0');
   const dd = String(day).padStart(2, '0');
   return `${dd}/${mm}/${year}`;
 };
 
-const rewriteDateText = (text) => text.replace(FULL_DATE_RE, toDdmmyyyy).replace(SHORT_DATE_RE, toDdmmyyyy);
+const isoToDdmmyyyy = (_match, year, month, day) =>
+  `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+
+const rewriteDateText = (text) =>
+  text.replace(FULL_DATE_RE, toDdmmyyyy).replace(SHORT_DATE_RE, toDdmmyyyy).replace(ISO_DATE_RE, isoToDdmmyyyy);
 
 const hasDateMatch = (text) => {
   const full = FULL_DATE_RE.test(text);
   FULL_DATE_RE.lastIndex = 0;
   const short = SHORT_DATE_RE.test(text);
   SHORT_DATE_RE.lastIndex = 0;
-  return full || short;
+  const iso = ISO_DATE_RE.test(text);
+  ISO_DATE_RE.lastIndex = 0;
+  return full || short || iso;
 };
 
 const rewriteDateNodesIn = (root) => {
@@ -776,6 +788,44 @@ const FIXED_PHRASE_TRANSLATIONS_AR = {
   'Manage the assets before adding them to the Media Library':
     'قم بإدارة الوسائط قبل إضافتها إلى مكتبة الوسائط',
   'Upload assets': 'رفع الوسائط',
+
+  // Menu category names. The category relation on a Menu Item (list filter,
+  // edit-form dropdown, selected chip) shows the category's main field, which
+  // is the English name — so unlike our "EN / AR" schema labels there's no
+  // Arabic side for the bilingual rewriter to pick. Map each canonical name
+  // (see cms/src/seed-data.js) to its Arabic so the dropdown follows the
+  // interface language.
+  'Breakfast': 'الفطور',
+  'Traditional Dishes': 'الأكلات الشعبية',
+  'Madhghoot & Kabsa Barriya': 'المضغوط',
+  'Goat Haneeth': 'الأطباق الرئيسية',
+  'Camel Haneeth': 'الحاشي',
+  'Chicken': 'الدجاج',
+  'Whole Lamb': 'لحم الذبيحة',
+  'Rice': 'الرز',
+  'Appetizers': 'المقبلات',
+  'Sides': 'الإيدامات',
+  'Salads': 'السلطات',
+  'Drinks': 'المشروبات',
+  'Desserts': 'الحلا',
+  'Add-ons': 'الإضافات',
+  'Raw Meat': 'لحم ني',
+
+  // List-view table column header. Title Case ("Menu Items"), a different
+  // casing than the "Displayed fields" column picker's raw camelCase key
+  // (menuItems) already mapped above — Strapi renders the two pickers from
+  // different casing sources. ("Display Label" already has its Title Case
+  // entry alongside displayLabel above.)
+  'Menu Items': 'عناصر القائمة',
+
+  // The Media relation field's list-column header renders the raw attribute
+  // key ("image"), not the humanized "Image" the edit-form label uses.
+  'image': 'الصورة',
+
+  // A collection relation's collapsed list-cell (e.g. Menu Category's related
+  // Menu Items) shows a bare "items" expand link — not part of any bundled
+  // locale, so it stays English without this.
+  'items': 'عناصر',
 };
 
 // "Hello Admin" / "Hello Jane" etc. — the greeting is a fixed template with
@@ -958,6 +1008,24 @@ const installLtrDateTimeFix = () => {
   new MutationObserver(() => fixDateTimeInputDirection(document.body)).observe(document.body, {
     childList: true,
     subtree: true
+  });
+
+  // The MutationObserver above only fires on nodes being added/removed. When
+  // an admin picks a date from the calendar popup (or types one), Strapi's
+  // DatePicker updates the *existing* input's value in place — no DOM nodes
+  // change, so that observer never re-runs and the field is left garbled
+  // until something unrelated elsewhere on the page happens to trigger a
+  // rescan. Listen for the value actually changing (and focus/blur, since
+  // some pickers reformat on blur) and re-check right away. Capturing phase
+  // + document target so this needs installing only once, ever.
+  ['input', 'change', 'focus', 'blur'].forEach((type) => {
+    document.addEventListener(
+      type,
+      (e) => {
+        if (e.target && e.target.tagName === 'INPUT') fixDateTimeInputDirection(document.body);
+      },
+      true
+    );
   });
 };
 

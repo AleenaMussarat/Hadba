@@ -100,8 +100,14 @@ export async function fetchMenuItems(locale, { categoryId, featured, page = 1, p
   const pageCount = Math.max(Math.ceil(filtered.length / pageSize), 1)
   const start = (page - 1) * pageSize
 
+  // Unfiltered browsing is paginated server-side (pagination[page]/[pageSize]
+  // above), so `mapped` already IS just this page's items — re-slicing it by
+  // an absolute (page-1)*pageSize offset returned an empty array on every
+  // page past the first. Category-filtered browsing fetches every matching
+  // item unpaginated and slices client-side instead, so that path still needs
+  // the slice.
   return {
-    items: categoryId ? filtered.slice(start, start + pageSize) : filtered.slice(start, start + pageSize),
+    items: categoryId ? filtered.slice(start, start + pageSize) : filtered,
     pageCount: categoryId ? pageCount : json.meta?.pagination?.pageCount || pageCount,
     total: filtered.length
   }
