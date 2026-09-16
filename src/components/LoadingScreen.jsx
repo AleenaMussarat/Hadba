@@ -16,6 +16,17 @@ const MIN_ROWS = 2
 const MIN_DISPLAY_MS = 2400
 const EXIT_MS = 900
 
+// Progress used to just race to 100% on a fixed ~1.5s timer regardless of
+// whether the real preload (see App.jsx's preloadHomeAssets) was anywhere
+// near done — it would hit 100%, then sit there frozen for however much
+// longer the images actually took, which read as stuck/broken rather than
+// "still working". Instead it creeps toward CAP_WHILE_LOADING and visibly
+// slows down as it nears it (the standard "indeterminate progress" trick)
+// for as long as `ready` is false, then quickly catches up to 100% the
+// moment the real data/images are actually in.
+const CAP_WHILE_LOADING = 92
+const TICK_MS = 60
+
 // Column count adapts to viewport width (targeting a fixed tile size)
 // instead of a hardcoded 3 columns — a fixed count sized for a phone-width
 // screen produced enormous hexagons once stretched across a wide desktop
@@ -56,15 +67,18 @@ const LoadingScreen = ({ onFinish, currentLang, ready = true }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          return 100
-        }
-        return prev + 2
+        const target = ready ? 100 : CAP_WHILE_LOADING
+        if (prev >= target) return prev
+        // Asymptotic step — larger while far from the target, shrinking as
+        // it closes in, so it's always visibly moving but never quite
+        // arrives on its own (while loading) or snaps instantly (once
+        // ready). Floored so it never fully stalls even at a tiny remainder.
+        const step = Math.max((target - prev) * (ready ? 0.18 : 0.035), ready ? 0.6 : 0.12)
+        return Math.min(target, prev + step)
       })
-    }, 30)
+    }, TICK_MS)
     return () => clearInterval(interval)
-  }, [])
+  }, [ready])
 
   // Holds at 100% until the home page's data/images are actually ready (see
   // preloadHomeAssets in strapi.js and App.jsx) as well as its own minimum
@@ -117,7 +131,7 @@ const LoadingScreen = ({ onFinish, currentLang, ready = true }) => {
           <div className="loading-bar-container">
             <div className="loading-bar" style={{ width: `${progress}%` }} />
           </div>
-          <p className="loading-percentage">{progress}%</p>
+          <p className="loading-percentage">{Math.round(progress)}%</p>
         </div>
       </div>
     </div>
