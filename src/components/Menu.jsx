@@ -3,7 +3,7 @@ import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
 import RiyalSymbol from './RiyalSymbol'
 import FeaturedMenu from './FeaturedMenu'
-import SectionLoader from './SectionLoader'
+import FadeImage from './FadeImage'
 import { getLenis } from '../lib/smoothScroll'
 import { fetchMenuCategories, fetchMenuItems, fetchPageHero } from '../services/strapi'
 
@@ -30,7 +30,6 @@ const Menu = () => {
   const [activeCategory, setActiveCategory] = useState(null)
   const [page, setPage] = useState(1)
   const [items, setItems] = useState([])
-  const [itemsLoading, setItemsLoading] = useState(true)
   const [categories, setCategories] = useState([])
   const [pageCount, setPageCount] = useState(1)
   const [isMobile, setIsMobile] = useState(
@@ -38,7 +37,6 @@ const Menu = () => {
   )
   const itemRefs = useRef([])
   const [heroData, setHeroData] = useState(null)
-  const [heroLoading, setHeroLoading] = useState(true)
 
   useEffect(() => {
     setPage(1)
@@ -78,22 +76,21 @@ const Menu = () => {
 
   useEffect(() => {
     let active = true
-    setHeroLoading(true)
     fetchPageHero('menu', currentLang)
       .then((data) => {
         if (active) setHeroData(data)
       })
-      .catch(() => {
-        if (active) setHeroData(null)
-      })
-      .finally(() => {
-        if (active) setHeroLoading(false)
-      })
+      .catch(() => {})
     return () => {
       active = false
     }
   }, [currentLang])
 
+  // App.jsx warms this exact call in the background shortly after the splash
+  // screen finishes (see preloadRestOfSiteAssets), so this is often already
+  // cached by the time a visitor navigates here. Doesn't reset items to
+  // empty first, so a page/category change just keeps the previous (still
+  // valid) grid on screen until the new one resolves, instead of a blank gap.
   useEffect(() => {
     let active = true
     const activeDynamicCategory = activeCategory != null
@@ -101,23 +98,13 @@ const Menu = () => {
       : undefined
     const categoryId = activeDynamicCategory?.id
 
-    setItemsLoading(true)
-
     fetchMenuItems(currentLang, { categoryId, page, pageSize: PAGE_SIZE })
       .then((data) => {
         if (!active) return
         setItems(data.items)
         setPageCount(data.pageCount)
       })
-      .catch(() => {
-        if (active) {
-          setItems([])
-          setPageCount(1)
-        }
-      })
-      .finally(() => {
-        if (active) setItemsLoading(false)
-      })
+      .catch(() => {})
 
     return () => {
       active = false
@@ -154,8 +141,6 @@ const Menu = () => {
           style={{ backgroundImage: `url(${hero.backgroundImage})` }}
           aria-hidden="true"
         />
-      ) : heroLoading ? (
-        <SectionLoader overlay />
       ) : null}
       <div className="container">
         <div className="section-heading">
@@ -191,39 +176,35 @@ const Menu = () => {
             ))}
           </div>
 
-          {itemsLoading ? (
-            <SectionLoader minHeight="400px" />
-          ) : (
-            <div className="menu-items">
-              {items.map((item, index) => (
-                <article
-                  key={`${item.name}-${index}`}
-                  ref={(el) => (itemRefs.current[index] = el)}
-                  className={`menu-item ${isMobile ? 'menu-item-reveal' : 'fade-in-up'} ${item.featured ? 'featured' : ''}`}
-                  style={isMobile ? undefined : { animationDelay: `${(index % 8) * 0.08}s` }}
-                >
-                  <div className={`menu-item-media ${item.isPlaceholder ? 'is-placeholder' : ''}`}>
-                    <img src={item.image} alt={item.name} loading="lazy" />
-                    {item.featured ? (
-                      <span className="menu-badge">
-                        <img src="/brand/icon-cloche-steam.webp" alt="" />
-                        {t.menu.recommended}
-                      </span>
-                    ) : null}
+          <div className="menu-items">
+            {items.map((item, index) => (
+              <article
+                key={`${item.name}-${index}`}
+                ref={(el) => (itemRefs.current[index] = el)}
+                className={`menu-item ${isMobile ? 'menu-item-reveal' : 'fade-in-up'} ${item.featured ? 'featured' : ''}`}
+                style={isMobile ? undefined : { animationDelay: `${(index % 8) * 0.08}s` }}
+              >
+                <div className={`menu-item-media ${item.isPlaceholder ? 'is-placeholder' : ''}`}>
+                  <FadeImage src={item.image} alt={item.name} loading="lazy" />
+                  {item.featured ? (
+                    <span className="menu-badge">
+                      <img src="/brand/icon-cloche-steam.webp" alt="" />
+                      {t.menu.recommended}
+                    </span>
+                  ) : null}
+                </div>
+                <div className="menu-item-top">
+                  <span className="menu-item-category">{item.category}</span>
+                  <div className="menu-item-title-row">
+                    <h4>{item.name}</h4>
+                    <span className="menu-price"><RiyalSymbol value={item.price} /></span>
                   </div>
-                  <div className="menu-item-top">
-                    <span className="menu-item-category">{item.category}</span>
-                    <div className="menu-item-title-row">
-                      <h4>{item.name}</h4>
-                      <span className="menu-price"><RiyalSymbol value={item.price} /></span>
-                    </div>
-                    <p>{item.description}</p>
-                    {item.calories ? <span className="menu-item-calories">{item.calories} {t.menu.caloriesLabel}</span> : null}
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
+                  <p>{item.description}</p>
+                  {item.calories ? <span className="menu-item-calories">{item.calories} {t.menu.caloriesLabel}</span> : null}
+                </div>
+              </article>
+            ))}
+          </div>
 
           <div className="menu-pagination">
             <button

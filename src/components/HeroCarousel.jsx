@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { fetchCarouselSlides } from '../services/strapi'
 import { useLanguage } from '../i18n'
-import SectionLoader from './SectionLoader'
+import FadeImage from './FadeImage'
 
 const STEP_COOLDOWN_MS = 400
 const TOUCH_THRESHOLD = 25
@@ -9,8 +9,10 @@ const TOUCH_THRESHOLD = 25
 const HeroCarousel = () => {
   const { currentLang } = useLanguage()
   // No static fallback slides — this only ever shows what Strapi returns.
+  // App.jsx preloads this exact call while the splash screen is up (see
+  // preloadHomeAssets), so on first mount it resolves from cache essentially
+  // instantly.
   const [slides, setSlides] = useState([])
-  const [loading, setLoading] = useState(true)
   const [activeIndex, setActiveIndex] = useState(0)
   const [progress, setProgress] = useState(0)
 
@@ -43,10 +45,6 @@ const HeroCarousel = () => {
 
   useEffect(() => {
     let isCurrent = true
-    setLoading(true)
-    setActiveIndex(0)
-    targetProgressRef.current = 0
-    currentProgressRef.current = 0
 
     fetchCarouselSlides(currentLang)
       .then((data) => {
@@ -56,12 +54,7 @@ const HeroCarousel = () => {
         targetProgressRef.current = 0
         currentProgressRef.current = 0
       })
-      .catch(() => {
-        if (isCurrent) setSlides([])
-      })
-      .finally(() => {
-        if (isCurrent) setLoading(false)
-      })
+      .catch(() => {})
 
     return () => {
       isCurrent = false
@@ -202,39 +195,33 @@ const HeroCarousel = () => {
   return (
     <div className="dish-carousel" ref={rootRef}>
       <div className="dish-carousel-stage">
-        {loading ? (
-          <div className="dish-carousel-loading">
-            <SectionLoader />
-          </div>
-        ) : (
-          slides.map((slide, index) => {
-            const style = getCardStyle(index)
-            const isCenter = Math.abs(index - progress) < 0.4
-            return (
-              <button
-                type="button"
-                key={`${slide.title}-${index}`}
-                className={`dish-card ${isCenter ? 'is-center' : ''}`}
-                style={style}
-                onClick={() => navigateTo(index)}
-                aria-current={index === activeIndex}
-              >
-                <div className="dish-card-media">
-                  <img src={slide.image} alt={slide.title} loading={index === 0 ? 'eager' : 'lazy'} />
-                  <span className="dish-card-scrim" aria-hidden="true" />
-                </div>
-                <div className="dish-card-content">
-                  {slide.badge ? <span className="dish-card-badge">{slide.badge}</span> : null}
-                  <h3>{slide.title}</h3>
-                  {slide.subtitle ? <p>{slide.subtitle}</p> : null}
-                </div>
-              </button>
-            )
-          })
-        )}
+        {slides.map((slide, index) => {
+          const style = getCardStyle(index)
+          const isCenter = Math.abs(index - progress) < 0.4
+          return (
+            <button
+              type="button"
+              key={`${slide.title}-${index}`}
+              className={`dish-card ${isCenter ? 'is-center' : ''}`}
+              style={style}
+              onClick={() => navigateTo(index)}
+              aria-current={index === activeIndex}
+            >
+              <div className="dish-card-media">
+                <FadeImage src={slide.image} alt={slide.title} loading={index === 0 ? 'eager' : 'lazy'} />
+                <span className="dish-card-scrim" aria-hidden="true" />
+              </div>
+              <div className="dish-card-content">
+                {slide.badge ? <span className="dish-card-badge">{slide.badge}</span> : null}
+                <h3>{slide.title}</h3>
+                {slide.subtitle ? <p>{slide.subtitle}</p> : null}
+              </div>
+            </button>
+          )
+        })}
       </div>
 
-      {!loading && slides.length > 0 ? (
+      {slides.length > 0 ? (
         <div className="dish-carousel-controls">
           <div className="dish-carousel-dots">
             {slides.map((_, idx) => (

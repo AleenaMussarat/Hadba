@@ -1129,13 +1129,6 @@ html[dir="rtl"] .mobile-menu.active {
   perspective: 1200px;
 }
 
-.dish-carousel-loading {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .dish-card {
   position: absolute;
   top: 50%;
@@ -3792,50 +3785,23 @@ html[dir="rtl"] .reserve-field-row .reserve-field:first-child {
   margin: 0.5rem 0;
 }
 
-/* ===== SECTION LOADER ===== */
-/* Placeholder for a CMS-sourced block (hero background, carousel, menu grid,
-   gallery, branches) while its data is still being fetched — no static
-   fallback image shows in the meantime, this spinner does instead. */
-.section-loader {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 220px;
-}
-
-.section-loader-spinner {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 3px solid rgba(246, 157, 28, 0.25);
-  border-top-color: var(--color-accent);
-  animation: sectionSpin 0.8s linear infinite;
-}
-
-@keyframes sectionSpin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .page-intro-bg.is-cms-loaded {
   animation: fadeIn 0.5s ease;
 }
 
-/* Stands in for .page-intro-bg's exact box (see that rule for why: top:0,
-   500px tall, absolute) while its CMS backgroundImage hasn't loaded yet. */
-.page-intro-bg-loader {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 500px;
-  z-index: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-primary-dark);
+/* See src/components/FadeImage.jsx — progressive-reveal treatment for plain
+   <img> tags (dish carousel, menu items, branch photos): fades in once the
+   image has actually finished loading instead of popping in abruptly. In
+   practice App.jsx has almost always already preloaded it (see
+   preloadHomeAssets/preloadRestOfSiteAssets in services/strapi.js) by the
+   time this mounts, so this transition is rarely even visible. */
+.fade-image {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.fade-image.is-loaded {
+  opacity: 1;
 }
 
 /* ===== ANIMATIONS ===== */

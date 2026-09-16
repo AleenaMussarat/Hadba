@@ -18,7 +18,7 @@ import ScrollToTop from './components/ScrollToTop'
 import BackToTop from './components/BackToTop'
 import MapPreload from './components/MapPreload'
 import { startSmoothScroll, stopSmoothScroll } from './lib/smoothScroll'
-import { checkReservationsEnabled } from './services/strapi'
+import { checkReservationsEnabled, preloadHomeAssets, preloadRestOfSiteAssets } from './services/strapi'
 import './App.css'
 
 const LANG_STORAGE_KEY = 'samdan-lang'
@@ -26,7 +26,31 @@ const LANG_STORAGE_KEY = 'samdan-lang'
 function App() {
   const [currentLang, setCurrentLang] = useState(() => localStorage.getItem(LANG_STORAGE_KEY) || 'ar')
   const [isLoading, setIsLoading] = useState(true)
+  const [homeReady, setHomeReady] = useState(false)
   const [isReserveOpen, setIsReserveOpen] = useState(false)
+
+  // The home page is where nearly every visitor lands first, so its data AND
+  // images are fully loaded while the splash screen is still up — the splash
+  // won't finish until this resolves (see the `ready` prop below), so Hero/
+  // HeroCarousel/FeaturedMenu can render real content immediately with no
+  // loading state of their own. Every other page's data is only warmed in
+  // the background, starting once the home preload is done so it isn't
+  // competing with it for bandwidth — home genuinely finishes first, the
+  // rest "depending" on whether a visitor gets there before it's done.
+  useEffect(() => {
+    let active = true
+    preloadHomeAssets(currentLang)
+      .catch(() => {})
+      .finally(() => {
+        if (!active) return
+        setHomeReady(true)
+        preloadRestOfSiteAssets(currentLang).catch(() => {})
+      })
+    return () => {
+      active = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     const link = document.createElement('link')
@@ -71,7 +95,7 @@ function App() {
     return (
       <>
         <MapPreload />
-        <LoadingScreen currentLang={currentLang} onFinish={() => setIsLoading(false)} />
+        <LoadingScreen currentLang={currentLang} ready={homeReady} onFinish={() => setIsLoading(false)} />
       </>
     )
   }

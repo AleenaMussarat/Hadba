@@ -1,11 +1,10 @@
 const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337'
 // The CMS runs as a Node app behind a proxy that cold-starts it after idle
-// periods (first request can take 20-40s). Pages now block on this fetch
-// instead of showing a static placeholder while it's in flight (see
-// SectionLoader), so the timeout needs to comfortably outlast a real cold
-// start rather than fail fast into one — cutting it off early just means a
-// visitor who'd have gotten real data in a few more seconds sees an empty
-// section instead.
+// periods (first request can take 20-40s). App.jsx now preloads each page's
+// data (and images) ahead of time — starting with the home page during the
+// splash screen — instead of a page showing its own spinner while this is in
+// flight, so the timeout needs to comfortably outlast a real cold start
+// rather than fail fast into one.
 const FETCH_TIMEOUT_MS = 35000
 
 async function strapiFetch(path) {
@@ -24,6 +23,42 @@ async function strapiFetch(path) {
 const mediaUrl = (media) => {
   if (!media?.url) return null
   return media.url.startsWith('http') ? media.url : `${STRAPI_URL}${media.url}`
+}
+
+// In-memory only (cleared on full page reload) — keyed by call + locale +
+// params, so App.jsx's preload during the splash screen and a page
+// component's own later fetch for the exact same data share one in-flight
+// request/result instead of hitting the CMS twice. A failed fetch evicts its
+// own key so the next call (e.g. a manual retry, or navigating to the page
+// again) gets a fresh attempt rather than being stuck replaying the same
+// rejection forever.
+const requestCache = new Map()
+
+function cached(key, loader) {
+  if (requestCache.has(key)) return requestCache.get(key)
+  const promise = loader()
+  requestCache.set(key, promise)
+  promise.catch(() => requestCache.delete(key))
+  return promise
+}
+
+// Warms the browser's own image cache so that by the time a component
+// renders an <img>/backgroundImage using this URL, the bytes are already
+// downloaded and decoded — resolving the CMS fetch alone isn't enough for
+// that, the image itself still has to actually download. Never rejects
+// (a broken/missing image shouldn't fail the whole preload batch it's part
+// of) and no-ops on a falsy url.
+function preloadImage(url) {
+  return new Promise((resolve) => {
+    if (!url) {
+      resolve()
+      return
+    }
+    const img = new Image()
+    img.onload = () => resolve()
+    img.onerror = () => resolve()
+    img.src = url
+  })
 }
 
 export const RESERVATION_CLOSED_MESSAGE = 'sorry, bookings are full try another day'
@@ -49,7 +84,11 @@ export async function checkReservationsEnabled() {
 }
 
 // FETCH CATEGORIES - Updated for Strapi v5 (no attributes wrapper)
-export async function fetchMenuCategories(locale) {
+export function fetchMenuCategories(locale) {
+  return cached(`categories:${locale}`, () => fetchMenuCategoriesUncached(locale))
+}
+
+async function fetchMenuCategoriesUncached(locale) {
   const json = await strapiFetch('menu-categories?sort=order:asc')
   const data = json.data || []
 
@@ -61,7 +100,13 @@ export async function fetchMenuCategories(locale) {
 }
 
 // FETCH MENU ITEMS - Updated for Strapi v5
-export async function fetchMenuItems(locale, { categoryId, featured, page = 1, pageSize = 10 } = {}) {
+export function fetchMenuItems(locale, options = {}) {
+  const { categoryId, featured, page = 1, pageSize = 10 } = options
+  const key = `menuItems:${locale}:cat=${categoryId || 'all'}:feat=${!!featured}:page=${page}:size=${pageSize}`
+  return cached(key, () => fetchMenuItemsUncached(locale, options))
+}
+
+async function fetchMenuItemsUncached(locale, { categoryId, featured, page = 1, pageSize = 10 } = {}) {
   const params = new URLSearchParams({
     populate: 'image,menuCategory',
     sort: 'order:asc'
@@ -178,7 +223,11 @@ export async function submitInquiry({ name, phone, guests, date, time, notes }) 
   }
 }
 
-export async function fetchCarouselSlides(locale) {
+export function fetchCarouselSlides(locale) {
+  return cached(`carousel:${locale}`, () => fetchCarouselSlidesUncached(locale))
+}
+
+async function fetchCarouselSlidesUncached(locale) {
   const json = await strapiFetch(`carousel-slides?filters[isActive][$eq]=true&populate=image&sort=order:asc`)
   const slides = json.data || []
   if (slides.length === 0) throw new Error('No carousel slides returned by Strapi')
@@ -192,7 +241,11 @@ export async function fetchCarouselSlides(locale) {
   }))
 }
 
-export async function fetchBranches(locale) {
+export function fetchBranches(locale) {
+  return cached(`branches:${locale}`, () => fetchBranchesUncached(locale))
+}
+
+async function fetchBranchesUncached(locale) {
   const json = await strapiFetch(`branches?populate=image&sort=order:asc`)
   const data = json.data || []
   if (data.length === 0) throw new Error('No branches returned by Strapi')
@@ -206,7 +259,11 @@ export async function fetchBranches(locale) {
   }))
 }
 
-export async function fetchPageHero(pageKey, locale) {
+export function fetchPageHero(pageKey, locale) {
+  return cached(`pageHero:${pageKey}:${locale}`, () => fetchPageHeroUncached(pageKey, locale))
+}
+
+async function fetchPageHeroUncached(pageKey, locale) {
   const json = await strapiFetch(`page-heros?filters[pageKey][$eq]=${pageKey}&populate=backgroundImage`)
   const entry = json.data?.[0]
   if (!entry) return null
@@ -218,7 +275,11 @@ export async function fetchPageHero(pageKey, locale) {
   }
 }
 
-export async function fetchGalleryImages(locale) {
+export function fetchGalleryImages(locale) {
+  return cached(`gallery:${locale}`, () => fetchGalleryImagesUncached(locale))
+}
+
+async function fetchGalleryImagesUncached(locale) {
   const json = await strapiFetch(`gallery-images?populate=image&sort=order:asc`)
   const data = json.data || []
   if (data.length === 0) throw new Error('No gallery images returned by Strapi')
@@ -261,4 +322,61 @@ export async function fetchSiteSettings(locale) {
   }
 
   return null
+}
+
+// Called from App.jsx's splash screen — the home page is what nearly every
+// visitor lands on first, so its data AND images are fully loaded (not just
+// fetched — actually downloaded and decoded, via preloadImage) before the
+// splash finishes, instead of Hero/HeroCarousel/FeaturedMenu each showing
+// their own placeholder while this happens after the splash is gone. Never
+// rejects — a CMS-down visitor still gets the branded splash's minimum
+// display time and then the (empty) home page, not a hang.
+export async function preloadHomeAssets(locale) {
+  const [hero, carousel, featured] = await Promise.all([
+    fetchPageHero('home', locale).catch(() => null),
+    fetchCarouselSlides(locale).catch(() => []),
+    fetchMenuItems(locale, { featured: true, pageSize: 4 }).catch(() => ({ items: [] }))
+  ])
+
+  const imageUrls = [
+    hero?.backgroundImage,
+    ...carousel.map((slide) => slide.image),
+    ...featured.items.map((item) => item.image)
+  ].filter(Boolean)
+
+  await Promise.all(imageUrls.map(preloadImage))
+}
+
+// Fired in the background alongside preloadHomeAssets (not awaited by it) —
+// warms every other page's data and images too, on the assumption most
+// visitors land on the home page first per preloadHomeAssets above, so this
+// has a head start before they navigate anywhere else. Each fetch here uses
+// the exact same cache key a page's own component fetch will use, so if this
+// finishes first (the common case) that component's fetch resolves from
+// cache instantly with no network wait; if the visitor gets there first,
+// nothing here is wasted either — the component's own fetch just wins the
+// race and this backfills the cache for next time.
+export async function preloadRestOfSiteAssets(locale) {
+  const [categories, menuHero, menuItems, galleryHero, gallery, branchesHero, branches] = await Promise.all([
+    fetchMenuCategories(locale).catch(() => []),
+    fetchPageHero('menu', locale).catch(() => null),
+    fetchMenuItems(locale, { page: 1, pageSize: 8 }).catch(() => ({ items: [] })),
+    fetchPageHero('gallery', locale).catch(() => null),
+    fetchGalleryImages(locale).catch(() => []),
+    fetchPageHero('branches', locale).catch(() => null),
+    fetchBranches(locale).catch(() => [])
+  ])
+
+  const imageUrls = [
+    menuHero?.backgroundImage,
+    galleryHero?.backgroundImage,
+    branchesHero?.backgroundImage,
+    ...menuItems.items.map((item) => item.image),
+    ...gallery.map((item) => item.image),
+    ...branches.map((branch) => branch.image)
+  ].filter(Boolean)
+
+  await Promise.all(imageUrls.map(preloadImage))
+  // categories has no images of its own — fetched only to warm its cache key.
+  void categories
 }

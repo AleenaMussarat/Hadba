@@ -46,7 +46,7 @@ const buildHexGrid = () => {
   return cells
 }
 
-const LoadingScreen = ({ onFinish, currentLang }) => {
+const LoadingScreen = ({ onFinish, currentLang, ready = true }) => {
   const t = translations[currentLang] || translations.en
   const [progress, setProgress] = useState(0)
   const [isExiting, setIsExiting] = useState(false)
@@ -66,13 +66,18 @@ const LoadingScreen = ({ onFinish, currentLang }) => {
     return () => clearInterval(interval)
   }, [])
 
+  // Holds at 100% until the home page's data/images are actually ready (see
+  // preloadHomeAssets in strapi.js and App.jsx) as well as its own minimum
+  // branded display time — whichever finishes later. This is what lets Hero/
+  // HeroCarousel/FeaturedMenu render with real content immediately once the
+  // splash is gone, with no spinner of their own.
   useEffect(() => {
-    if (progress < 100) return
+    if (progress < 100 || !ready) return
     const elapsed = Date.now() - startRef.current
     const wait = Math.max(MIN_DISPLAY_MS - elapsed, 0)
     const timer = setTimeout(() => setIsExiting(true), wait)
     return () => clearTimeout(timer)
-  }, [progress])
+  }, [progress, ready])
 
   useEffect(() => {
     if (!isExiting) return

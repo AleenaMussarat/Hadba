@@ -5,7 +5,6 @@ import { translations } from '../i18n/translations'
 import { fetchMenuItems } from '../services/strapi'
 import { FaAnglesDown, FaAnglesLeft, FaAnglesRight } from 'react-icons/fa6'
 import RiyalSymbol from './RiyalSymbol'
-import SectionLoader from './SectionLoader'
 import { getLenis } from '../lib/smoothScroll'
 
 const PANEL_COUNT = 4
@@ -34,9 +33,12 @@ const STEP_MS = 650
 const FeaturedMenu = ({ scrollTargetId, minimal = false }) => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
-  // No static fallback — only ever shows what Strapi returns.
+  // No static fallback — only ever shows what Strapi returns. On the home
+  // page this exact call is already preloaded by App.jsx before the splash
+  // screen finishes (see preloadHomeAssets), so it resolves from cache
+  // essentially instantly; on the menu page it's warmed shortly after
+  // (preloadRestOfSiteAssets).
   const [items, setItems] = useState([])
-  const [loading, setLoading] = useState(true)
   const [activeIndex, setActiveIndex] = useState(0)
   const [isMobile, setIsMobile] = useState(
     () => typeof window !== 'undefined' && window.matchMedia(MOBILE_QUERY).matches
@@ -48,8 +50,6 @@ const FeaturedMenu = ({ scrollTargetId, minimal = false }) => {
 
   useEffect(() => {
     let active = true
-    setLoading(true)
-    setActiveIndex(0)
 
     fetchMenuItems(currentLang, { featured: true, pageSize: PANEL_COUNT })
       .then((data) => {
@@ -57,12 +57,7 @@ const FeaturedMenu = ({ scrollTargetId, minimal = false }) => {
         setItems(data.items)
         setActiveIndex(0)
       })
-      .catch(() => {
-        if (active) setItems([])
-      })
-      .finally(() => {
-        if (active) setLoading(false)
-      })
+      .catch(() => {})
 
     return () => {
       active = false
@@ -169,11 +164,9 @@ const FeaturedMenu = ({ scrollTargetId, minimal = false }) => {
     setActiveIndex(i)
   }
 
-  if (!loading && items.length === 0) return null
+  if (items.length === 0) return null
 
-  const gallery = loading ? (
-    <SectionLoader minHeight="400px" />
-  ) : (
+  const gallery = (
     <div className="menu-expand-gallery" ref={galleryRef}>
       {items.map((item, i) => (
         <button

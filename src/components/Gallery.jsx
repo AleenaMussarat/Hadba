@@ -4,32 +4,26 @@ import { translations } from '../i18n/translations'
 import { fetchGalleryImages, fetchPageHero } from '../services/strapi'
 import { FaXmark } from 'react-icons/fa6'
 import Masonry from './reactbits/Masonry'
-import SectionLoader from './SectionLoader'
 
 const Gallery = () => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
-  // No static fallback — only ever shows what Strapi returns.
+  // No static fallback — only ever shows what Strapi returns. App.jsx warms
+  // this in the background after the splash screen (preloadRestOfSiteAssets),
+  // and Masonry itself already preloads+fades in every image it's given, so
+  // no loading state is needed here either.
   const [images, setImages] = useState([])
-  const [imagesLoading, setImagesLoading] = useState(true)
   const [activeImage, setActiveImage] = useState(null)
 
   const [heroData, setHeroData] = useState(null)
-  const [heroLoading, setHeroLoading] = useState(true)
 
   useEffect(() => {
     let active = true
-    setHeroLoading(true)
     fetchPageHero('gallery', currentLang)
       .then((data) => {
         if (active) setHeroData(data)
       })
-      .catch(() => {
-        if (active) setHeroData(null)
-      })
-      .finally(() => {
-        if (active) setHeroLoading(false)
-      })
+      .catch(() => {})
     return () => {
       active = false
     }
@@ -37,19 +31,11 @@ const Gallery = () => {
 
   useEffect(() => {
     let active = true
-    setImagesLoading(true)
-
     fetchGalleryImages(currentLang)
       .then((data) => {
         if (active) setImages(data)
       })
-      .catch(() => {
-        if (active) setImages([])
-      })
-      .finally(() => {
-        if (active) setImagesLoading(false)
-      })
-
+      .catch(() => {})
     return () => {
       active = false
     }
@@ -88,8 +74,6 @@ const Gallery = () => {
           style={{ backgroundImage: `url(${hero.backgroundImage})` }}
           aria-hidden="true"
         />
-      ) : heroLoading ? (
-        <SectionLoader overlay />
       ) : null}
       <div className="container">
         <div className="section-heading">
@@ -102,14 +86,10 @@ const Gallery = () => {
         </div>
 
         <div className="gallery-masonry-wrap">
-          {imagesLoading ? (
-            <SectionLoader minHeight="400px" />
-          ) : (
-            <Masonry
-              items={masonryItems}
-              onItemClick={(item) => setActiveImage({ image: item.img, caption: item.caption })}
-            />
-          )}
+          <Masonry
+            items={masonryItems}
+            onItemClick={(item) => setActiveImage({ image: item.img, caption: item.caption })}
+          />
         </div>
       </div>
 

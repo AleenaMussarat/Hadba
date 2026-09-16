@@ -5,27 +5,25 @@ import { translations } from '../i18n/translations'
 import { fetchPageHero } from '../services/strapi'
 import HeroCarousel from './HeroCarousel'
 import FeaturedMenu from './FeaturedMenu'
-import SectionLoader from './SectionLoader'
 
 const Hero = ({ onReserveClick }) => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
   const [heroData, setHeroData] = useState(null)
-  const [heroLoading, setHeroLoading] = useState(true)
 
+  // App.jsx already preloads this exact call (see preloadHomeAssets) while
+  // the splash screen is up, so this resolves from cache essentially
+  // instantly on first mount — no loading state needed here. Doesn't reset
+  // heroData first on a later language change either, so a toggle just keeps
+  // showing the current (still-correct) background image until the new
+  // language's text replaces it, rather than blanking it out in between.
   useEffect(() => {
     let active = true
-    setHeroLoading(true)
     fetchPageHero('home', currentLang)
       .then((data) => {
         if (active) setHeroData(data)
       })
-      .catch(() => {
-        if (active) setHeroData(null)
-      })
-      .finally(() => {
-        if (active) setHeroLoading(false)
-      })
+      .catch(() => {})
     return () => {
       active = false
     }
@@ -34,9 +32,8 @@ const Hero = ({ onReserveClick }) => {
   // Merged per-field (not all-or-nothing) — page-hero in Strapi only stores
   // title/subtitle/backgroundImage, so every other field here always comes
   // from the static translations regardless of whether a Strapi record exists.
-  // backgroundImage has no static fallback on purpose — it's only ever shown
-  // once the real CMS image is loaded (see the SectionLoader/is-cms-loaded
-  // handling below), never a placeholder photo.
+  // backgroundImage has no static fallback — the image itself is language-
+  // independent, so once it's loaded once it just stays put.
   const hero = {
     eyebrow: t.hero.eyebrow,
     tagline: t.hero.tagline,
@@ -63,8 +60,6 @@ const Hero = ({ onReserveClick }) => {
             style={{ backgroundImage: `url(${hero.backgroundImage})` }}
             aria-hidden="true"
           />
-        ) : heroLoading ? (
-          <SectionLoader overlay />
         ) : null}
 
         <div className="container">

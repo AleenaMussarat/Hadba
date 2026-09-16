@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react'
+import FadeImage from './FadeImage'
 
 // Scroll-driven vertical pan: as the image's container moves through the
 // viewport, the image itself shifts slightly slower/faster than the page,
@@ -32,7 +33,7 @@ const ParallaxImage = ({ src, alt = '', strength = 30, className = '' }) => {
   return (
     <div className={`parallax-image ${className}`.trim()} ref={rootRef}>
       <div className="parallax-image-pan">
-        <img src={src} alt={alt} />
+        <FadeImage src={src} alt={alt} />
       </div>
     </div>
   )
