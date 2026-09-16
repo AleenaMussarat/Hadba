@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useLanguage } from '../i18n'
-import { translations } from '../i18n/translations'
 import { fetchCarouselSlides } from '../services/strapi'
+import { useLanguage } from '../i18n'
+import SectionLoader from './SectionLoader'
 
 const STEP_COOLDOWN_MS = 400
 const TOUCH_THRESHOLD = 25
 
 const HeroCarousel = () => {
   const { currentLang } = useLanguage()
-  const t = translations[currentLang] || translations.en
-  const [slides, setSlides] = useState(t.hero.carousel)
+  // No static fallback slides — this only ever shows what Strapi returns.
+  const [slides, setSlides] = useState([])
+  const [loading, setLoading] = useState(true)
   const [activeIndex, setActiveIndex] = useState(0)
   const [progress, setProgress] = useState(0)
 
@@ -42,55 +43,71 @@ const HeroCarousel = () => {
 
   useEffect(() => {
     let isCurrent = true
-    setSlides(t.hero.carousel)
+    setLoading(true)
     setActiveIndex(0)
     targetProgressRef.current = 0
     currentProgressRef.current = 0
 
     fetchCarouselSlides(currentLang)
       .then((data) => {
-        if (isCurrent && data.length > 0) {
-          setSlides(data)
-          setActiveIndex(0)
-          targetProgressRef.current = 0
-          currentProgressRef.current = 0
-        }
+        if (!isCurrent) return
+        setSlides(data)
+        setActiveIndex(0)
+        targetProgressRef.current = 0
+        currentProgressRef.current = 0
       })
       .catch(() => {
-        // Strapi unavailable or empty — keep the static fallback already set above.
+        if (isCurrent) setSlides([])
+      })
+      .finally(() => {
+        if (isCurrent) setLoading(false)
       })
 
     return () => {
       isCurrent = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLang])
 
   // Physics loop: eases the visual position toward the target index instead
-  // of snapping, so the 3D arc glides between slides.
-  useEffect(() => {
+  // of snapping, so the 3D arc glides between slides. Only runs while
+  // actually easing toward a new target — it used to keep calling
+  // requestAnimationFrame forever regardless of whether anything was moving,
+  // which meant every slide's 3D transform (translate3d/rotateY/blur) was
+  // recomputed and re-applied 60 times a second for as long as the home page
+  // was open, fighting the browser's scroll compositor the whole time. Now
+  // it stops the moment the carousel settles and only restarts when
+  // navigateTo actually changes the target.
+  const runAnimationLoop = useCallback(() => {
+    if (rafRef.current) return // already ticking
+
     const lerp = (start, end, factor) => start + (end - start) * factor
 
     const tick = () => {
       const diff = Math.abs(targetProgressRef.current - currentProgressRef.current)
       if (diff > 0.0001) {
         currentProgressRef.current = lerp(currentProgressRef.current, targetProgressRef.current, 0.09)
+        setProgress(currentProgressRef.current)
+        rafRef.current = requestAnimationFrame(tick)
       } else {
         currentProgressRef.current = targetProgressRef.current
+        setProgress(currentProgressRef.current)
+        rafRef.current = null
       }
-      setProgress(currentProgressRef.current)
-      rafRef.current = requestAnimationFrame(tick)
     }
 
     rafRef.current = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(rafRef.current)
+  }, [])
+
+  useEffect(() => () => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current)
   }, [])
 
   const navigateTo = useCallback((index) => {
     const clamped = Math.max(0, Math.min(slidesLenRef.current - 1, index))
     setActiveIndex(clamped)
     targetProgressRef.current = clamped
-  }, [])
+    runAnimationLoop()
+  }, [runAnimationLoop])
 
   // Wheel: traps scroll while the carousel is in view to cycle through
   // slides one at a time, then lets it through once the first/last slide is
@@ -185,45 +202,53 @@ const HeroCarousel = () => {
   return (
     <div className="dish-carousel" ref={rootRef}>
       <div className="dish-carousel-stage">
-        {slides.map((slide, index) => {
-          const style = getCardStyle(index)
-          const isCenter = Math.abs(index - progress) < 0.4
-          return (
-            <button
-              type="button"
-              key={`${slide.title}-${index}`}
-              className={`dish-card ${isCenter ? 'is-center' : ''}`}
-              style={style}
-              onClick={() => navigateTo(index)}
-              aria-current={index === activeIndex}
-            >
-              <div className="dish-card-media">
-                <img src={slide.image} alt={slide.title} loading={index === 0 ? 'eager' : 'lazy'} />
-                <span className="dish-card-scrim" aria-hidden="true" />
-              </div>
-              <div className="dish-card-content">
-                {slide.badge ? <span className="dish-card-badge">{slide.badge}</span> : null}
-                <h3>{slide.title}</h3>
-                {slide.subtitle ? <p>{slide.subtitle}</p> : null}
-              </div>
-            </button>
-          )
-        })}
+        {loading ? (
+          <div className="dish-carousel-loading">
+            <SectionLoader />
+          </div>
+        ) : (
+          slides.map((slide, index) => {
+            const style = getCardStyle(index)
+            const isCenter = Math.abs(index - progress) < 0.4
+            return (
+              <button
+                type="button"
+                key={`${slide.title}-${index}`}
+                className={`dish-card ${isCenter ? 'is-center' : ''}`}
+                style={style}
+                onClick={() => navigateTo(index)}
+                aria-current={index === activeIndex}
+              >
+                <div className="dish-card-media">
+                  <img src={slide.image} alt={slide.title} loading={index === 0 ? 'eager' : 'lazy'} />
+                  <span className="dish-card-scrim" aria-hidden="true" />
+                </div>
+                <div className="dish-card-content">
+                  {slide.badge ? <span className="dish-card-badge">{slide.badge}</span> : null}
+                  <h3>{slide.title}</h3>
+                  {slide.subtitle ? <p>{slide.subtitle}</p> : null}
+                </div>
+              </button>
+            )
+          })
+        )}
       </div>
 
-      <div className="dish-carousel-controls">
-        <div className="dish-carousel-dots">
-          {slides.map((_, idx) => (
-            <button
-              key={idx}
-              type="button"
-              className={`dish-carousel-dot ${activeIndex === idx ? 'is-active' : ''}`}
-              onClick={() => navigateTo(idx)}
-              aria-label={`Go to dish ${idx + 1}`}
-            />
-          ))}
+      {!loading && slides.length > 0 ? (
+        <div className="dish-carousel-controls">
+          <div className="dish-carousel-dots">
+            {slides.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                className={`dish-carousel-dot ${activeIndex === idx ? 'is-active' : ''}`}
+                onClick={() => navigateTo(idx)}
+                aria-label={`Go to dish ${idx + 1}`}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   )
 }

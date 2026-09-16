@@ -5,21 +5,38 @@ import { translations } from '../i18n/translations'
 import { fetchPageHero } from '../services/strapi'
 import HeroCarousel from './HeroCarousel'
 import FeaturedMenu from './FeaturedMenu'
+import SectionLoader from './SectionLoader'
 
 const Hero = ({ onReserveClick }) => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
   const [heroData, setHeroData] = useState(null)
+  const [heroLoading, setHeroLoading] = useState(true)
 
   useEffect(() => {
+    let active = true
+    setHeroLoading(true)
     fetchPageHero('home', currentLang)
-      .then((data) => setHeroData(data))
-      .catch(() => setHeroData(null))
+      .then((data) => {
+        if (active) setHeroData(data)
+      })
+      .catch(() => {
+        if (active) setHeroData(null)
+      })
+      .finally(() => {
+        if (active) setHeroLoading(false)
+      })
+    return () => {
+      active = false
+    }
   }, [currentLang])
 
   // Merged per-field (not all-or-nothing) — page-hero in Strapi only stores
   // title/subtitle/backgroundImage, so every other field here always comes
   // from the static translations regardless of whether a Strapi record exists.
+  // backgroundImage has no static fallback on purpose — it's only ever shown
+  // once the real CMS image is loaded (see the SectionLoader/is-cms-loaded
+  // handling below), never a placeholder photo.
   const hero = {
     eyebrow: t.hero.eyebrow,
     tagline: t.hero.tagline,
@@ -31,7 +48,7 @@ const Hero = ({ onReserveClick }) => {
     hoursValue: t.hero.hoursValue,
     ctaPrimary: t.hero.ctaPrimary,
     ctaSecondary: t.hero.ctaSecondary,
-    backgroundImage: heroData?.backgroundImage || '/brand/photo-sadu-interior.webp',
+    backgroundImage: heroData?.backgroundImage || null,
     eyebrowIcon: 'brand/SingleRedBox.webp',
     cardIcon: '/brand/icon-table.webp',
     promoIcon: '/brand/icon-cloche-steam-orange.webp'
@@ -40,7 +57,15 @@ const Hero = ({ onReserveClick }) => {
   return (
     <>
       <section className="hero">
-        <div className="page-intro-bg" style={{ backgroundImage: `url(${hero.backgroundImage})` }} aria-hidden="true" />
+        {hero.backgroundImage ? (
+          <div
+            className="page-intro-bg is-cms-loaded"
+            style={{ backgroundImage: `url(${hero.backgroundImage})` }}
+            aria-hidden="true"
+          />
+        ) : heroLoading ? (
+          <SectionLoader overlay />
+        ) : null}
 
         <div className="container">
           <div className="section-heading">

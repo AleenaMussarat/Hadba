@@ -1,26 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useLanguage } from '../i18n'
-import { translations, CAT, CATEGORY_ORDER } from '../i18n/translations'
+import { translations } from '../i18n/translations'
 import RiyalSymbol from './RiyalSymbol'
 import FeaturedMenu from './FeaturedMenu'
+import SectionLoader from './SectionLoader'
 import { getLenis } from '../lib/smoothScroll'
 import { fetchMenuCategories, fetchMenuItems, fetchPageHero } from '../services/strapi'
 
 const PAGE_SIZE = 8
 const MOBILE_QUERY = '(max-width: 768px)'
-
-// Client-side filter + slice used whenever Strapi is unavailable — mirrors
-// the server-side filters[category] + pagination query so both paths agree.
-const paginateStatic = (allItems, categoryName, page) => {
-  const filtered = categoryName ? allItems.filter((item) => item.category === categoryName) : allItems
-  const pageCount = Math.max(Math.ceil(filtered.length / PAGE_SIZE), 1)
-  const start = (page - 1) * PAGE_SIZE
-  return {
-    items: filtered.slice(start, start + PAGE_SIZE),
-    pageCount,
-    total: filtered.length
-  }
-}
 
 // The site drives all scrolling through a shared Lenis instance — calling
 // the browser's native scrollIntoView fights it instead of landing where
@@ -42,6 +30,7 @@ const Menu = () => {
   const [activeCategory, setActiveCategory] = useState(null)
   const [page, setPage] = useState(1)
   const [items, setItems] = useState([])
+  const [itemsLoading, setItemsLoading] = useState(true)
   const [categories, setCategories] = useState([])
   const [pageCount, setPageCount] = useState(1)
   const [isMobile, setIsMobile] = useState(
@@ -49,9 +38,7 @@ const Menu = () => {
   )
   const itemRefs = useRef([])
   const [heroData, setHeroData] = useState(null)
-  // Once a real Strapi fetch has succeeded, stop showing the static fallback
-  // on every subsequent page/category change — see the effect below.
-  const hasLiveData = useRef(false)
+  const [heroLoading, setHeroLoading] = useState(true)
 
   useEffect(() => {
     setPage(1)
@@ -90,9 +77,21 @@ const Menu = () => {
   }, [currentLang])
 
   useEffect(() => {
+    let active = true
+    setHeroLoading(true)
     fetchPageHero('menu', currentLang)
-      .then((data) => setHeroData(data))
-      .catch(() => setHeroData(null))
+      .then((data) => {
+        if (active) setHeroData(data)
+      })
+      .catch(() => {
+        if (active) setHeroData(null)
+      })
+      .finally(() => {
+        if (active) setHeroLoading(false)
+      })
+    return () => {
+      active = false
+    }
   }, [currentLang])
 
   useEffect(() => {
@@ -101,67 +100,63 @@ const Menu = () => {
       ? categories.find((category) => category.id === activeCategory)
       : undefined
     const categoryId = activeDynamicCategory?.id
-    const categoryName = activeDynamicCategory
-      ? activeDynamicCategory.name
-      : (activeCategory ? CAT[activeCategory]?.[currentLang] : undefined)
 
-    // Only paint the static fallback ahead of the fetch on the very first
-    // load. It has no relation to the CMS's real item count (different
-    // dataset entirely), so once Strapi has answered even once, using it
-    // again on every later page/category change was flashing a wrong page
-    // count ("x of 9") for an instant before the real one ("x of 10")
-    // replaced it. After that first success, a page/category change just
-    // keeps showing the previous (correct) items/count until the new
-    // fetch resolves, instead of a flash of unrelated fallback data.
-    if (!hasLiveData.current) {
-      const fallback = paginateStatic(t.menu.items, categoryName, page)
-      setItems(fallback.items)
-      setPageCount(fallback.pageCount)
-    }
+    setItemsLoading(true)
 
     fetchMenuItems(currentLang, { categoryId, page, pageSize: PAGE_SIZE })
       .then((data) => {
         if (!active) return
-        hasLiveData.current = true
         setItems(data.items)
         setPageCount(data.pageCount)
       })
       .catch(() => {
-        // Strapi unavailable — keep whatever is already on screen (the static
-        // fallback if this was the first load, or the last live data otherwise).
+        if (active) {
+          setItems([])
+          setPageCount(1)
+        }
+      })
+      .finally(() => {
+        if (active) setItemsLoading(false)
       })
 
     return () => {
       active = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLang, activeCategory, page, categories])
 
+  // Strapi categories are the only source here — no static category list to
+  // fall back to, so until they've loaded the filter bar is just "All".
   const filters = useMemo(
-    () => {
-      // Strapi categories are the source of truth once loaded — the static list is only
-      // a fallback while Strapi is unreachable, never merged alongside real categories
-      // (merging both showed duplicate pills for any name that exists in each list).
-      const source = categories.length > 0
-        ? categories.map((category) => ({ key: category.id, label: category.name }))
-        : CATEGORY_ORDER.map((key) => ({ key, label: CAT[key][currentLang] }))
-
-      return [{ key: null, label: t.menu.filterAll }, ...source]
-    },
-    [categories, currentLang, t.menu.filterAll]
+    () => [
+      { key: null, label: t.menu.filterAll },
+      ...categories.map((category) => ({ key: category.id, label: category.name }))
+    ],
+    [categories, t.menu.filterAll]
   )
 
   const pageLabel = t.menu.pageOf.replace('{page}', page).replace('{count}', pageCount)
 
-  const hero = heroData || {
-    title: t.menu.title,
-    subtitle: t.menu.subtitle,
-    backgroundImage: '/brand/photo-sadu-interior.webp'
+  // title/subtitle keep the static-text fallback (not images — Strapi's
+  // page-hero only optionally overrides site copy that already exists).
+  // backgroundImage has no fallback: only ever the real CMS photo, shown
+  // once loaded.
+  const hero = {
+    title: heroData?.title || t.menu.title,
+    subtitle: heroData?.subtitle || t.menu.subtitle,
+    backgroundImage: heroData?.backgroundImage || null
   }
 
   return (
     <section className="section section-menu">
-      <div className="page-intro-bg" style={{ backgroundImage: `url(${hero.backgroundImage})` }} aria-hidden="true" />
+      {hero.backgroundImage ? (
+        <div
+          className="page-intro-bg is-cms-loaded"
+          style={{ backgroundImage: `url(${hero.backgroundImage})` }}
+          aria-hidden="true"
+        />
+      ) : heroLoading ? (
+        <SectionLoader overlay />
+      ) : null}
       <div className="container">
         <div className="section-heading">
           <p className="eyebrow eyebrow-icon fade-in-up" style={{ animationDelay: '0.05s' }}>
@@ -196,35 +191,39 @@ const Menu = () => {
             ))}
           </div>
 
-          <div className="menu-items">
-            {items.map((item, index) => (
-              <article
-                key={`${item.name}-${index}`}
-                ref={(el) => (itemRefs.current[index] = el)}
-                className={`menu-item ${isMobile ? 'menu-item-reveal' : 'fade-in-up'} ${item.featured ? 'featured' : ''}`}
-                style={isMobile ? undefined : { animationDelay: `${(index % 8) * 0.08}s` }}
-              >
-                <div className={`menu-item-media ${item.isPlaceholder ? 'is-placeholder' : ''}`}>
-                  <img src={item.image} alt={item.name} loading="lazy" />
-                  {item.featured ? (
-                    <span className="menu-badge">
-                      <img src="/brand/icon-cloche-steam.webp" alt="" />
-                      {t.menu.recommended}
-                    </span>
-                  ) : null}
-                </div>
-                <div className="menu-item-top">
-                  <span className="menu-item-category">{item.category}</span>
-                  <div className="menu-item-title-row">
-                    <h4>{item.name}</h4>
-                    <span className="menu-price"><RiyalSymbol value={item.price} /></span>
+          {itemsLoading ? (
+            <SectionLoader minHeight="400px" />
+          ) : (
+            <div className="menu-items">
+              {items.map((item, index) => (
+                <article
+                  key={`${item.name}-${index}`}
+                  ref={(el) => (itemRefs.current[index] = el)}
+                  className={`menu-item ${isMobile ? 'menu-item-reveal' : 'fade-in-up'} ${item.featured ? 'featured' : ''}`}
+                  style={isMobile ? undefined : { animationDelay: `${(index % 8) * 0.08}s` }}
+                >
+                  <div className={`menu-item-media ${item.isPlaceholder ? 'is-placeholder' : ''}`}>
+                    <img src={item.image} alt={item.name} loading="lazy" />
+                    {item.featured ? (
+                      <span className="menu-badge">
+                        <img src="/brand/icon-cloche-steam.webp" alt="" />
+                        {t.menu.recommended}
+                      </span>
+                    ) : null}
                   </div>
-                  <p>{item.description}</p>
-                  {item.calories ? <span className="menu-item-calories">{item.calories} {t.menu.caloriesLabel}</span> : null}
-                </div>
-              </article>
-            ))}
-          </div>
+                  <div className="menu-item-top">
+                    <span className="menu-item-category">{item.category}</span>
+                    <div className="menu-item-title-row">
+                      <h4>{item.name}</h4>
+                      <span className="menu-price"><RiyalSymbol value={item.price} /></span>
+                    </div>
+                    <p>{item.description}</p>
+                    {item.calories ? <span className="menu-item-calories">{item.calories} {t.menu.caloriesLabel}</span> : null}
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
 
           <div className="menu-pagination">
             <button

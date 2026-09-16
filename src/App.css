@@ -1129,6 +1129,13 @@ html[dir="rtl"] .mobile-menu.active {
   perspective: 1200px;
 }
 
+.dish-carousel-loading {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .dish-card {
   position: absolute;
   top: 50%;
@@ -1564,6 +1571,20 @@ html[dir="rtl"] .mobile-menu.active {
   display: flex;
   justify-content: center;
   margin-top: 2.5rem;
+}
+
+/* "View full menu" — gold/accent instead of the default red .btn-primary,
+   to stand out against the "From Our Menu" section. */
+.btn-view-menu {
+  background: var(--color-accent);
+  color: #1A1108;
+  box-shadow: 0 8px 25px rgba(246, 157, 28, 0.35);
+}
+
+.btn-view-menu:hover {
+  background: var(--color-accent-dark);
+  color: #1A1108;
+  box-shadow: 0 12px 35px rgba(246, 157, 28, 0.45);
 }
 
 .btn-scroll-explore-arrow {
@@ -2389,9 +2410,9 @@ html[dir="rtl"] .menu-filter-pill {
 }
 
 .menu-page-btn {
-  background: var(--color-primary);
-  color: #fff;
-  border: 1px solid var(--color-primary);
+  background: var(--color-accent);
+  color: #1A1108;
+  border: 1px solid var(--color-accent);
   padding: 0.65rem 1.6rem;
   border-radius: var(--radius-btn);
   font-family: 'Montserrat', sans-serif;
@@ -2406,9 +2427,9 @@ html[dir="rtl"] .menu-page-btn {
 }
 
 .menu-page-btn:hover:not(:disabled) {
-  background: var(--color-primary-dark);
-  border-color: var(--color-primary-dark);
-  color: #fff;
+  background: var(--color-accent-dark);
+  border-color: var(--color-accent-dark);
+  color: #1A1108;
 }
 
 .menu-page-btn:disabled {
@@ -2416,10 +2437,20 @@ html[dir="rtl"] .menu-page-btn {
   cursor: not-allowed;
 }
 
+/* This section's backdrop (see .menu-curated-section::before above) fades
+   from solid orange at the top to a dark pattern lower down — the plain
+   light text this used to be dropped to near-invisible against the orange
+   portion. A dark pill behind it guarantees contrast regardless of which
+   part of that gradient it lands on. */
 .menu-page-label {
   color: var(--text-on-dark-primary);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 700;
   white-space: nowrap;
+  background: rgba(13, 13, 13, 0.55);
+  padding: 0.5rem 1.2rem;
+  border-radius: var(--radius-btn);
+  letter-spacing: 0.3px;
 }
 
 .menu-items {
@@ -2740,7 +2771,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-accent);
+  background: var(--color-primary);
   border: 1px solid transparent;
   color: #fff;
   font-size: 1.2rem;
@@ -2749,7 +2780,7 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 }
 
 .social-links a:hover {
-  background: var(--color-accent-dark);
+  background: var(--color-primary-dark);
   color: #fff;
   transform: translateY(-3px);
 }
@@ -2979,6 +3010,15 @@ html[dir="rtl"] .footer-contact-rows span[dir="ltr"] {
 .branch-directions {
   margin-top: 0.6rem;
   width: fit-content;
+  background: var(--color-accent);
+  color: #1A1108;
+  box-shadow: 0 8px 25px rgba(246, 157, 28, 0.35);
+}
+
+.branch-directions:hover {
+  background: var(--color-accent-dark);
+  color: #1A1108;
+  box-shadow: 0 12px 35px rgba(246, 157, 28, 0.45);
 }
 
 @media (max-width: 768px) {
@@ -3750,6 +3790,52 @@ html[dir="rtl"] .reserve-field-row .reserve-field:first-child {
   font-weight: 600;
   color: var(--text-muted);
   margin: 0.5rem 0;
+}
+
+/* ===== SECTION LOADER ===== */
+/* Placeholder for a CMS-sourced block (hero background, carousel, menu grid,
+   gallery, branches) while its data is still being fetched — no static
+   fallback image shows in the meantime, this spinner does instead. */
+.section-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 220px;
+}
+
+.section-loader-spinner {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 3px solid rgba(246, 157, 28, 0.25);
+  border-top-color: var(--color-accent);
+  animation: sectionSpin 0.8s linear infinite;
+}
+
+@keyframes sectionSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.page-intro-bg.is-cms-loaded {
+  animation: fadeIn 0.5s ease;
+}
+
+/* Stands in for .page-intro-bg's exact box (see that rule for why: top:0,
+   500px tall, absolute) while its CMS backgroundImage hasn't loaded yet. */
+.page-intro-bg-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 500px;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-dark);
 }
 
 /* ===== ANIMATIONS ===== */

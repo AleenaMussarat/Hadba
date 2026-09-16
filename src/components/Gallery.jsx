@@ -4,37 +4,55 @@ import { translations } from '../i18n/translations'
 import { fetchGalleryImages, fetchPageHero } from '../services/strapi'
 import { FaXmark } from 'react-icons/fa6'
 import Masonry from './reactbits/Masonry'
+import SectionLoader from './SectionLoader'
 
 const Gallery = () => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
-  const [images, setImages] = useState(t.gallery.images)
+  // No static fallback — only ever shows what Strapi returns.
+  const [images, setImages] = useState([])
+  const [imagesLoading, setImagesLoading] = useState(true)
   const [activeImage, setActiveImage] = useState(null)
 
   const [heroData, setHeroData] = useState(null)
+  const [heroLoading, setHeroLoading] = useState(true)
 
   useEffect(() => {
+    let active = true
+    setHeroLoading(true)
     fetchPageHero('gallery', currentLang)
-      .then((data) => setHeroData(data))
-      .catch(() => setHeroData(null))
+      .then((data) => {
+        if (active) setHeroData(data)
+      })
+      .catch(() => {
+        if (active) setHeroData(null)
+      })
+      .finally(() => {
+        if (active) setHeroLoading(false)
+      })
+    return () => {
+      active = false
+    }
   }, [currentLang])
 
   useEffect(() => {
     let active = true
-    setImages(t.gallery.images)
+    setImagesLoading(true)
 
     fetchGalleryImages(currentLang)
       .then((data) => {
         if (active) setImages(data)
       })
       .catch(() => {
-        // Strapi unavailable or empty — keep the static fallback already set above.
+        if (active) setImages([])
+      })
+      .finally(() => {
+        if (active) setImagesLoading(false)
       })
 
     return () => {
       active = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLang])
 
   useEffect(() => {
@@ -56,15 +74,23 @@ const Gallery = () => {
     [images]
   )
 
-  const hero = heroData || {
-    title: t.gallery.title,
-    subtitle: t.gallery.subtitle,
-    backgroundImage: '/brand/photo-sadu-interior.webp'
+  const hero = {
+    title: heroData?.title || t.gallery.title,
+    subtitle: heroData?.subtitle || t.gallery.subtitle,
+    backgroundImage: heroData?.backgroundImage || null
   }
 
   return (
     <section className="section section-gallery">
-      <div className="page-intro-bg" style={{ backgroundImage: `url(${hero.backgroundImage})` }} aria-hidden="true" />
+      {hero.backgroundImage ? (
+        <div
+          className="page-intro-bg is-cms-loaded"
+          style={{ backgroundImage: `url(${hero.backgroundImage})` }}
+          aria-hidden="true"
+        />
+      ) : heroLoading ? (
+        <SectionLoader overlay />
+      ) : null}
       <div className="container">
         <div className="section-heading">
           <p className="eyebrow eyebrow-icon fade-in-up" style={{ animationDelay: '0.05s' }}>
@@ -76,10 +102,14 @@ const Gallery = () => {
         </div>
 
         <div className="gallery-masonry-wrap">
-          <Masonry
-            items={masonryItems}
-            onItemClick={(item) => setActiveImage({ image: item.img, caption: item.caption })}
-          />
+          {imagesLoading ? (
+            <SectionLoader minHeight="400px" />
+          ) : (
+            <Masonry
+              items={masonryItems}
+              onItemClick={(item) => setActiveImage({ image: item.img, caption: item.caption })}
+            />
+          )}
         </div>
       </div>
 

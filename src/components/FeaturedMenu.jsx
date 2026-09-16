@@ -5,12 +5,11 @@ import { translations } from '../i18n/translations'
 import { fetchMenuItems } from '../services/strapi'
 import { FaAnglesDown, FaAnglesLeft, FaAnglesRight } from 'react-icons/fa6'
 import RiyalSymbol from './RiyalSymbol'
+import SectionLoader from './SectionLoader'
 import { getLenis } from '../lib/smoothScroll'
 
 const PANEL_COUNT = 4
 const MOBILE_QUERY = '(max-width: 768px)'
-
-const staticFeatured = (t) => t.menu.items.filter((item) => item.featured).slice(0, PANEL_COUNT)
 
 // Goes through the shared Lenis instance instead of the native
 // scrollIntoView — Lenis drives all scrolling on this site, and fighting it
@@ -35,7 +34,9 @@ const STEP_MS = 650
 const FeaturedMenu = ({ scrollTargetId, minimal = false }) => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
-  const [items, setItems] = useState(staticFeatured(t))
+  // No static fallback — only ever shows what Strapi returns.
+  const [items, setItems] = useState([])
+  const [loading, setLoading] = useState(true)
   const [activeIndex, setActiveIndex] = useState(0)
   const [isMobile, setIsMobile] = useState(
     () => typeof window !== 'undefined' && window.matchMedia(MOBILE_QUERY).matches
@@ -47,24 +48,25 @@ const FeaturedMenu = ({ scrollTargetId, minimal = false }) => {
 
   useEffect(() => {
     let active = true
-    setItems(staticFeatured(t))
+    setLoading(true)
     setActiveIndex(0)
 
     fetchMenuItems(currentLang, { featured: true, pageSize: PANEL_COUNT })
       .then((data) => {
-        if (active && data.items.length > 0) {
-          setItems(data.items)
-          setActiveIndex(0)
-        }
+        if (!active) return
+        setItems(data.items)
+        setActiveIndex(0)
       })
       .catch(() => {
-        // Strapi unavailable or empty — keep the static fallback already set above.
+        if (active) setItems([])
+      })
+      .finally(() => {
+        if (active) setLoading(false)
       })
 
     return () => {
       active = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLang])
 
   useEffect(() => {
@@ -167,9 +169,11 @@ const FeaturedMenu = ({ scrollTargetId, minimal = false }) => {
     setActiveIndex(i)
   }
 
-  if (items.length === 0) return null
+  if (!loading && items.length === 0) return null
 
-  const gallery = (
+  const gallery = loading ? (
+    <SectionLoader minHeight="400px" />
+  ) : (
     <div className="menu-expand-gallery" ref={galleryRef}>
       {items.map((item, i) => (
         <button

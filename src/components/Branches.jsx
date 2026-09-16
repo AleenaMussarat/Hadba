@@ -4,47 +4,73 @@ import { translations } from '../i18n/translations'
 import { fetchBranches, fetchPageHero } from '../services/strapi'
 import { FaLocationDot, FaClock, FaDiamondTurnRight } from 'react-icons/fa6'
 import ParallaxImage from './ParallaxImage'
+import SectionLoader from './SectionLoader'
 
 const Branches = () => {
   const { currentLang } = useLanguage()
   const t = translations[currentLang] || translations.en
-  const [branches, setBranches] = useState(t.branches.items)
+  // No static fallback — only ever shows what Strapi returns.
+  const [branches, setBranches] = useState([])
+  const [branchesLoading, setBranchesLoading] = useState(true)
 
   const [heroData, setHeroData] = useState(null)
+  const [heroLoading, setHeroLoading] = useState(true)
 
   useEffect(() => {
+    let active = true
+    setHeroLoading(true)
     fetchPageHero('branches', currentLang)
-      .then((data) => setHeroData(data))
-      .catch(() => setHeroData(null))
+      .then((data) => {
+        if (active) setHeroData(data)
+      })
+      .catch(() => {
+        if (active) setHeroData(null)
+      })
+      .finally(() => {
+        if (active) setHeroLoading(false)
+      })
+    return () => {
+      active = false
+    }
   }, [currentLang])
 
   useEffect(() => {
     let active = true
-    setBranches(t.branches.items)
+    setBranchesLoading(true)
 
     fetchBranches(currentLang)
       .then((data) => {
         if (active) setBranches(data)
       })
       .catch(() => {
-        // Strapi unavailable or empty — keep the static fallback already set above.
+        if (active) setBranches([])
+      })
+      .finally(() => {
+        if (active) setBranchesLoading(false)
       })
 
     return () => {
       active = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLang])
 
-  const hero = heroData || {
-    title: t.branches.title,
-    subtitle: t.branches.subtitle,
-    backgroundImage: '/brand/photo-sadu-interior.webp'
+  const hero = {
+    title: heroData?.title || t.branches.title,
+    subtitle: heroData?.subtitle || t.branches.subtitle,
+    backgroundImage: heroData?.backgroundImage || null
   }
 
   return (
     <section className="section section-branches">
-      <div className="page-intro-bg" style={{ backgroundImage: `url(${hero.backgroundImage})` }} aria-hidden="true" />
+      {hero.backgroundImage ? (
+        <div
+          className="page-intro-bg is-cms-loaded"
+          style={{ backgroundImage: `url(${hero.backgroundImage})` }}
+          aria-hidden="true"
+        />
+      ) : heroLoading ? (
+        <SectionLoader overlay />
+      ) : null}
       <div className="container">
         <div className="section-heading">
           <p className="eyebrow eyebrow-icon fade-in-up" style={{ animationDelay: '0.05s' }}>
@@ -56,30 +82,34 @@ const Branches = () => {
         </div>
 
         <div className="branches-box">
-          <div className="branches-grid">
-            {branches.map((branch) => (
-              <article className="branch-card" key={branch.name}>
-                <div className="branch-card-image">
-                  <ParallaxImage src={branch.image} alt={branch.name} strength={20} />
-                </div>
-                <div className="branch-card-body">
-                  <h3>{branch.name}</h3>
-                  <p className="branch-detail">
-                    <span className="contact-item-icon"><FaLocationDot /></span>
-                    <span>{branch.location}</span>
-                  </p>
-                  <p className="branch-detail">
-                    <span className="contact-item-icon"><FaClock /></span>
-                    <span>{branch.hours}</span>
-                  </p>
-                  <a className="btn btn-primary branch-directions" href={branch.mapsLink} target="_blank" rel="noreferrer">
-                    <FaDiamondTurnRight />
-                    {t.branches.directionsLabel}
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
+          {branchesLoading ? (
+            <SectionLoader minHeight="400px" />
+          ) : (
+            <div className="branches-grid">
+              {branches.map((branch) => (
+                <article className="branch-card" key={branch.name}>
+                  <div className="branch-card-image">
+                    <ParallaxImage src={branch.image} alt={branch.name} strength={20} />
+                  </div>
+                  <div className="branch-card-body">
+                    <h3>{branch.name}</h3>
+                    <p className="branch-detail">
+                      <span className="contact-item-icon"><FaLocationDot /></span>
+                      <span>{branch.location}</span>
+                    </p>
+                    <p className="branch-detail">
+                      <span className="contact-item-icon"><FaClock /></span>
+                      <span>{branch.hours}</span>
+                    </p>
+                    <a className="btn btn-primary branch-directions" href={branch.mapsLink} target="_blank" rel="noreferrer">
+                      <FaDiamondTurnRight />
+                      {t.branches.directionsLabel}
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>
