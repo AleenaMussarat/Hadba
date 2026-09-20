@@ -10,8 +10,15 @@ const escapeHtml = (value) =>
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 
-// "12:00:00.000" -> "12:00"
-const formatTime = (time) => (time ? String(time).slice(0, 5) : '');
+// "18:30:00.000" -> "6:30 PM" (12-hour; AM/PM stays Latin even in Arabic)
+const formatTime = (time) => {
+  if (!time) return '';
+  const [hourStr, minute] = String(time).split(':');
+  const hour = Number(hourStr);
+  if (Number.isNaN(hour) || minute === undefined) return String(time);
+  const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+  return `${hour12}:${minute.slice(0, 2)} ${hour >= 12 ? 'PM' : 'AM'}`;
+};
 
 const PHONE_LABEL = 'رقم الجوال';
 const EMPTY_VALUE = 'غير متوفر';

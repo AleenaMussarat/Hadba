@@ -305,7 +305,9 @@ const downloadInquiriesCsv = async () => {
 
     const lines = [
       INQUIRY_EXPORT_COLUMNS.join(','),
-      ...rows.map((row) => INQUIRY_EXPORT_COLUMNS.map((col) => csvEscape(row[col])).join(','))
+      ...rows.map((row) =>
+        INQUIRY_EXPORT_COLUMNS.map((col) => csvEscape(col === 'time' && row.time ? toTime12(String(row.time)) : row[col])).join(',')
+      )
     ];
     // Leading BOM so Excel opens the UTF-8 file correctly (needed for Arabic names/notes).
     const blob = new Blob([`﻿${lines.join('\r\n')}`], { type: 'text/csv;charset=utf-8;' });
@@ -416,8 +418,26 @@ const toDdmmyyyy = (_match, month, day, year) => {
 const isoToDdmmyyyy = (_match, year, month, day) =>
   `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
 
+// Time-type table cells (the Inquiry "time" column) show the raw 24-hour value
+// ("18:30:00.000"). Only a text node that is *entirely* a time is matched, so
+// nothing else containing digits and colons is touched; the 12-hour output
+// carries an AM/PM suffix (Latin letters in Arabic too), so it can't re-match
+// — idempotent.
+const TIME_24H_RE = /^\s*(\d{1,2}):(\d{2})(?::\d{2}(?:\.\d+)?)?\s*$/;
+
+const toTime12 = (text) => {
+  const match = text.match(TIME_24H_RE);
+  if (!match) return text;
+  const hour = Number(match[1]);
+  if (hour > 23) return text;
+  const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+  return `${hour12}:${match[2]} ${hour >= 12 ? 'PM' : 'AM'}`;
+};
+
 const rewriteDateText = (text) =>
-  text.replace(FULL_DATE_RE, toDdmmyyyy).replace(SHORT_DATE_RE, toDdmmyyyy).replace(ISO_DATE_RE, isoToDdmmyyyy);
+  toTime12(
+    text.replace(FULL_DATE_RE, toDdmmyyyy).replace(SHORT_DATE_RE, toDdmmyyyy).replace(ISO_DATE_RE, isoToDdmmyyyy)
+  );
 
 const hasDateMatch = (text) => {
   const full = FULL_DATE_RE.test(text);
@@ -426,7 +446,7 @@ const hasDateMatch = (text) => {
   SHORT_DATE_RE.lastIndex = 0;
   const iso = ISO_DATE_RE.test(text);
   ISO_DATE_RE.lastIndex = 0;
-  return full || short || iso;
+  return full || short || iso || TIME_24H_RE.test(text);
 };
 
 const rewriteDateNodesIn = (root) => {

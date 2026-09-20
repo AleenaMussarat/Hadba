@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useLanguage } from '../i18n'
 import { translations } from '../i18n/translations'
 import { useReservationForm } from '../lib/useReservationForm'
+import { formatTime12 } from '../lib/formatTime'
 import { FaLocationDot, FaPhone, FaEnvelope, FaClock, FaCircleCheck, FaTriangleExclamation } from 'react-icons/fa6'
 import { buildSocialLinks } from '../data/social'
 import { MAP_QUERY, MAP_EMBED_SRC } from '../lib/mapConfig'
@@ -141,7 +142,7 @@ const Contact = () => {
                     <select required value={form.time} onChange={handleChange('time')}>
                       <option value="">{t.reserve.selectTime}</option>
                       {['12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'].map(time => (
-                        <option key={time} value={time}>{time}</option>
+                        <option key={time} value={time}>{formatTime12(time)}</option>
                       ))}
                     </select>
                   </label>
