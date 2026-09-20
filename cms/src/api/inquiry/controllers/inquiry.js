@@ -13,18 +13,21 @@ const escapeHtml = (value) =>
 // "12:00:00.000" -> "12:00"
 const formatTime = (time) => (time ? String(time).slice(0, 5) : '');
 
+const PHONE_LABEL = 'رقم الجوال';
+const EMPTY_VALUE = 'غير متوفر';
+
 const reservationFields = (payload) => [
-  ['Name', payload.name],
-  ['Phone', payload.phone],
-  ['Guests', payload.guests],
-  ['Date', payload.date],
-  ['Time', formatTime(payload.time)],
-  ['Notes', payload.notes],
+  ['الاسم', payload.name],
+  [PHONE_LABEL, payload.phone],
+  ['عدد الضيوف', payload.guests],
+  ['التاريخ', payload.date],
+  ['الوقت', formatTime(payload.time)],
+  ['ملاحظات', payload.notes],
 ];
 
 // Plain-text fallback for mail clients that don't render HTML.
 const buildReservationText = (payload) =>
-  ['New reservation inquiry', '', ...reservationFields(payload).map(([label, value]) => `${label}: ${value || 'N/A'}`)].join('\n');
+  ['طلب حجز جديد', '', ...reservationFields(payload).map(([label, value]) => `${label}: ${value || EMPTY_VALUE}`)].join('\n');
 
 // Table-based layout with inline styles only — the one format every mail
 // client (Gmail, Outlook, Apple Mail) renders consistently. Every guest-
@@ -33,31 +36,33 @@ const buildReservationText = (payload) =>
 const buildReservationHtml = (payload) => {
   const rows = reservationFields(payload)
     .map(([label, value], index) => {
-      const shown = value ? escapeHtml(value) : '<span style="color:#9a8f85;">N/A</span>';
+      const shown = value ? escapeHtml(value) : `<span style="color:#9a8f85;">${EMPTY_VALUE}</span>`;
+      // Phone numbers stay left-to-right (dir="ltr") inside the RTL row so the
+      // digits don't get reordered.
       const content =
-        label === 'Phone' && value
-          ? `<a href="tel:${escapeHtml(String(value).replace(/\s+/g, ''))}" style="color:#BC3433;text-decoration:none;">${shown}</a>`
+        label === PHONE_LABEL && value
+          ? `<a dir="ltr" href="tel:${escapeHtml(String(value).replace(/\s+/g, ''))}" style="color:#BC3433;text-decoration:none;">${shown}</a>`
           : shown;
       const background = index % 2 === 0 ? '#ffffff' : '#faf6f1';
       return `<tr style="background:${background};">
-        <td style="padding:14px 20px;width:130px;font-size:13px;font-weight:600;color:#8c7c6a;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #eee6dc;vertical-align:top;">${label}</td>
-        <td dir="auto" style="padding:14px 20px;font-size:16px;color:#221910;border-bottom:1px solid #eee6dc;white-space:pre-wrap;">${content}</td>
+        <td style="padding:14px 20px;width:120px;font-size:14px;font-weight:700;color:#8c7c6a;border-bottom:1px solid #eee6dc;vertical-align:top;text-align:right;">${label}</td>
+        <td dir="auto" style="padding:14px 20px;font-size:16px;color:#221910;border-bottom:1px solid #eee6dc;white-space:pre-wrap;text-align:right;">${content}</td>
       </tr>`;
     })
     .join('');
 
   return `<!DOCTYPE html>
-<html>
-<body style="margin:0;padding:0;background:#f3ece3;font-family:Segoe UI,Tahoma,Arial,sans-serif;">
+<html lang="ar" dir="rtl">
+<body dir="rtl" style="margin:0;padding:0;background:#f3ece3;font-family:Segoe UI,Tahoma,Arial,sans-serif;direction:rtl;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3ece3;padding:32px 12px;">
     <tr><td align="center">
       <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(34,25,16,0.10);">
         <tr><td style="background:#BC3433;padding:28px 24px;text-align:center;">
-          <div style="font-size:26px;font-weight:700;color:#ffffff;letter-spacing:1px;">SAMDAN</div>
-          <div style="font-size:14px;color:#ffd9a0;margin-top:6px;">New Reservation Inquiry</div>
+          <div style="font-size:26px;font-weight:700;color:#ffffff;">سَمْدَان</div>
+          <div style="font-size:15px;color:#ffd9a0;margin-top:6px;">طلب حجز جديد</div>
         </td></tr>
-        <tr><td style="padding:24px 24px 8px;font-size:15px;color:#5c4f3f;">
-          A guest just submitted a reservation request through the website.
+        <tr><td style="padding:24px 24px 8px;font-size:15px;color:#5c4f3f;text-align:right;">
+          قام أحد الضيوف بإرسال طلب حجز عبر الموقع الإلكتروني.
         </td></tr>
         <tr><td style="padding:8px 24px 24px;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #eee6dc;border-radius:8px;overflow:hidden;border-collapse:separate;">
@@ -65,7 +70,7 @@ const buildReservationHtml = (payload) => {
           </table>
         </td></tr>
         <tr><td style="background:#faf6f1;padding:16px 24px;text-align:center;font-size:12px;color:#8c7c6a;">
-          Sent automatically by the SAMDAN website. You can also review this inquiry in the CMS.
+          تم إرسال هذه الرسالة تلقائيًا من موقع سمدان. يمكنك أيضًا مراجعة الطلب من لوحة التحكم.
         </td></tr>
       </table>
     </td></tr>
@@ -118,7 +123,7 @@ module.exports = createCoreController('api::inquiry.inquiry', ({ strapi }) => ({
       await strapi.plugin('email').service('email').send({
         to: recipient,
         from: sender,
-        subject: `New reservation inquiry from ${payload.name || 'Guest'}`,
+        subject: `طلب حجز جديد من ${payload.name || 'ضيف'}`,
         text: buildReservationText(payload),
         html: buildReservationHtml(payload),
       });
