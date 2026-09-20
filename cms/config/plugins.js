@@ -46,13 +46,13 @@ module.exports = ({ env }) => ({
         port: env.int('SMTP_PORT', 587),
         secure: env.bool('SMTP_SECURE', false),
         auth: {
-          user: env('SMTP_USERNAME', 'aleenamussarat@gmail.com'),
+          user: env('SMTP_USERNAME', 'smdn.ksa@gmail.com'),
           pass: env('SMTP_PASSWORD', ''),
         },
       },
       settings: {
-        defaultFrom: env('SMTP_FROM', 'aleenamussarat@gmail.com'),
-        defaultReplyTo: env('SMTP_FROM', 'aleenamussarat@gmail.com'),
+        defaultFrom: env('SMTP_FROM', 'smdn.ksa@gmail.com'),
+        defaultReplyTo: env('SMTP_FROM', 'smdn.ksa@gmail.com'),
       },
     },
   },

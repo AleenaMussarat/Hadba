@@ -53,7 +53,7 @@ If you already have a restaurant info/settings collection, add the `acceptingRes
     },
     settings: {
       defaultFrom: 'noreply@samdan.sa',
-      defaultReplyTo: 'aleenamussarat@gmail.com',
+      defaultReplyTo: 'smdn.ksa@gmail.com',
     },
   },
 },
@@ -86,7 +86,7 @@ async create(ctx) {
   // Send email notification
   try {
     await strapi.plugins['email'].services.email.send({
-      to: settings.adminEmail || 'aleenamussarat@gmail.com',
+      to: settings.adminEmail || 'smdn.ksa@gmail.com',
       from: 'noreply@samdan.sa',
       subject: `New Reservation Inquiry from ${ctx.request.body.data.name}`,
       html: `

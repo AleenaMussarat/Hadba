@@ -77,9 +77,9 @@ secrets — but generating fresh ones for production is cleaner. If you change
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_SECURE=false
-SMTP_USERNAME=aleenamussarat@gmail.com
+SMTP_USERNAME=smdn.ksa@gmail.com
 SMTP_PASSWORD=<gmail app password>
-SMTP_FROM=aleenamussarat@gmail.com
+SMTP_FROM=smdn.ksa@gmail.com
 ```
 
 (These names match [cms/config/plugins.js](cms/config/plugins.js). For Gmail,
